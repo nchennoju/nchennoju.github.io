@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>The ASU Outlook</title>
+
+    
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+    <link href="https://fonts.googleapis.com/css?family=Montserrat" rel="stylesheet">
+
+      <style>
+
+/*General */
+html{    
+  background:#000;
+  background-size: cover;
+  height:100%;
+}
+body
+{
+	font-family: 'Montserrat', Arial, Helvetica, sans-serif;
+}
+
+#feedback-page{
+	text-align:center;
+}
+
+#form-main{
+	width:100%;
+	float:left;
+	padding-top:0px;
+}
+
+#form-div {
+	background-color:rgba(72,72,72,0.4);
+	padding-left:35px;
+	padding-right:35px;
+	padding-top:35px;
+	padding-bottom:10px;
+	width: 450px;
+	float: left;
+	left: 50%;
+	position: absolute;
+  margin-top:20px;
+  margin-bottom: 20px;
+	margin-left: -260px;
+  border-radius: 7px;
+  
+}
+
+.montform .feedback-input {
+	color:#3c3c3c;
+	font-family: Helvetica, Arial, sans-serif;
+  font-weight:500;
+	font-size: 18px;
+	border-radius: 0;
+	line-height: 22px;
+	background-color: #fbfbfb;
+	padding: 13px 13px 13px 54px;
+	margin-bottom: 10px;
+	width:100%;
+	box-sizing: border-box;
+	border: 3px solid rgba(0,0,0,0);
+}
+/*Inputs styles*/
+.montform .feedback-input:focus{
+	background: #fff;
+	border: 3px solid #8a2812;
+	color: #3498db;
+	outline: none;
+  padding: 13px 13px 13px 54px;
+}
+
+
+.montform  #comment{
+	background-image: url(https://cdnjs.cloudflare.com/ajax/libs/foundicons/3.0.0/svgs/fi-pencil.svg);
+	background-size: 30px 30px;
+	background-position: 11px 8px;
+	background-repeat: no-repeat;
+  background-color: #000;
+  color: #fff;
+}
+
+.montform  textarea {
+    width: 100%;
+    height: 300px;
+    line-height: 150%;
+    resize:vertical;
+}
+
+.montform  input:hover, .montform  textarea:hover,
+.montform  input:focus, .montform  textarea:focus {
+	background-color:#424242;
+}
+
+.button-blue{
+	font-family: 'Montserrat', Arial, Helvetica, sans-serif;
+	float:left;
+	width: 100%;
+	border: #5e5e5e solid 4px;
+	cursor:pointer;
+	background-color: #b83518;
+	color:white;
+	font-size:24px;
+	padding-top:22px;
+	padding-bottom:22px;
+	transition: all 0.3s;
+  margin-top:-4px;
+  font-weight:700;
+}
+
+.button-blue:hover{
+	background-color: rgba(0,0,0,0);
+	color: #8a2812;
+}
+	
+.montform  .submit:hover {
+	color: #8a2812;
+}
+	
+.ease {
+	width: 0px;
+	height: 74px;
+	background-color: #fbfbfb;
+	transition: .3s ease;
+}
+
+.submit:hover .ease{
+  width:100%;
+  background-color:#000;
+}
+
+/*Styles for small screens*/
+
+@media  only screen and (max-width: 580px) {
+	#form-div{
+		left: 3%;
+		margin-right: 3%;
+		width: 88%;
+		margin-left: 0;
+		padding-left: 3%;
+		padding-right: 3%;
+	}
+}
+
+</style>
+
+
+</head>
+  <body >
+      <div class="container">
+        <div id="form-main">
+  <div id="form-div">
+
+    <form class="montform" id="reused_form" enctype=&quot;multipart/form-data&quot; action="https://formspree.io/xbjzwggq"
+  method="POST">
+      <h1 style="text-align: center; color: #fff;">The ASU Outlook - Anonymous</h1>
+      <p style="text-align: left; color: #787878;"><br>There's a lot going on in the world and sometimes, people need to be able to speak their minds anonymously. That's what this form is for, your opinions, confessions, views... (& memes - in text) displayed on a facebook page.<br><br>Please refrain from using hurtful comments or a filter will be implemented.<br><br>DISCLAIMER: Not all messages may appear on the anonymous facebook page. A randomly selected message from messages sent in that minute will be posted up on the facebook group to view. A post will thus be made every minute (assuming there is content from users).<br><br>ASU Confessions Page -><br><a href="https://www.facebook.com/pg/The-ASU-Outlook-103086475075433/posts/" target="_blank" style="color: #059c8f;">https://www.facebook.com/pg/The-ASU-Outlook-103086475075433/posts/</a></p>
+      <p class="text">
+        <textarea name="message" class="feedback-input" id="comment" placeholder="Message"></textarea>
+      </p>
+      <div class="submit">
+        <button type="submit" class="button-blue">SUBMIT</button>
+        <div class="ease"></div>
+      </div>
+    </form>
+
+    
+    <a href="https://www.public.asu.edu/~nchennoj/" target="_blank">
+    	<button style="text-align: center; color: #787878; font-size: 12px; border: #5e5e5e solid 1px; cursor:pointer; background-color: #000; margin-top:5%; margin-left: 30%; margin-right: auto; width: 40%;" >Designed by Nitish C.</button>
+    </a>
+
+
+    </div>
+    </div>
+    </div>
+      
+
+      
+  </body>
+</html>

@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Nitish Chennoju - Research</title>
+	<meta name=”description” content="Nitish Chennoju is a freshman at ASU pursuing a career in the junction of Aerospace, Electrical, and Computer Science. He strives to learn about new technologies and determine methods to enhance the capabilities of the product. He has completed several projects and is actively involved with FURI research regarding propulsion data analysis.">
+	<link href='https://fonts.googleapis.com/css?family=Quicksand' rel='stylesheet'>
+	<link rel="stylesheet" href="style.css">
+	<link rel="icon" href="img/me.png">
+</head>
+<body>
+	<div class="container">
+		<div class="menu">
+			<ul>
+				<a class="logo" href="https://www.public.asu.edu/~nchennoj/"><img src="img/nclogo.png"></a>
+				<a href="index.html">Home</a>
+				<a class='active2'; href="research.html">Research</a>
+				<a href="projects.html">Projects</a>
+				<a href="blog.html">Blog</a>
+				<a href="mailto:nchennoju@gmail.com" class="contactme-btn" style="color: #fff" ><span>Contact Me</span></a>
+			</ul>
+		</div>
+	</div>
+
+
+	<div class="banner2">
+			<div class="content">
+			
+				<br>
+				<h1 style="font-family: 'Quicksand">Current Research: Electric Propulsion Data Aquisition</h1>
+				<p style="margin-bottom: 20px; margin-top: 20px; font-family: 'Quicksand">With the help from Professer Timothy Takahashi, I have been able to establish a research project with ASU's Fulton Undergraduate Research Initiative (FURI). As part of FURI, I am in the works of developing a flight controller that logs data regarding the flight of an aircraft. Using a combination of in-flight filtration and post-flight analysis, I am looking to develop an effecient method to tune an electric aircraft to maximize certain Aerodynamic features.<br></p>
+				<a href=""><img src="img/Projects/pcb1.JPG" alt="PCB1" style="width: 40%; height: auto;"></a>
+				<br>
+				<p style="font-family: 'Quicksand">The PCB in the image above was the first iteration of a flight controller that could potentially be used to collect and log sensor data. The sensors that will be equipped on the flight controller are: </p>
+				<br>
+				<ol>
+					<li style="font-family: 'Quicksand">Acceleromter</li>
+					<li style="font-family: 'Quicksand">Gyro</li>
+					<li style="font-family: 'Quicksand">Pitot Tube</li>
+					<li style="font-family: 'Quicksand">Thrust Sensor (Load Cell)</li>
+					<li style="font-family: 'Quicksand">Potentiometer (Angle of Attack)</li>
+				</ol>
+				<br>
+				<p style="font-family: 'Quicksand">The current setup collects data at a sampling rate of 100Hz (every 10ms) which gives users plenty of data to work with. All data collected is also logged onto a micro sd card which can be analysized post-flight.</p>
+
+				<br>
+				<div class="code">
+					<a href="https://github.com/nchennoju/ASU-FURI-2020-Spring/tree/master/FURI_PropulsionDataAcquisition" target="_blank"><img src="img/Projects/Prog1.jpg" alt="PROG1" style="width: 80%; height: auto;"></a>
+					<a href="https://github.com/nchennoju/ASU-FURI-2020-Spring/tree/master/AirDevilsR_D" target="_blank"><img src="img/Projects/Annotation 2019-11-23 234138.png" alt="PROG1" style="width: 80%; height: auto;"></a>
+				</div>
+				<p style="margin-bottom: 50px; font-family: 'Quicksand">The screenshots above are snippets of the two layers of code running. One runs on the arduino to collect and log sensor data to the sd card. The other runs post flight on the SD card and simulates a digital and analog filter. This enables noisy analog data collected to be usable.</p>
+
+
+		</div>
+	</div>
+
+
+
+
+
+</body>
+</html>

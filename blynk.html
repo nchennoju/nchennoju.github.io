@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Nitish Chennoju - Projects</title>
+	<meta name=”description” content="Nitish Chennoju is a freshman at ASU pursuing a career in the junction of Aerospace, Electrical, and Computer Science. He strives to learn about new technologies and determine methods to enhance the capabilities of the product. He has completed several projects and is actively involved with FURI research regarding propulsion data analysis.">
+	<meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
+	<link href='https://fonts.googleapis.com/css?family=Quicksand' rel='stylesheet'>
+	<link rel="icon" href="img/me.png">
+	<style>
+		html{
+			scroll-behavior: smooth;
+		}
+
+		.tokenEnter{
+			font-family: 'Quicksand';
+			background-color: #4caf98;
+  			border: none;
+  			color: white;
+  			padding: 15px 32px;
+  			text-align: center;
+  			font-size: 16px;
+  			border: none;
+		}
+
+		.tokenEnter input{
+			font-family: 'Quicksand';
+			width: 30%;
+		}
+
+		.tokenEnter .unlock{
+			font-size: 100%;
+			font-family: 'Quicksand';
+			padding: 15px 32px;
+			width: 40%;
+			height: 7%;
+			background-color: #37db45;
+			border: none;
+  			color: white;
+		}
+		.tokenEnter .unlock:hover{
+			background-color: #37db45;
+		}
+
+		.tokenEnter .lock{
+			font-size: 100%;
+			font-family: 'Quicksand';
+			padding: 15px 32px;
+			width: 40%;
+			height: 7%;
+			background-color: #f53131;
+			border: none;
+  			color: white;
+		}
+		.tokenEnter .lock:hover{
+			background-color: #bd2222;
+		}
+
+		.tokenEnter .state{
+			font-family: 'Quicksand';
+			padding: 15px 32px;
+			width: 30%;
+		}
+
+		*{
+			margin: 0;
+			padding: 0;
+			font-family: sans-serif;
+		  	transition: 0.3s;
+		  	box-sizing: border-box;
+		}
+
+
+
+		.container{
+			width: 100%;
+		}
+
+
+		html, body{
+		  background-color: #075273;
+		  height: 100%;
+		  scroll-behavior: smooth;
+		}
+
+
+		.menu ul{
+			display: inline-flex;
+			margin: 40px;
+			list-style: none;
+		}
+
+		.menu ul li{
+			margin: 0px 20px;
+			color: #b2b1b1;
+			cursor: pointer;
+		}
+
+		.menu ul a{
+			margin: 0px 20px;
+			color: #b2b1b1;
+			cursor: pointer;
+			text-decoration: none;
+		}
+
+		.menu ul a:hover{
+			color: #949494;
+		}
+
+		.logo img{
+			width: 70px;
+			margin-top: -17px;
+			margin-right: 2%; 
+		}
+
+		.active2{
+			color: #19dafa !important;
+		}
+
+		.contactme-btn{
+			right: 5%;
+			position: absolute;
+			text-decoration: none;
+			color: #fff;
+			border: 2px solid transparent;
+			border-radius: 20px;
+			background-image: linear-gradient(#0b4873, #0b4873), radial-gradient(circle at top left,#61d11b,#1b97d1);
+			background-origin: border-box;
+			background-clip: content-box, border-box;
+		}
+
+		.contactme-btn:hover{
+			background-image: linear-gradient(#05253b, #05253b), radial-gradient(circle at top left,#61d11b,#1b97d1);
+		}
+
+		.contactme-btn span{
+			display: block;
+			padding: 8px 22px;
+		}
+
+		.row{
+			display: table;
+			margin-top: 5%;
+		}
+
+		.column{
+			width: 50%;
+			float: right;
+		}
+
+		.column h1{
+			font-size: 68px;
+			width: 80%;
+			position: relative;
+			margin-top: 10%;
+			margin-left: 20%; 
+			color: #fff;
+		}
+
+		.column p{
+			width: 80%;
+			font-size: 20px;
+			margin-left: 20%;
+			margin-top: 3%;
+			color: #c2c2c2;
+		}
+
+		.row .column .links{
+		  display: inline-block;
+		  margin-left: 20%;
+		}
+
+		.links img{
+		  width: 5%;
+		  margin-right: 5%;
+		  margin-top: 5%;
+		  box-shadow: 0 2px 4px 0 #1a1a1a;
+		}
+
+		.row .column .links img:hover{
+		  box-shadow: 0 8px 16px 0 #1a1a1a;
+		}
+
+
+
+
+
+		.banner2{
+			width: 90%;
+			height: 80%;
+			top: 15%;
+			left: 5%;
+			right: auto;
+			position: absolute;
+			color: #fff;
+		}
+
+
+
+
+
+
+
+
+
+
+
+
+
+		.content{
+		  color: #fff;
+		}
+
+		.content .code img {
+		  margin-bottom: 20px;
+		  box-shadow: 0 4px 8px 0 #000;
+		  transition: 0.3s;
+		  /*border-radius: 40px;*/
+		}
+
+		.content .code img:hover{
+		  box-shadow: 0 9px 18px 0 #000;
+		}
+
+		.content .code{
+		  display: flex;
+		  justify-content: space-between;
+		  margin: 10px;
+		}
+
+
+
+
+		.banner2 .content h1{
+			font-size: 45px;
+			position: relative;
+			margin-bottom: 10px;
+		}
+
+		.banner2 .content ol{
+		  margin-left: 30px; 
+		}
+
+
+
+
+
+
+
+
+
+
+		.card {
+		  display: inline-block;
+		  float: center;
+		  box-shadow: 0 4px 8px 0 #000;
+		  transition: 0.3s;
+		  width: 80%;
+		  margin-left: 10%;
+		  margin-right: auto;
+		  margin-bottom: 1%;
+		  margin-top: 1%;
+		  background-color: #fff;
+		}
+
+		.card .desc{
+		  /*padding-left: 44%;
+		  padding-top: 2%;
+		  padding-bottom: 2%*/
+		  float: right;
+		  padding: 2px 16px;
+		  padding-top: 2%;
+		  padding-bottom: 2%;
+		  width: 57%;
+		  color: #000;
+		  /*vertical-align: center;*/
+		}
+
+		.card .desc ul{
+		  margin-left: 30px; 
+		}
+
+		.card:hover {
+		  box-shadow: 0 8px 16px 0 #000;
+		}
+
+		.footer{
+		    width: 75%;
+		    margin: auto;
+		    position: relative;
+		    margin-top:1%;
+		    border-top: 4px solid #fff;
+		}
+
+
+
+
+		.shade img {
+		  box-shadow: 0 0 0 0 #000;
+		  transition: 0.3s;
+		}
+
+		.shade img:hover{
+		  box-shadow: 0 6px 12px 0 #000;
+		}
+
+
+
+
+
+		@media only screen and (max-width:800px) {
+		  /* For mobile phones: */
+
+		  /*html, body{
+		  background-color: #ff0000;
+		  height: 100%;
+		}*/
+			.column{
+				width: 50%;
+				float: top;
+			}
+
+			.me img{
+				width: 75%;
+			}
+
+			.menu ul a{
+				margin: 0px 10px;
+			}
+
+
+		}
+
+
+	</style>
+
+	<script>
+
+		setInterval(function() {httpGetAsync();}, 1000); // Call the update function every set interval e.g. 1000mS or 1-sec
+
+	  	function httpGetAsync() {
+		    var auth = document.getElementById("code").value;
+	    	var url = "http://blynk-cloud.com/" + auth + "/get/V1";
+	    	var url2 = "http://blynk-cloud.com/" + auth + "/isHardwareConnected"
+
+	    	let request = new XMLHttpRequest();
+
+			request.open('GET', url, true);
+			request.send();
+			request.onreadystatechange = function () {
+			  if (this.readyState === 4 && this.status == 200) {
+			    var state = this.responseText;
+			    //console.log('Content:', this.responseText);
+			    if(state == "[\"1\"]"){
+				    document.getElementById("demo").innerHTML = "DOOR UNLOCKED";
+				    document.getElementById("tokenEnter").style.backgroundColor = "#4CAF50";
+				}else if(state == "[\"0\"]") {
+				    document.getElementById("demo").innerHTML = "DOOR LOCKED";
+				    document.getElementById("tokenEnter").style.backgroundColor = "#af4c4c";
+				}else {
+				    document.getElementById("demo").innerHTML = "UNKNOWN";
+				    document.getElementById("tokenEnter").style.backgroundColor = "#4caf98";
+				}
+			  }else{
+				  document.getElementById("demo").innerHTML = "UNKNOWN";
+				  document.getElementById("tokenEnter").style.backgroundColor = "#4caf98";
+			  }
+			};
+
+			let request2 = new XMLHttpRequest();
+
+			request2.open('GET', url2, true);
+			request2.send();
+			request2.onreadystatechange = function () {
+			  if (this.readyState === 4 && this.status == 200) {
+			    var state = this.responseText;
+			    //console.log('Content:', this.responseText);
+			    if(state == "true"){
+				    document.getElementById("demo2").innerHTML = "Connection Status: TRUE";
+				}else if(state == "false") {
+				    document.getElementById("demo2").innerHTML = "Connection Status: FALSE";
+				}
+			  }else{
+				  document.getElementById("demo2").innerHTML = "Connection Status: UNKNOWN";
+			  }
+			};
+		}
+
+	  function httpRequestUnlock() {
+	  		var auth = document.getElementById("code").value;
+	    	var url = "http://blynk-cloud.com/" + auth + "/update/V1?value=1";
+		    var xmlHttp = new XMLHttpRequest();
+
+		    xmlHttp.open("GET", url, true); // true for asynchronous 
+		    xmlHttp.send();
+		    xmlHttp.onreadystatechange = function() { 
+		        if (xmlHttp.readyState == 4 && xmlHttp.status == 200)
+		            document.getElementById("demo").innerHTML = "UNLOCK";
+	    			document.getElementById("tokenEnter").style.backgroundColor = "#4CAF50";
+		    }
+		    
+	  }
+
+	  function httpRequestLock() {
+	  	var auth = document.getElementById("code").value;
+	    var url = "http://blynk-cloud.com/" + auth + "/update/V1?value=0";
+		var xmlHttp = new XMLHttpRequest();
+
+		xmlHttp.open("GET", url, true); // true for asynchronous 
+		xmlHttp.send();
+
+		xmlHttp.onreadystatechange = function() { 
+		if (xmlHttp.readyState == 4 && xmlHttp.status == 200)
+		        document.getElementById("demo").innerHTML = "LOCK";
+	    		document.getElementById("tokenEnter").style.backgroundColor = "#af4c4c";
+		}
+	  }
+	</script>
+
+</head>
+<body>
+
+	<div class="container">
+		<div class="menu">
+			<div class="tabs">
+				<ul>
+					<a class="logo" href="index.html"><img src="img/nclogo.png"></a>
+					<a href="index.html">Home</a>
+					<a href="projects.html">Projects</a>
+					<a href="projects.html#blog">Blog</a>
+				</ul>
+			</div>
+		</div>
+	</div>
+
+
+	
+	<div class="banner2">
+		<div class="content">
+			<br>
+			<h1 style="text-align: center; font-size: 45px; font-family: 'Quicksand">Blynk Web Interface</h1>
+			<h3 style="text-align: center; font-size: 15px; font-family: 'Quicksand">**Note: Designed to control IoT door lock mechanism</h3><br><br>
+			<br>
+
+			<div class="tokenEnter" id="tokenEnter" style="text-align: center;">
+				<br>
+				<br>
+				<br>
+				<label style="font-family: 'Quicksand'; font-size: 20px;" for="code">Auth Token : </label>
+				<input type="text" id="code" name="code"><br><br><br><br><br>
+				<b><p style="font-family: 'Quicksand'; font-size: 50px;" id="demo">UNKNOWN</p></b><br>
+				<b><p style="font-family: 'Quicksand'; font-size: 15px;" id="demo2">Connection Status: FALSE</p></b><br><br>
+				
+				<button class="unlock" onclick="httpRequestUnlock()">UNLOCK</button><br><br>
+				<button class="lock" onclick="httpRequestLock()">LOCK</button><br><br>
+				<br>
+				<br>
+			</div>
+
+		</div>
+	</div>
+
+
+
+</body>
+</html>
