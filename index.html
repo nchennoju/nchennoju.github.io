@@ -290,12 +290,12 @@
                         </div>
                         <p class="lead">With the help of Professor Timothy Takahashi, I've been able to establish a research project with ASU's Fulton Undergraduate Research Initiative (FURI). As part of FURI, I am in the works of developing a flight controller and associated software capable of logging data regarding the flight of an aircraft. Using a combination of in-flight filtration and post-flight analysis, the objective of this project is to determine and optimize certain Aerodynamic features, mainly regarding the Thrust lapse of the aircraft.<br><br>The flight controller (fig 2) used to collect and log sensor data consists of the following sensors:<br></p>
                         <ol class="lead">
-                          <li>Accelerometer</li>
-                          <li>Gyro</li>
+                          <li>IMU - 6 axis</li>
+                          <li>Barometer</li>
                           <li>Pitot Tube</li>
                           <li>Thrust Sensor (Load Cell)</li>
                         </ol>
-                        <p class="lead"><br>The current setup collects data at a sampling rate of 100Hz (every 10ms) which gives users plenty of data to work with. All data collected is also logged onto a micro sd card which can be analyzed post-flight.<br><br>Figures 3 and 4 are snippets of the two layers of code running. Figure 3 runs on the arduino to collect and log sensor data to the sd card. Figure 4 runs post flight on the SD card and simulates a digital and analog filter. This enables noisy analog data collected to be usable.<br><br>Although my research period with FURI is complete, I plan to continue enhancing this project to eventually include a virtual reconstruction of the aircraft's flight for further analysis.</p>
+                        <p class="lead"><br>The current setup collects data at a sampling rate of 100Hz (every 10ms) which gives users plenty of data to work with. All data collected is also logged onto a micro sd card which is analyzed post-flight.<br><br>Figures 3 and 4 are snippets of the two layers of code running. Figure 3 runs on the arduino to collect and log sensor data to the sd card. Figure 4 runs post flight on the SD card and simulates a digital and analog filter. This enables noisy analog data collected to be usable.<br><br>Although my research period with FURI is complete, I plan to continue enhancing this project to eventually include a virtual reconstruction of the aircraft's flight for further analysis considering thrust lapse data can be skewed by undersired aircraft manuvers.</p>
                       </div>
                     </div>
                   </div>
