@@ -428,7 +428,7 @@ a:hover {
 .navbar-b.navbar-reduce .nav-link {
   color: #fff;
   text-transform: uppercase;
-  font-weight: 600;
+  font-weight: 350;
 }
 
 .navbar-b.navbar-trans .nav-link:before,
@@ -631,13 +631,14 @@ a:hover {
 
 .intro .intro-title {
   color: #fff;
-  font-weight: 600;
+  font-weight: 200;
   font-size: 3rem;
 }
 
+
 .intro .intro-subtitle {
   font-size: 1.5rem;
-  font-weight: 300;
+  font-weight: 50;
 }
 
 .intro .text-slider-items {
@@ -700,12 +701,12 @@ a:hover {
 .skill-mf .progress {
   background-color: #d7ebf8;
   margin: .5rem 0 1.2rem 0;
-  border-radius: 0;
-  height: .7rem;
+  border-radius: 1;
+  height: .3rem;
 }
 
 .skill-mf .progress .progress-bar {
-  height: .7rem;
+  height: .3rem;
   background-color: #48abec;
 }
 
@@ -1236,9 +1237,9 @@ footer .credits a {
     font-size: 4.5rem;
   }
 
-  .intro .intro-subtitle {
+  /*.intro .intro-subtitle {
     font-size: 2.5rem;
-  }
+  }*/
 
   .intro-single .intro-title {
     font-size: 3.5rem;
