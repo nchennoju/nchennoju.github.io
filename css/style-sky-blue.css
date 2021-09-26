@@ -36,6 +36,16 @@ a:hover {
 
 .links {
   border-radius: 20%;
+  margin-bottom: 15%;
+  width: 80%;
+  margin-left: 15%;
+  margin-right: auto;
+}
+
+.links img:hover {
+  opacity: 1;
+  transition: opacity 1s, background 1s;
+  background: #48abec;
 }
 
 .p-r {
