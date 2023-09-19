@@ -1,0 +1,282 @@
+<div class="birthdayCard">
+  
+  <style type="text/css">
+    body {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height:100vh;
+  background-color: #4287f5;
+}
+
+.birthdayCard {
+  position: relative;
+  width: 250px;
+  height:350px;
+  cursor: pointer;
+  transform-style: preserve-3d;
+  transform: perspective(2500px);
+  transition: 4s;
+}
+
+.birthdayCard:hover {
+  transform: perspective(2500px) rotate(5deg);
+  box-shadow: inset 100px 20px 100px rgba(0,0,0,.15), 0 10px 100px rgba(0,0,0,0.3);
+}
+
+.birthdayCard:hover .cardFront {
+  transform: rotateY(-160deg); 
+}
+
+.birthdayCard:hover .front-text {
+  display: none;
+}
+
+.birthdayCard:hover .wrap-deco {
+  display: none;
+}
+
+.birthdayCard:hover .wrap-decoTwo {
+  display: none;
+}
+
+.birthdayCard:hover .plate {
+  display: none;
+}
+
+.cardFront {
+  position: relative;
+  background-color: #8fb7f7;
+  width: 250px;
+  height:700px;
+  overflow: hidden;
+  transform-origin: left;
+  box-shadow: inset 100px 20px 100px rgba(0,0,0,.13), 30px 0 50px rgba(0,0,0,0.1);
+  transition: .4s;
+}
+
+.happy, .toyou {
+  position: relative;
+  font-family: didot;
+  text-align: center;
+  backface-visibility: hidden;
+  font-size: 30px; 
+}
+
+.happy {
+  top:198px;
+}
+
+.toyou {
+  top:123px;
+}
+
+.bday {
+  position: relative;
+  font-family: arial;
+  font-size: 35px;
+  text-align: center;
+  top:163px;
+}
+
+.wrap-deco {
+  position: absolute;
+  top:-230px;
+  left:-200px;
+}
+
+.decorations {
+  position: absolute;
+  width: 400px;
+  height: 300px;
+  border: 3px solid #333;
+  border-radius: 50%;
+}
+
+.decorations:before, .decorations:after, .decorationsTwo:before, .decorationsTwo:after, .decorationsThree:before, .decorationsThree:after {
+  content:"";
+  position: absolute;
+  border-left: 20px solid transparent;
+  border-right: 20px solid transparent;
+  width:0;
+  height:0;
+}
+
+.decorations:before {
+  border-top: 40px solid #f15bb5;
+  top:297px;
+  left:210px;
+  transform: rotate(-5deg);
+}
+
+.decorations:after{
+  border-top: 40px solid #f4d35e;
+  top:288px;
+  left:260px;
+  transform: rotate(-17deg);
+}
+
+.decorationsTwo:before {
+  border-top: 40px solid #00f5d4;
+  top:268px;
+  left:315px;
+  transform: rotate(-30deg);
+}
+
+.decorationsTwo:after, .decorationsThree:after {
+  border-top: 40px solid #9b5de5;
+  top:238px;
+  left:355px;
+  transform: rotate(-40deg);
+}
+
+.wrap-decoTwo {
+  transform: scaleX(-1);
+  position: absolute;
+  top:-230px;
+  left:445px; 
+}
+
+.decorationsThree:before {
+  border-top: 40px solid #00bbf9;
+  top:268px;
+  left:315px;
+  transform: rotate(-30deg);
+}
+
+.plate {
+  position: absolute;
+  width: 130px;
+  height: 5px;
+  background-color: #00bbf9;
+  left:60px;
+  top:213px;
+}
+
+.cake {
+  position: absolute;
+  overflow: hidden;
+  width:100px;
+  height: 50px;
+  background-color: #f15bb5;
+  border-radius: 10px 10px 0 0;
+  top:-50px;
+  left:15px;
+  box-shadow: inset 0 -15px #f9c74f, inset 0 15px #432818;
+}
+
+.cake:before {
+  content:"";
+  position: absolute;
+  background-color: #432818;
+  width:10px;
+  height:20px;
+  top:5px;
+  border-radius:20px;
+  box-shadow: 10px 5px #f15bb5, 20px 0px #432818, 30px 2px #f15bb5, 40px 5px #432818, 50px 5px #f15bb5, 60px 0px #432818, 70px 5px #f15bb5, 80px 5px #432818, 90px 5px #f15bb5;
+}
+
+.plate:before {
+  content:"";
+  position: absolute;
+  background: repeating-linear-gradient(-45deg, #9b5de5, #9b5de5 3px, #00f5d4 3px, #00f5d4 6px);
+  width:7px;
+  height: 25px;
+  top:-75px;
+  left:61px;
+}
+
+.plate:after {
+  content:"";
+  position: absolute;
+  width:1px;
+  height: 5px;
+  background-color: #333;
+  top:-80px;
+  left:64px;
+}
+
+
+.flame {
+  position: absolute;
+  background-color: #fb5607;
+  border-radius: 80% 0 55% 50% / 55% 0 80% 50%;
+  transform: rotate(-45deg);
+  width:15px;
+  height:15px;
+  opacity:0.7;
+  top:-93px;
+  left:57px;
+}
+
+.cardInside {
+  position: absolute;
+  background-color: #fff;
+  width: 250px;
+  height:700px;
+  z-index:-1;
+  left:0;
+  top:0;
+  box-shadow: inset 100px 20px 100px rgba(0,0,0,0.2);
+}
+
+.inside-text {
+  position: relative;
+  top:-160px;
+  transform: scale(0.7);
+}
+
+.wishes {
+  position: relative;
+  top:-125px;
+  margin: 25px;
+  line-height: 0.9;
+  size: 10px;
+}
+
+p {
+  font-family: 'Brush Script MT', cursive;
+  color: #333;
+}
+
+.name {
+  margin-left:100px;
+}
+  </style>
+
+
+<div class="cardFront">
+  <div><img src="us.jpg" width="100%" height="55%" top="-50%">
+    <img src="us2.jpg" width="100%" top="-50%">
+      <img src="us3.jpg" width="100%" top="-50%">
+  </div>
+
+  <!--<h3 class="happy">1 YEAR</h3>
+
+  <h2 class="bday">STRONG</h2> -->
+   
+  <!--<h3 class="toyou">Sky!</h3>-->  
+
+  <!--<div class="plate">
+    <div class="cake"></div>
+    <div class="flame"></div>
+  </div>-->
+
+  
+</div>
+
+  <div class="cardInside">
+     <div class="inside-text">
+  <h3 class="happy">1 YEAR</h3>
+  <h2 class="bday">STRONG</h2>
+  <br>
+  </div>
+    <div class="wishes">
+    <p>Sky,</p>
+    <p>
+      Thinking back to our first "accidental" date, I can hardly believe that it's been a whole year since we became "us." Now, as we discuss spending the rest of our lives together, I've grown to love you like nothing else in my life. Whenever days are tough or work gets me down, the thought of you keeps me going. I honestly don't know what I'd do without you.<br>The truth is, I really liked you from the first time we talked. You are confident, smart, beautiful, kind (less so over time), and have a good heart. I fell for you hard the first time we had our heads touched while you were in my arms, as the cool breeze of the beach brushed past us cuddling for warmth.<br>Our journey together has been marked by frustration, sleepless and spicy nights, laughter, kindness, and most importantly, an abundance of love. We've celebrated each other's successes and supported one another through challenges. We've learned, grown, and flourished together. And through it all, our bond has only grown stronger and will continue to grow.<br>I want to make a promise to you. I promise to continue loving you with all my heart, to be there for you in both good times and bad, and to always strive to make you as happy as you make me.<br>Happy 1 year together Chewie.
+    </p>
+    <p class="name">Love,<br>Your Dingy</p>
+    </div>
+  </div>
+</div>
