@@ -36,16 +36,20 @@ a:hover {
 
 .links {
   border-radius: 20%;
-  margin-bottom: 15%;
-  width: 80%;
-  margin-left: 15%;
-  margin-right: auto;
+  margin-bottom: 10%;
+  width: 100%;
 }
 
 .links img:hover {
-  opacity: 1;
+  opacity: 0.8;
   transition: opacity 1s, background 1s;
   background: #48abec;
+}
+
+@media screen and (max-width: 500px) {
+  .links {
+    height: 100px;
+  }
 }
 
 .p-r {
