@@ -32,6 +32,8 @@
     Author: BootstrapMade.com
     License: https://bootstrapmade.com/license/
   ======================================================= -->
+
+  <script src="https://cdn.plot.ly/plotly-3.0.1.min.js" charset="utf-8"></script>
 </head>
 
 <style>
@@ -146,23 +148,25 @@
               <a href="https://www.youtube.com/watch?v=EetdMjNPqK8" target="_blank">LAUNCH</a>
             </h3>
             <p class="subtitle-a">
-              UCI's first methalox rocket launch
+              UC Irvine's 1st Methalox Rocket Launch
             </p>
             <div class="line-mf"></div>
             <br>
             <iframe width="100%" height="350" src="https://www.youtube.com/embed/EetdMjNPqK8?si=-t-sWhIYSmzKa7RY?autoplay=1&mute=1&loop=1" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; loop;" allowfullscreen></iframe>
           </div>
         </div>
+        <iframe id="launch-plot" src="launch_plot.html" frameborder="0" width="100%" height="500" style="z-index: 9999;"></iframe>
       </div>
 
     </div>
   </section>
 
-  <div class="section-counter paralax-mf bg-image" style="background-image: url(img/launch-bg.jpg)">
+  
+
+  <div class="section-counter paralax-mf bg-image" style="background-image: url(img/launch-bg.jpg)" style="z-index: 0;">
     <div class="overlay-mf"></div>
     <div class="container">
-      <div class="row">
-        
+      <div class="row"> 
         <div class="col-sm-3 col-lg-3">
           <div class="counter-box">
             <div class="counter-ico">
@@ -206,53 +210,15 @@
               <span class="counter-text">LBF THRUST</span>
             </div>
           </div>
-        </div>
-
-        
+        </div>     
       </div>
-    </div>
+    </div> 
   </div>
 
-  <!--/ Section Portfolio Star /-->
-  <section id="work" class="portfolio-mf sect-pt4 route">
-    <div class="container">
-      <!--<div class="row">
-        <div class="col-sm-12">
-          <div class="title-box text-center">
-            <h3 class="title-a">
-              <a href="MyWebsite2/projects.html" target="_blank">Projects</a>
-            </h3>
-            <p class="subtitle-a">
-              Click on the image to view the link
-            </p>
-            <div class="line-mf"></div>
-          </div>
-        </div>
-      </div>-->
-
-      <!--<div class="row">
-        <div class="col-sm-12">
-          <div class="title-box text-center">
-            <h3 class="title-a">
-              Projects
-            </h3>
-            <div class="line-mf"></div>
-          </div>
-        </div>
-      </div>-->
 
 
 
 
-      
-
-        
-
-
-      </div>
-    </div>
-  </section>
-  <!--/ Section Portfolio End /-->
 
   <section id="vtf" class="about-mf sect-pt4 route">
     <div class="container">
@@ -271,6 +237,7 @@
             <iframe width="100%" height="350" src="https://www.youtube.com/embed/BA7LJOHaXC4?si=vRi242FKWH5QKRHs?autoplay=1&mute=1&loop=1" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; loop;" allowfullscreen></iframe>
           </div>
         </div>
+        <iframe id="vtf-plot" src="vtf_plot.html" frameborder="0" width="100%" height="500" style="z-index: 9999;"></iframe>
       </div>
 
     </div>
@@ -338,7 +305,8 @@
             </p>
             <div class="line-mf"></div>
             <br>
-            <iframe width="100%" height="350" src="https://drive.google.com/file/d/1wpa0WY52MovEaKjeQQ9Fz8JXSFFXFVAS/preview?autoplay=1&mute=1&loop=1" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; loop;" allowfullscreen></iframe>
+
+            <iframe src="https://drive.google.com/file/d/1wpa0WY52MovEaKjeQQ9Fz8JXSFFXFVAS/preview" width="100%" height="350" allow="autoplay"></iframe>
           </div>
         </div>
       </div>
@@ -406,7 +374,7 @@
 
 
 
-  <section id="about" class="about-mf sect-pt4 route">
+  <!--<section id="about" class="about-mf sect-pt4 route">
     <div class="container">
 
       <div class="row">
@@ -429,7 +397,7 @@
         </div>
       </div>
     </div>
-  </section>
+  </section>-->
 
 
 
@@ -479,6 +447,11 @@
   <script src="lib/owlcarousel/owl.carousel.min.js"></script>
   <script src="lib/lightbox/js/lightbox.min.js"></script>
   <script src="lib/typed/typed.min.js"></script>
+
+        <script src="js/launch_plot.js"></script>
+
+
+        
 
 
   <!-- LOAD MORE -->
