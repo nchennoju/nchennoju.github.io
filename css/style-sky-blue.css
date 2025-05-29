@@ -623,7 +623,7 @@ a:hover {
 ======================================*/
 
 .intro {
-  height: 100vh;
+  height: 100dvh;
   position: relative;
   color: #fff;
 }
