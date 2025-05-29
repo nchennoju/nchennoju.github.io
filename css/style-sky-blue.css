@@ -623,9 +623,11 @@ a:hover {
 ======================================*/
 
 .intro {
+  height: -webkit-fill-available;
   height: 100dvh;
   position: relative;
   color: #fff;
+  background-size: cover;
 }
 
 .intro .intro-content {
