@@ -105,7 +105,6 @@ a:hover {
   background-attachment: fixed;
   background-size: cover;
   background-position: center center;
-  width: 100%;
 }
 
 .overlay-mf {
@@ -623,11 +622,9 @@ a:hover {
 ======================================*/
 
 .intro {
-  height: -webkit-fill-available;
   height: 100dvh;
   position: relative;
   color: #fff;
-  background-size: cover;
 }
 
 .intro .intro-content {
