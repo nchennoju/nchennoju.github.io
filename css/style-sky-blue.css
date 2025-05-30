@@ -625,8 +625,8 @@ a:hover {
 @media screen and (max-width: 767px) {
   .intro {
     background-size: 400% ; /* Or a specific dimension if needed */
-    background-position: -800px center; /* Adjust position as needed */
-    height: 100vh;
+    background-position: 70% center; /* Adjust position as needed */
+    height: 100%;
   }
 }
 
