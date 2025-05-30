@@ -630,8 +630,8 @@ a:hover {
 
 .intro-bg {
   background-image: url("intro-bg.jpg");
-  background-size: cover;
-  background-position: center;
+  /*background-size: cover;
+  background-position: center;*/
 }
 
 
