@@ -621,21 +621,25 @@ a:hover {
 //--//-->   INTRO
 ======================================*/
 
-/* Media query for mobile devices */
-@media screen and (max-width: 767px) {
-  .intro {
-    background-size: cover; /* Or a specific dimension if needed */
-    /*background-position: 70% center; Adjust position as needed */
-    position: relative;
-    color: #fff;
-  }
-}
-
 .intro {
   height: 100dvh;
   position: relative;
   color: #fff;
 }
+
+/* Media query for mobile devices */
+@media screen and (max-width: 767px) {
+  .intro {
+    /*background-size: cover;  Or a specific dimension if needed */
+    
+    /*background-position: 70% center; Adjust position as needed */
+    width: 100px;
+    position: relative;
+    color: #fff;
+  }
+}
+
+
 
 .intro .intro-content {
   text-align: center;
