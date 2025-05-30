@@ -103,8 +103,8 @@ a:hover {
 .bg-image {
   background-repeat: no-repeat;
   background-attachment: fixed;
-  background-size: cover;
-  background-position: center center;
+  /*background-size: cover;
+  background-position: center center;*/
 }
 
 .overlay-mf {
@@ -625,6 +625,7 @@ a:hover {
   height: 100dvh;
   position: relative;
   color: #fff;
+  background-size: cover;
 }
 
 
@@ -634,7 +635,7 @@ a:hover {
     /*background-size: cover;  Or a specific dimension if needed */
     
     /*background-position: 70% center; Adjust position as needed */
-    background-size: 10% 10%;
+    background-size: 100% 100%;
     position: relative;
     color: #fff;
    
