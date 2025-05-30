@@ -637,14 +637,15 @@ a:hover {
 
 /* Media query for mobile devices */
 @media screen and (max-width: 767px) {
-  .intro-bg{
+  .intro{
     /*background-size: cover;  Or a specific dimension if needed */
     
     /*background-position: 70% center; Adjust position as needed */
-    background-image: url("same_phone.jpg");
+    background-image: url("intro-bg-phone.jpg");
     background-size: 100vw;
     position: relative;
     color: #fff;
+    overflow: hidden;
     
    
   }
