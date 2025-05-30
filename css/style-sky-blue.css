@@ -640,7 +640,7 @@ a:hover {
     
     /*background-position: 70% center; Adjust position as needed */
     background-image: url("same_phone.jpg");
-    background-size: 300px 100%;
+    background-size: 100vw 100vh;
     position: relative;
     color: #fff;
     
