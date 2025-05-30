@@ -635,7 +635,7 @@ a:hover {
 
 /* Media query for mobile devices */
 @media screen and (max-width: 767px) {
-  .intro .intro-bg{
+  .intro{
     /*background-size: cover;  Or a specific dimension if needed */
     
     /*background-position: 70% center; Adjust position as needed */
