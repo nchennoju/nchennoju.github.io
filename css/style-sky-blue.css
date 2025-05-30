@@ -629,7 +629,7 @@ a:hover {
 }
 
 .intro-bg {
-  background-image: url("index-bg.jpg");
+  background-image: url("intro-bg.jpg");
   background-size: cover;
   background-position: center;
 }
@@ -641,7 +641,7 @@ a:hover {
     /*background-size: cover;  Or a specific dimension if needed */
     
     /*background-position: 70% center; Adjust position as needed */
-    background-image: url("index-bg-phone.jpg");
+    background-image: url("intro-bg-phone.jpg");
     background-size: 100vw;
     position: relative;
     color: #fff;
