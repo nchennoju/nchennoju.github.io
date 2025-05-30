@@ -633,7 +633,7 @@ a:hover {
     /*background-size: cover;  Or a specific dimension if needed */
     
     /*background-position: 70% center; Adjust position as needed */
-    width: 100px;
+    background-size: 40%;
     position: relative;
     color: #fff;
   }
