@@ -635,6 +635,14 @@ a:hover {
   background-position: center;*/
 }
 
+.project-bg{
+    background-image: url("projects_compressed.gif");
+}
+
+.ucirp-bg{
+    background-image: url("rp_launch_hf.gif");
+}
+
 
 /* Media query for mobile devices */
 @media screen and (max-width: 767px) {
@@ -642,13 +650,23 @@ a:hover {
     /*background-size: cover;  Or a specific dimension if needed */
     
     /*background-position: 70% center; Adjust position as needed */
-    background-image: url("intro-bg-phone.jpg");
-    background-size: relative 100vh;
+    background-size: 100vw;
     position: relative;
     color: #fff;
     overflow: hidden;
     
-   
+  }
+
+  .intro-bg{
+    background-image: url("same_phone.jpg");
+  }
+
+  .project-bg{
+    background-image: url("projects_compressed_phone.gif");
+  }
+
+  .ucirp-bg{
+    background-image: url("rp_launch_hf_phone.gif");
   }
 }
 
