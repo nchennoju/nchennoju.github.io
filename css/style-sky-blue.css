@@ -626,6 +626,7 @@ a:hover {
   position: relative;
   color: #fff;
   background-size: cover;
+  overflow: hidden;
 }
 
 .intro-bg {
@@ -641,8 +642,8 @@ a:hover {
     /*background-size: cover;  Or a specific dimension if needed */
     
     /*background-position: 70% center; Adjust position as needed */
-    background-image: url("same_phone.jpg");
-    background-size: 100vw;
+    background-image: url("intro-bg-phone.jpg");
+    background-size: relative 100vh;
     position: relative;
     color: #fff;
     overflow: hidden;
