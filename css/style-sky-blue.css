@@ -624,17 +624,15 @@ a:hover {
 /* Media query for mobile devices */
 @media screen and (max-width: 767px) {
   .intro {
-    background-size: 40% ; /* Or a specific dimension if needed */
+    background-size: cover; /* Or a specific dimension if needed */
     /*background-position: 70% center; Adjust position as needed */
     position: relative;
-    height: 100dvh;
     color: #fff;
   }
 }
 
 .intro {
   height: 100dvh;
-  width: 100dvw;
   position: relative;
   color: #fff;
 }
