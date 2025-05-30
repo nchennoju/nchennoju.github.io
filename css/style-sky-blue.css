@@ -628,6 +628,10 @@ a:hover {
   background-size: cover;
 }
 
+.intro-bg {
+  background-image: url("same.jpg");
+}
+
 
 /* Media query for mobile devices */
 @media screen and (max-width: 767px) {
@@ -635,9 +639,11 @@ a:hover {
     /*background-size: cover;  Or a specific dimension if needed */
     
     /*background-position: 70% center; Adjust position as needed */
-    background-size: 100% 100%;
+    background-image: url("same_phone.jpg");
+    height: 100dvh;
     position: relative;
     color: #fff;
+    
    
   }
 }
