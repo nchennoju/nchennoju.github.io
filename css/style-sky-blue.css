@@ -626,7 +626,9 @@ a:hover {
   .intro {
     background-size: 40% ; /* Or a specific dimension if needed */
     /*background-position: 70% center; Adjust position as needed */
-    height: 100%;
+    position: relative;
+    height: 100dvh;
+    color: #fff;
   }
 }
 
