@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html>
+<head>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Quicksand">
+<style>
+
+body {
+	background-color: #000;
+  color: #fff;
+  font-family: Quicksand, sans-serif;
+}
+
+table {
+  font-family: Quicksand, sans-serif;
+  border-collapse: collapse;
+  width: 100%;
+}
+
+td, th {
+  border: 1px solid #dddddd;
+  text-align: left;
+  padding: 8px;
+}
+
+tr:nth-child(even) {
+  background-color: #666;
+}
+
+
+.header ul {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  background-color: #333;
+}
+
+li {
+  float: left;
+}
+
+li a {
+  display: block;
+  color: white;
+  text-align: center;
+  padding: 24px 24px;
+  text-decoration: none;
+}
+
+/*li a:hover:not(.active) {
+  background-color: #111;
+}*/
+
+.active {
+  background-color: #3c1d73;
+}
+
+.pass {
+  background-color: #22c77d;
+}
+
+.fail {
+  background-color: #c41f33;
+}
+
+.fail_exception {
+  background-color: #cc8721;
+}
+
+.abort {
+  background-color: #8224d4;
+}
+
+* {
+  box-sizing: border-box;
+  scroll-behavior: smooth;
+}
+
+.column {
+  float: left;
+  width: 5vh;
+  height: 5vh;
+  padding: 5px;
+}
+
+/* Clearfix (clear floats) */
+.row::after {
+  content: "";
+  clear: both;
+  display: table;
+}
+
+ul {
+  margin: 0px;
+  padding: 0px;
+  overflow: hidden;
+  background-color: #000;
+  position: sticky;
+  top: 0;
+  display: block;
+  list-style-type:none;
+}
+
+
+
+.pass_step {
+  color: #fff;
+  padding: 0px 0;
+  border: 3px green;
+  background-color: #22c77d;
+  text-align: center;
+  /*margin: 10px 10px 10px 10px;*/
+}
+
+.pass_step:hover{
+  background-color: #227a4a;
+}
+
+.fail_step {
+  color: #fff;
+  padding: 0px 0;
+  border: 3px green;
+  background-color: #c41f33;
+  text-align: center;
+  /*margin: 10px 10px 10px 10px;*/
+}
+
+.fail_step:hover{
+  background-color: #8c2a3a;
+}
+
+
+
+
+</style>
+</head>
+<body>
+
+<div class="header"><ul>
+  <li><a class="active" href="#home"><img src="machindustries_logo.jpg" style="height: 24px; width: 24px;"></a></li>
+  <li><a><b>AUTOTEST.TESTCASE.FUNCTIONAL_TEST</b></a></li>
+  <li style="float:right"><a class="pass">PASS</a></li>
+</ul></div>
+
+<h1>Automated Testcase Results</h1>
+<p><b>Description:</b> Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque eget tellus nec leo aliquam porta. Maecenas venenatis mi sed urna aliquam viverra. Nulla ut mollis justo. Donec suscipit ante sem, ac semper justo ornare eget. Fusce at mi et dolor mattis viverra. Integer euismod leo vitae felis elementum, vel vehicula turpis posuere. Etiam pulvinar leo ut felis maximus euismod. Donec a faucibus massa, at mollis ex. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus metus diam, faucibus in sollicitudin non, faucibus eu est. In congue id quam maximus tristique. Phasellus placerat diam ipsum, sit amet varius metus bibendum vitae. Proin volutpat imperdiet magna sit amet rhoncus.</p>
+
+<table>
+  <tr>
+    <th>DUT</th>
+    <th>Start Time</th>
+    <th>End Time</th>
+    <th>Duration</th>
+  </tr>
+  <tr>
+    <td>Alfreds Futterkiste</td>
+    <td>Maria Anders</td>
+    <td>Germany</td>
+    <td>&#x2705;</td>
+  </tr>
+</table>
+
+<p><b>CMD:</b> <pre>
+  <code>
+    for(int i = 0; i < 100; i++)
+  </code>
+</pre></p>
+
+
+<h2 id="">Steps Breakdown</h2>
+<ul>
+  <li><a href="#1"><div>
+    <h2 class="column pass_step">1</h2>  
+  </div></a></li>
+  <li><a href="#2"><div>
+    <h2 class="column fail_step">2</h2>  
+  </div></a></li>
+  <li><a href="#3"><div>
+    <h2 class="column pass_step">3</h2>  
+  </div></a></li>
+  <li><a href="#4"><div>
+    <h2 class="column pass_step">4</h2>  
+  </div></a></li>
+  <li><a href="#5"><div>
+    <h2 class="column pass_step">5</h2>  
+  </div></a></li>
+  <li><a href="#6"><div>
+    <h2 class="column pass_step">6</h2>  
+  </div></a></li>
+  <li><a href="#7"><div>
+    <h2 class="column pass_step">7</h2>  
+  </div></a></li>
+  <li><a href="#8"><div>
+    <h2 class="column pass_step">8</h2>  
+  </div></a></li>
+  <li><a href="#9"><div>
+    <h2 class="column pass_step">9</h2>  
+  </div></a></li>
+  <li><a href="#10"><div>
+    <h2 class="column pass_step">10</h2>  
+  </div></a></li>
+  <li><a href="#11"><div>
+    <h2 class="column pass_step">11</h2>  
+  </div></a></li>
+  <li><a href="#12"><div>
+    <h2 class="column pass_step">12</h2>  
+  </div></a></li>
+  <li><a href="#13"><div>
+    <h2 class="column pass_step">13</h2>  
+  </div></a></li>
+  <li><a href="#14"><div>
+    <h2 class="column pass_step">14</h2>  
+  </div></a></li>
+  <li><a href="#12"><div>
+    <h2 class="column pass_step">15</h2>  
+  </div></a></li>
+  <li><a href="#13"><div>
+    <h2 class="column pass_step">16</h2>  
+  </div></a></li>
+  <li><a href="#14"><div>
+    <h2 class="column pass_step">17</h2>  
+  </div></a></li>
+  <li><a href="#12"><div>
+    <h2 class="column pass_step">18</h2>  
+  </div></a></li>
+  <li><a href="#13"><div>
+    <h2 class="column pass_step">19</h2>  
+  </div></a></li>
+  <li><a href="#14"><div>
+    <h2 class="column pass_step">20</h2>  
+  </div></a></li>
+  </div>
+</ul>
+
+<div id="1">
+  <h2>&#x2705; 1. Automated Testcase Results</h2>
+  <h4 style="color: #858585">Start: 00/00/0000 00:00 UTC&#0009;End: 00/00/0000 00:00 UTC</h4>
+
+  <p><b>Description:</b> Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque eget tellus nec leo aliquam porta. Maecenas venenatis mi sed urna aliquam viverra. Nulla ut mollis justo. Donec suscipit ante sem, ac semper justo ornare eget. Fusce at mi et dolor mattis viverra. Integer euismod leo vitae felis elementum, vel vehicula turpis posuere. Etiam pulvinar leo ut felis maximus euismod. Donec a faucibus massa, at mollis ex. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus metus diam, faucibus in sollicitudin non, faucibus eu est. In congue id quam maximus tristique. Phasellus placerat diam ipsum, sit amet varius metus bibendum vitae. Proin volutpat imperdiet magna sit amet rhoncus.</p>
+
+  <iframe id="launch-plot" src="launch_plot.html" frameborder="0" width="100%" height="500" style="z-index: 9999;"></iframe>
+
+  <table>
+    <tr>
+      <th>Company</th>
+      <th>Contact</th>
+      <th>Country</th>
+      <th>PASS/FAIl</th>
+    </tr>
+    <tr>
+      <td>Alfreds Futterkiste</td>
+      <td>Maria Anders</td>
+      <td>Germany</td>
+      <td>&#x2705;</td>
+    </tr>
+    <tr>
+      <td>Centro comercial Moctezuma</td>
+      <td>Francisco Chang</td>
+      <td>Mexico</td>
+      <td>&#x2705;</td>
+    </tr>
+    <tr>
+      <td>Ernst Handel</td>
+      <td>Roland Mendel</td>
+      <td>Austria</td>
+      <td>&#x2705;</td>
+    </tr>
+    <tr>
+      <td>Island Trading</td>
+      <td>Helen Bennett</td>
+      <td>-</td>
+      <td>&#x2705;</td>
+    </tr>
+    <tr>
+      <td>Laughing Bacchus Winecellars</td>
+      <td>Yoshi Tannamuri</td>
+      <td>Canada</td>
+      <td>&#x2705;</td>
+    </tr>
+    <tr>
+      <td>Magazzini Alimentari Riuniti</td>
+      <td>Giovanni Rovelli</td>
+      <td>Italy</td>
+      <td>&#x274C;</td>
+    </tr>
+  </table>
+</div>
+
+
+
+
+
+
+<div id="2">
+  <h2>&#x2705; 2. Automated Testcase Results</h2>
+  <h4 style="color: #858585">Start: 00/00/0000 00:00 UTC&#0009;End: 00/00/0000 00:00 UTC</h4>
+
+  <p><b>Description:</b> Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque eget tellus nec leo aliquam porta. Maecenas venenatis mi sed urna aliquam viverra. Nulla ut mollis justo. Donec suscipit ante sem, ac semper justo ornare eget. Fusce at mi et dolor mattis viverra. Integer euismod leo vitae felis elementum, vel vehicula turpis posuere. Etiam pulvinar leo ut felis maximus euismod. Donec a faucibus massa, at mollis ex. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus metus diam, faucibus in sollicitudin non, faucibus eu est. In congue id quam maximus tristique. Phasellus placerat diam ipsum, sit amet varius metus bibendum vitae. Proin volutpat imperdiet magna sit amet rhoncus.</p>
+
+  <iframe id="launch-plot" src="launch_plot.html" frameborder="0" width="100%" height="500" style="z-index: 9999;"></iframe>
+
+  <table>
+    <tr>
+      <th>Company</th>
+      <th>Contact</th>
+      <th>Country</th>
+      <th>PASS/FAIl</th>
+    </tr>
+    <tr>
+      <td>Alfreds Futterkiste</td>
+      <td>Maria Anders</td>
+      <td>Germany</td>
+      <td>&#x2705;</td>
+    </tr>
+    <tr>
+      <td>Centro comercial Moctezuma</td>
+      <td>Francisco Chang</td>
+      <td>Mexico</td>
+      <td>&#x2705;</td>
+    </tr>
+    <tr>
+      <td>Ernst Handel</td>
+      <td>Roland Mendel</td>
+      <td>Austria</td>
+      <td>&#x2705;</td>
+    </tr>
+    <tr>
+      <td>Island Trading</td>
+      <td>Helen Bennett</td>
+      <td>-</td>
+      <td>&#x2705;</td>
+    </tr>
+    <tr>
+      <td>Laughing Bacchus Winecellars</td>
+      <td>Yoshi Tannamuri</td>
+      <td>Canada</td>
+      <td>&#x2705;</td>
+    </tr>
+    <tr>
+      <td>Magazzini Alimentari Riuniti</td>
+      <td>Giovanni Rovelli</td>
+      <td>Italy</td>
+      <td>&#x274C;</td>
+    </tr>
+  </table>
+</div>
+
+
+
+
+
+
+<div id="3">
+  <h2>&#x2705; 3. Automated Testcase Results</h2>
+  <h4 style="color: #858585">Start: 00/00/0000 00:00 UTC&#0009;End: 00/00/0000 00:00 UTC</h4>
+
+  <p><b>Description:</b> Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque eget tellus nec leo aliquam porta. Maecenas venenatis mi sed urna aliquam viverra. Nulla ut mollis justo. Donec suscipit ante sem, ac semper justo ornare eget. Fusce at mi et dolor mattis viverra. Integer euismod leo vitae felis elementum, vel vehicula turpis posuere. Etiam pulvinar leo ut felis maximus euismod. Donec a faucibus massa, at mollis ex. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus metus diam, faucibus in sollicitudin non, faucibus eu est. In congue id quam maximus tristique. Phasellus placerat diam ipsum, sit amet varius metus bibendum vitae. Proin volutpat imperdiet magna sit amet rhoncus.</p>
+
+  <iframe id="launch-plot" src="launch_plot.html" frameborder="0" width="100%" height="500" style="z-index: 9999;"></iframe>
+
+  <table>
+    <tr>
+      <th>Company</th>
+      <th>Contact</th>
+      <th>Country</th>
+      <th>PASS/FAIl</th>
+    </tr>
+    <tr>
+      <td>Alfreds Futterkiste</td>
+      <td>Maria Anders</td>
+      <td>Germany</td>
+      <td>&#x2705;</td>
+    </tr>
+    <tr>
+      <td>Centro comercial Moctezuma</td>
+      <td>Francisco Chang</td>
+      <td>Mexico</td>
+      <td>&#x2705;</td>
+    </tr>
+    <tr>
+      <td>Ernst Handel</td>
+      <td>Roland Mendel</td>
+      <td>Austria</td>
+      <td>&#x2705;</td>
+    </tr>
+    <tr>
+      <td>Island Trading</td>
+      <td>Helen Bennett</td>
+      <td>-</td>
+      <td>&#x2705;</td>
+    </tr>
+    <tr>
+      <td>Laughing Bacchus Winecellars</td>
+      <td>Yoshi Tannamuri</td>
+      <td>Canada</td>
+      <td>&#x2705;</td>
+    </tr>
+    <tr>
+      <td>Magazzini Alimentari Riuniti</td>
+      <td>Giovanni Rovelli</td>
+      <td>Italy</td>
+      <td>&#x274C;</td>
+    </tr>
+  </table>
+</div>
+
+
+</body>
+</html>
+

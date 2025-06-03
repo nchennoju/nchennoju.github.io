@@ -646,17 +646,6 @@ a:hover {
 
 /* Media query for mobile devices */
 @media screen and (max-width: 767px) {
-  .intro{
-    /*background-size: cover;  Or a specific dimension if needed */
-    
-    /*background-position: 70% center; Adjust position as needed */
-    background-size: 100vw;
-    position: relative;
-    color: #fff;
-    overflow: hidden;
-    
-  }
-
   .intro-bg{
     background-image: url("same_phone.jpg");
   }
@@ -668,6 +657,19 @@ a:hover {
   .ucirp-bg{
     background-image: url("rp_launch_hf_phone.gif");
   }
+  
+  .intro{
+    /*background-size: cover;  Or a specific dimension if needed */
+    
+    /*background-position: 70% center; Adjust position as needed */
+    background-size: 100vw;
+    position: relative;
+    color: #fff;
+    overflow: hidden;
+    
+  }
+
+  
 }
 
 
