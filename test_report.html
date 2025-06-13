@@ -27,7 +27,6 @@ tr:nth-child(even) {
   background-color: #666;
 }
 
-
 .header ul {
   list-style-type: none;
   margin: 0;
@@ -47,10 +46,6 @@ li a {
   padding: 24px 24px;
   text-decoration: none;
 }
-
-/*li a:hover:not(.active) {
-  background-color: #111;
-}*/
 
 .active {
   background-color: #3c1d73;
@@ -102,15 +97,12 @@ ul {
   list-style-type:none;
 }
 
-
-
 .pass_step {
   color: #fff;
   padding: 0px 0;
   border: 3px green;
   background-color: #22c77d;
   text-align: center;
-  /*margin: 10px 10px 10px 10px;*/
 }
 
 .pass_step:hover{
@@ -123,24 +115,22 @@ ul {
   border: 3px green;
   background-color: #c41f33;
   text-align: center;
-  /*margin: 10px 10px 10px 10px;*/
 }
 
 .fail_step:hover{
   background-color: #8c2a3a;
 }
 
-
-
-
 </style>
+
+
 </head>
 <body>
 
 <div class="header"><ul>
-  <li><a class="active" href="#home"><img src="machindustries_logo.jpg" style="height: 24px; width: 24px;"></a></li>
+  <li><a class="active" href="#home"><img src="machindustries_logo.jpg" style="height: 20px; width: 24px;"></a></li>
   <li><a><b>AUTOTEST.TESTCASE.FUNCTIONAL_TEST</b></a></li>
-  <li style="float:right"><a class="pass">PASS</a></li>
+  <li style="float:right;"><a class="pass">PASS</a></li>
 </ul></div>
 
 <h1>Automated Testcase Results</h1>
@@ -212,22 +202,22 @@ ul {
   <li><a href="#14"><div>
     <h2 class="column pass_step">14</h2>  
   </div></a></li>
-  <li><a href="#12"><div>
+  <li><a href="#15"><div>
     <h2 class="column pass_step">15</h2>  
   </div></a></li>
-  <li><a href="#13"><div>
+  <li><a href="#16"><div>
     <h2 class="column pass_step">16</h2>  
   </div></a></li>
-  <li><a href="#14"><div>
+  <li><a href="#17"><div>
     <h2 class="column pass_step">17</h2>  
   </div></a></li>
-  <li><a href="#12"><div>
+  <li><a href="#18"><div>
     <h2 class="column pass_step">18</h2>  
   </div></a></li>
-  <li><a href="#13"><div>
+  <li><a href="#19"><div>
     <h2 class="column pass_step">19</h2>  
   </div></a></li>
-  <li><a href="#14"><div>
+  <li><a href="#20"><div>
     <h2 class="column pass_step">20</h2>  
   </div></a></li>
   </div>
@@ -357,7 +347,7 @@ ul {
 
   <p><b>Description:</b> Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque eget tellus nec leo aliquam porta. Maecenas venenatis mi sed urna aliquam viverra. Nulla ut mollis justo. Donec suscipit ante sem, ac semper justo ornare eget. Fusce at mi et dolor mattis viverra. Integer euismod leo vitae felis elementum, vel vehicula turpis posuere. Etiam pulvinar leo ut felis maximus euismod. Donec a faucibus massa, at mollis ex. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus metus diam, faucibus in sollicitudin non, faucibus eu est. In congue id quam maximus tristique. Phasellus placerat diam ipsum, sit amet varius metus bibendum vitae. Proin volutpat imperdiet magna sit amet rhoncus.</p>
 
-  <iframe id="launch-plot" src="launch_plot.html" frameborder="0" width="100%" height="500" style="z-index: 9999;"></iframe>
+  <iframe id="launch-plot" src="vtf_plot.html" frameborder="0" width="100%" height="500" style="z-index: 9999;"></iframe>
 
   <table>
     <tr>
@@ -405,6 +395,11 @@ ul {
   </table>
 </div>
 
+
+<iframe scrolling="no" id="report" src="https://nchennoju.github.io/test_report.html"
+ frameborder="0" width="1000" height="90px" 
+ title="The client-side of the web">
+</iframe>
 
 </body>
 </html>
