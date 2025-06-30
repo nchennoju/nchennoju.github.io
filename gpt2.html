@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Barbie Birthday Card Deluxe</title>
+  <link href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap" rel="stylesheet">
+  <style>
+    body {
+      margin: 0;
+      background: #ffe0f0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      overflow: hidden;
+      font-family: 'Comic Sans MS', cursive, sans-serif;
+    }
+
+    .card {
+      position: relative;
+      width: 250px;
+      height: 350px;
+      perspective: 1000px;
+    }
+
+    .birthdayCard {
+      width: 100%;
+      height: 100%;
+      transition: transform 1.5s ease;
+      transform-style: preserve-3d;
+    }
+
+    .birthdayCard.open {
+      transform: rotateY(-160deg);
+    }
+
+    .cardFront, .cardInside {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      backface-visibility: hidden;
+      border-radius: 12px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+    }
+
+    .cardFront {
+      background: linear-gradient(135deg, #ff1988, #ff69b4);
+      color: white;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      align-items: center;
+      text-align: center;
+      padding: 20px 10px 10px;
+      font-family: 'Pacifico', cursive;
+      border: 4px solid transparent;
+      animation: sparkleBorder 3s linear infinite;
+      box-shadow: 0 0 30px #ff69b4;
+    }
+
+    .cardFront h1 {
+      margin: 0.2em 0;
+      font-size: 2.2rem;
+      text-shadow: 1px 1px #c2185b;
+      animation: sparkle 2s infinite alternate;
+    }
+
+    .cardInside {
+      background: white;
+      transform: rotateY(180deg);
+      padding: 20px;
+      box-sizing: border-box;
+      text-align: center;
+    }
+
+    h1 {
+      font-size: 2rem;
+    }
+
+    .cake {
+      position: relative;
+      width: 100px;
+      height: 70px;
+      background: linear-gradient(to top, #ff99cc 0%, #ffb6d9 50%, #ffe0f0 100%);
+      border-radius: 10px 10px 0 0;
+      margin-top: 10px;
+      margin-bottom: 10px;
+      box-shadow: inset 0 -5px #d63384, inset 0 5px #fff0f5;
+    }
+
+    .cake::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      height: 8px;
+      background: repeating-linear-gradient(45deg, #fff, #fff 3px, #f06292 3px, #f06292 6px);
+      border-radius: 0 0 10px 10px;
+    }
+
+    .candles {
+      display: flex;
+      justify-content: center;
+      position: absolute;
+      top: -40px;
+      left: 0;
+      right: 0;
+      margin: auto;
+      gap: 10px;
+    }
+
+    .candle {
+      width: 10px;
+      height: 30px;
+      background: linear-gradient(45deg, #f8f9fa, #ffe0f0);
+      border-radius: 2px;
+      position: relative;
+      box-shadow: 0 0 4px #ff69b4;
+    }
+
+    .flame {
+      position: absolute;
+      top: -15px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 12px;
+      height: 18px;
+      background: radial-gradient(circle, #ffeb3b 30%, #f57f17 70%);
+      border-radius: 50%;
+      opacity: 1;
+      animation: complexFlicker 1s infinite ease-in-out;
+      transition: opacity 0.6s ease;
+    }
+
+    .flame.off {
+      opacity: 0;
+      animation: none;
+    }
+
+    @keyframes complexFlicker {
+      0%   { transform: translateX(-50%) scale(1) rotate(0deg); opacity: 1; }
+      20%  { transform: translateX(-50%) scale(1.2) rotate(-5deg); opacity: 0.85; }
+      40%  { transform: translateX(-50%) scale(0.95) rotate(5deg); opacity: 0.95; }
+      60%  { transform: translateX(-50%) scale(1.15) rotate(-3deg); opacity: 1; }
+      80%  { transform: translateX(-50%) scale(1) rotate(3deg); opacity: 0.9; }
+      100% { transform: translateX(-50%) scale(1) rotate(0deg); opacity: 1; }
+    }
+
+    @keyframes sparkle {
+      0%   { text-shadow: 0 0 4px white; }
+      100% { text-shadow: 0 0 10px #fff8dc; }
+    }
+
+    @keyframes sparkleBorder {
+      0% {
+        border-color: #ff69b4;
+        box-shadow: 0 0 10px #ffb6c1, 0 0 20px #ffc0cb, 0 0 30px #ff69b4;
+      }
+      50% {
+        border-color: #ffc0cb;
+        box-shadow: 0 0 15px #ffe4e1, 0 0 25px #ff1493, 0 0 35px #ff69b4;
+      }
+      100% {
+        border-color: #ff69b4;
+        box-shadow: 0 0 10px #ffb6c1, 0 0 20px #ffc0cb, 0 0 30px #ff69b4;
+      }
+    }
+
+    p {
+      font-family: 'Brush Script MT', cursive;
+      font-size: 1.2rem;
+      margin-top: 2rem;
+      color: #444;
+    }
+
+    .confetti {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      pointer-events: none;
+      overflow: hidden;
+      z-index: 999;
+    }
+
+    .confetti-piece {
+      position: absolute;
+      width: 10px;
+      height: 10px;
+      background-color: hsl(var(--hue), 100%, 60%);
+      top: -10px;
+      animation: fall 3s linear infinite;
+    }
+
+    @keyframes fall {
+      to {
+        transform: translateY(100vh) rotate(720deg);
+      }
+    }
+
+    button {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      padding: 10px 15px;
+      border: none;
+      background: #ff1988;
+      color: white;
+      border-radius: 6px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background: #e01777;
+    }
+  </style>
+</head>
+<body>
+
+<div class="card">
+  <div id="birthdayCard" class="birthdayCard">
+    <div class="cardFront">
+      <div>
+        <h1>Happy</h1>
+        <h1>Birthday</h1>
+        <h1>Sky</h1>
+      </div>
+      <div class="cake">
+        <div class="candles">
+          <div class="candle"><div class="flame"></div></div>
+          <div class="candle"><div class="flame"></div></div>
+          <div class="candle"><div class="flame"></div></div>
+        </div>
+      </div>
+    </div>
+    <div class="cardInside">
+      <h1>🎉 Surprise! 🎉</h1>
+      <p>Sky, you are smart, gorgeous, caring, funny, crazy, scary (not really), and the best thing that has happened in my life. I hope you have an awesome birthday!!</p>
+      <p>Love,<br>Nitish</p>
+    </div>
+  </div>
+</div>
+
+<div class="confetti" id="confetti"></div>
+<button onclick="resetCard()">🔁 Reset</button>
+
+<script>
+  let audioIN = { audio: true };
+  let triggered = false;
+  var prvVol = 0;
+
+  navigator.mediaDevices.getUserMedia(audioIN)
+    .then(function(stream) {
+      const audioContext = new AudioContext();
+      const analyser = audioContext.createAnalyser();
+      const microphone = audioContext.createMediaStreamSource(stream);
+      const scriptProcessor = audioContext.createScriptProcessor(2048, 1, 1);
+
+      analyser.smoothingTimeConstant = 0.8;
+      analyser.fftSize = 1024;
+
+      microphone.connect(analyser);
+      analyser.connect(scriptProcessor);
+      scriptProcessor.connect(audioContext.destination);
+
+      scriptProcessor.onaudioprocess = function() {
+        const array = new Uint8Array(analyser.frequencyBinCount);
+        analyser.getByteFrequencyData(array);
+        const arraySum = array.reduce((a, value) => a + value, 0);
+        const average = Math.round(arraySum / array.length);
+
+        if (!triggered && average - prvVol > 60) {
+          triggered = true;
+          console.log("BLOW!");
+
+          new Audio('blow_out.mp3').play();
+
+          const flames = Array.from(document.querySelectorAll('.flame'));
+
+          flames.forEach((flame, i) => {
+            setTimeout(() => {
+              flame.classList.add("off");
+
+              if (i === flames.length - 1) {
+                setTimeout(() => {
+                  document.getElementById("birthdayCard").classList.add("open");
+                  new Audio('party_horn.mp4').play();
+                  launchConfetti();
+                }, 500);
+              }
+            }, i * 300);
+          });
+        }
+
+        prvVol = average;
+      };
+    })
+    .catch(function(err) {
+      console.error(err);
+    });
+
+  function launchConfetti() {
+    const confettiContainer = document.getElementById('confetti');
+    for (let i = 0; i < 100; i++) {
+      const piece = document.createElement('div');
+      piece.classList.add('confetti-piece');
+      piece.style.left = Math.random() * 100 + 'vw';
+      piece.style.animationDuration = 2 + Math.random() * 2 + 's';
+      piece.style.setProperty('--hue', Math.floor(Math.random() * 360));
+      confettiContainer.appendChild(piece);
+
+      setTimeout(() => piece.remove(), 4000);
+    }
+  }
+
+  function resetCard() {
+    triggered = false;
+    document.getElementById("birthdayCard").classList.remove("open");
+    document.querySelectorAll('.flame').forEach(f => f.classList.remove("off"));
+    document.getElementById('confetti').innerHTML = '';
+  }
+</script>
+
+</body>
+</html>
