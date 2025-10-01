@@ -1,0 +1,239 @@
+<!DOCTYPE html> 
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<title>Nilesh’s 911 Birthday Card — Retro Sage</title>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700&family=Inter:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --sage:#9baa8d;      /* light sage like the bg */
+    --olive:#6b7f5a;     /* darker olive */
+    --deep:#2f3a2e;      /* near black green */
+    --cream:#e7e3d7;     /* warm paper */
+    --orange:#e5652a;    /* accent */
+    --ink:#11140f;
+  }
+  *{box-sizing:border-box}
+  body{
+    margin:0; height:100vh; overflow:hidden;
+    display:flex; justify-content:center; align-items:center;
+    color:var(--cream);
+    font-family: 'Inter', system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
+    background:
+      linear-gradient(160deg, var(--deep) 0%, #223026 60%, #1a231c 100%);
+  }
+  body::before{
+    content:""; position:fixed; inset:0; pointer-events:none; opacity:.18;
+    background:
+      repeating-linear-gradient(20deg, transparent 0 26px, rgba(255,255,255,.25) 26px 30px),
+      repeating-linear-gradient(-18deg, transparent 0 40px, rgba(255,255,255,.18) 40px 44px);
+    mix-blend-mode:overlay;
+  }
+
+  .card{ position:relative; width:630px; height:650px; perspective:1200px; }
+  .birthdayCard{ width:100%; height:100%; transform-style:preserve-3d; transition:transform 1.2s ease; }
+  .birthdayCard.open{ transform: rotateY(-160deg); }
+
+  .cardFront,.cardInside{
+    position:absolute; inset:0; backface-visibility:hidden; border-radius:16px; overflow:hidden;
+    box-shadow: 0 20px 40px rgba(0,0,0,.45);
+    border: 1px solid rgba(255,255,255,.06);
+  }
+
+  /* FRONT */
+  .cardFront{
+    background: radial-gradient(800px 420px at 50% 15%, #3a4a3a 0%, #283327 60%, #1a221a 100%);
+    display:flex; flex-direction:column; align-items:center; text-align:center; padding:18px 16px;
+  }
+  .header{ margin-top:6px; }
+  h1{ margin:.15em 0; font-family:'Orbitron', sans-serif; text-transform:uppercase; letter-spacing:.6px; }
+  .kicker{ font-size:1rem; color:var(--sage); opacity:.95; }
+  .title{ font-size:2rem; color:var(--cream); }
+  .name{ font-size:1.5rem; color:var(--orange); }
+
+  .car-wrap{
+    width:100%; display:flex; justify-content:center; align-items:center;
+    padding:10px 0 6px;
+  }
+  .car{
+    width:92%; max-width:520px;
+    filter: drop-shadow(0 12px 18px rgba(0,0,0,.45));
+  }
+
+  /* Cake + candles */
+  .cake{
+    position:relative; width:130px; height:76px; margin-top:6px;
+    border-radius:12px 12px 0 0;
+    background: linear-gradient(180deg, #4b5b47, #3c4a3a);
+    box-shadow: inset 0 6px rgba(255,255,255,.05), inset 0 -6px rgba(0,0,0,.25);
+  }
+  .cake::after{
+    content:""; position:absolute; left:0; right:0; bottom:0; height:10px; border-radius:0 0 12px 12px;
+    background: repeating-linear-gradient(90deg, #c9c4b4 0 7px, #9a9686 7px 14px);
+  }
+  .candles{ position:absolute; top:-44px; left:0; right:0; display:flex; gap:12px; justify-content:center; }
+  .candle{ position: relative; width:12px; height:34px; border-radius:3px; background: linear-gradient(180deg,#d8d4c6,#817c6f); border:1px solid rgba(0,0,0,.25); }
+  .flame{
+    position: absolute; top:-16px; left:50%; transform: translate(-50%, 0);
+    width:14px; height:20px; border-radius:50%;
+    background: radial-gradient(circle at 50% 45%, #ffe7a1 30%, #ff9f1a 70%);
+    box-shadow: 0 0 10px 2px rgba(255,159,26,.45);
+    animation: flicker .85s ease-in-out infinite; transition: opacity .45s ease;
+  }
+  .flame.off{ opacity:0; animation:none; }
+  @keyframes flicker{
+    0%{ transform:translateX(-50%) scale(1) } 
+    50%{ transform:translateX(-50%) scale(1.18) } 
+    100%{ transform:translateX(-50%) scale(1) }
+  }
+
+  /* INSIDE */
+  .cardInside{
+    transform: rotateY(180deg);
+    background: linear-gradient(160deg, #2b372c 0%, #212b21 60%, #182019 100%);
+    padding:22px 18px; text-align:center;
+    overflow-y: auto;  /* ✅ scrollable */
+  }
+  .insideHeader{ font-family:'Orbitron', sans-serif; color:var(--sage); font-size:1.25rem; margin:.2rem 0 .6rem; }
+  .msg{ color:var(--cream); line-height:1.5; font-size:1.05rem; }
+  .sig{ margin-top:1rem; color:var(--orange); font-weight:700; }
+
+  /* Scrollbar styling */
+  .cardInside::-webkit-scrollbar { width:6px; }
+  .cardInside::-webkit-scrollbar-thumb { background: var(--orange); border-radius:6px; }
+  .cardInside::-webkit-scrollbar-track { background: rgba(255,255,255,0.1); }
+
+  /* Confetti */
+  .confetti{ position:fixed; inset:0; pointer-events:none; z-index:999; }
+  .piece{
+    position:absolute; top:-12px; width:12px; height:8px;
+    transform: rotate(10deg);
+    animation: fall linear infinite;
+    border-radius: 2px;
+  }
+  @keyframes fall{ to{ transform: translateY(100vh) rotate(720deg); } }
+
+  /* Reset */
+  button{
+    position:fixed; bottom:20px; right:20px; padding:10px 14px;
+    background: var(--orange); color:#1a1a1a; border:none; border-radius:10px;
+    font-weight:700; cursor:pointer; box-shadow:0 10px 18px rgba(0,0,0,.35);
+  }
+  button:hover{ filter: brightness(1.05); }
+</style>
+</head>
+<body>
+
+<div class="card">
+  <div id="birthdayCard" class="birthdayCard">
+    <div class="cardFront">
+      <div class="header">
+        <h1 class="kicker">Start Your Next Lap</h1>
+        <h1 class="title">Happy Birthday</h1>
+        <h1 class="name">Nilesh</h1>
+      </div>
+
+      <div class="car-wrap">
+        <img class="car" src="pngtree-hand-drawn-cartoon-porsche-911-png-image_4082715.png" alt="Retro sage Porsche 911">
+      </div>
+
+      <br>
+      <br>
+      <br>
+      <br>
+
+      <div class="cake" title="Performance Cake">
+        <div class="candles">
+          <div class="candle"><div class="flame"></div></div>
+          <div class="candle"><div class="flame"></div></div>
+          <div class="candle"><div class="flame"></div></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="cardInside">
+      <h2 class="insideHeader">🎓 Future Mechanical Engineer • Retro 911 Edition</h2>
+      <p class="msg">
+        Happy Birthday, Nilu! I’m proud of the man you’re becoming. I may be out here chasing rockets and drones, but I know you’ve got the same fire in you to own the automotive world. You’ve always had that spark for cars, and I want to see you take it all the way — not just working on them, but leading the field.<br><br>
+        This year, I hope you keep pushing yourself, learning, and building. We’re brothers chasing different machines but we share the same drive. So enjoy today, celebrate big, and get ready to dominate your path. Happy birthday, boi!
+      </p>
+      <p class="sig">— Nitish</p>
+    </div>
+  </div>
+</div>
+
+<div id="confetti" class="confetti"></div>
+<button onclick="resetCard()">Reset</button>
+
+<script>
+  const BLOW_SFX = 'blow_out.mp3';
+  const REV_SFX  = 'rev.mp3';
+
+  let triggered = false;
+  let prvVol = 0;
+
+  navigator.mediaDevices.getUserMedia({ audio: true }).then(stream=>{
+    const AC = new (window.AudioContext || window.webkitAudioContext)();
+    const analyser = AC.createAnalyser();
+    const mic = AC.createMediaStreamSource(stream);
+    const proc = AC.createScriptProcessor(2048,1,1);
+    analyser.fftSize = 1024; analyser.smoothingTimeConstant = 0.8;
+    mic.connect(analyser); analyser.connect(proc); proc.connect(AC.destination);
+
+    proc.onaudioprocess = () => {
+      const arr = new Uint8Array(analyser.frequencyBinCount);
+      analyser.getByteFrequencyData(arr);
+      const avg = arr.reduce((a,v)=>a+v,0)/arr.length;
+
+      if (!triggered && avg - prvVol > 30) {
+        triggered = true;
+        if (BLOW_SFX) play(BLOW_SFX);
+
+        const flames = [...document.querySelectorAll('.flame')];
+        flames.forEach((f,i)=>{
+          setTimeout(()=> {
+            f.classList.add('off');
+            if (i === flames.length - 1){
+              setTimeout(()=>{
+                document.getElementById('birthdayCard').classList.add('open');
+                play(REV_SFX);
+                confetti();
+              }, 420);
+            }
+          }, i*250);
+        });
+      }
+      prvVol = avg;
+    };
+  }).catch(console.error);
+
+  function play(src){ try{ new Audio(src).play().catch(()=>{});}catch(e){} }
+
+  function confetti(){
+    const c = document.getElementById('confetti');
+    const colors = ['var(--cream)','var(--orange)','var(--sage)','var(--olive)'];
+    const N = 110;
+    for(let i=0;i<N;i++){
+      const d = document.createElement('div');
+      d.className = 'piece';
+      d.style.left = (Math.random()*100)+'vw';
+      d.style.width = (8 + Math.random()*10) + 'px';
+      d.style.height = (6 + Math.random()*8) + 'px';
+      d.style.background = colors[Math.floor(Math.random()*colors.length)];
+      d.style.opacity = (0.75 + Math.random()*0.25).toFixed(2);
+      d.style.animationDuration = (1.8 + Math.random()*2.2) + 's';
+      d.style.transform = `rotate(${(Math.random()*40-20)}deg)`;
+      c.appendChild(d);
+      setTimeout(()=>d.remove(), 4500);
+    }
+  }
+
+  function resetCard(){
+    triggered = false;
+    document.getElementById('birthdayCard').classList.remove('open');
+    document.querySelectorAll('.flame').forEach(f=>f.classList.remove('off'));
+    document.getElementById('confetti').innerHTML='';
+  }
+</script>
+</body>
+</html>
