@@ -1,0 +1,602 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Harness Termination List – Template</title>
+  <style>
+    :root {
+      --bg: #f7f7fb;
+      --panel: #ffffff;
+      --text: #0f172a;
+      --muted: #5b667a;
+      --border: #e5e7eb;
+      --accent: #3b82f6;
+      --accent-2: #10b981;
+      --warning: #f59e0b;
+      --shadow: 0 10px 25px rgba(2, 6, 23, 0.08);
+      --table-stripe: #fafafa;
+      --chip: #eef2ff;
+    }
+    [data-theme="dark"] {
+      --bg: #0b1020;
+      --panel: #0f172a;
+      --text: #e5e7eb;
+      --muted: #94a3b8;
+      --border: #1f2937;
+      --accent: #60a5fa;
+      --accent-2: #34d399;
+      --warning: #fbbf24;
+      --shadow: 0 8px 20px rgba(0,0,0,0.4);
+      --table-stripe: #0b1222;
+      --chip: #1f2937;
+    }
+
+    * { box-sizing: border-box; }
+    html, body { height: 100%; }
+    body {
+      margin: 0;
+      font: 14px/1.5 ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji";
+      color: var(--text);
+      background: var(--bg);
+    }
+
+    .container {
+      display: grid;
+      grid-template-rows: auto 1fr;
+      min-height: 100dvh;
+      gap: 12px;
+    }
+
+    /* Top Bar */
+    .topbar {
+      position: sticky; top: 0; z-index: 20;
+      display: flex; align-items: center; gap: 12px;
+      padding: 12px 16px;
+      background: var(--bg);
+      border-bottom: 1px solid var(--border);
+      backdrop-filter: blur(6px);
+    }
+    .brand { font-weight: 700; letter-spacing: 0.2px; }
+    .chip { padding: 2px 8px; border-radius: 999px; background: var(--chip); color: var(--muted); font-size: 12px; }
+    .spacer { flex: 1; }
+
+    .btn {
+      appearance: none; border: 1px solid var(--border); background: var(--panel); color: var(--text);
+      padding: 8px 12px; border-radius: 10px; cursor: pointer; display: inline-flex; gap: 8px; align-items: center;
+      box-shadow: var(--shadow);
+    }
+    .btn:hover { border-color: var(--accent); }
+    .btn--primary { background: var(--accent); color: white; border-color: transparent; }
+    .btn--success { background: var(--accent-2); color: #052e1a; border-color: transparent; }
+    .btn--ghost { background: transparent; box-shadow: none; border-color: var(--border); }
+
+    .toolbar { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+
+    /* Layout: Harness (top) + Table (bottom) */
+    .main {
+      padding: 12px 16px 18px;
+      display: grid; gap: 12px;
+      grid-template-rows: minmax(260px, 45vh) minmax(260px, 1fr);
+    }
+
+    .panel {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      box-shadow: var(--shadow);
+      overflow: hidden;
+      display: grid;
+      grid-template-rows: auto 1fr;
+    }
+
+    .panel__header { display: flex; align-items: center; justify-content: space-between; padding: 10px 12px; border-bottom: 1px solid var(--border); }
+    .panel__title { font-weight: 600; }
+    .panel__body { position: relative; }
+
+    /* Harness Viewer */
+    .viewer {
+      width: 100%; height: 100%;
+      display: grid; grid-template-columns: 1fr 260px; gap: 0; min-height: 240px;
+    }
+    .viewer__stage { position: relative; overflow: hidden; background: radial-gradient(1200px 600px at 30% -20%, rgba(59,130,246,0.10), transparent), radial-gradient(900px 900px at 100% 120%, rgba(16,185,129,0.08), transparent); }
+    .viewer__aside { border-left: 1px solid var(--border); padding: 12px; display: grid; grid-template-rows: auto 1fr; gap: 10px; }
+    .legend { display: grid; gap: 8px; align-content: start; }
+    .legend__item { display: flex; align-items: center; gap: 8px; color: var(--muted); font-size: 12px; }
+    .legend__swatch { width: 12px; height: 12px; border-radius: 3px; border: 1px solid var(--border); }
+    .legend__swatch--sig { background: #3b82f6; }
+    .legend__swatch--pwr { background: #f59e0b; }
+    .legend__swatch--gnd { background: #10b981; }
+
+    .viewer__controls { display: flex; gap: 6px; flex-wrap: wrap; }
+    .viewer__controls .btn { padding: 6px 10px; }
+
+    /* SVG harness canvas */
+    svg { width: 100%; height: 100%; display: block; }
+    .node { fill: var(--panel); stroke: var(--border); stroke-width: 1.5; filter: drop-shadow(0 1px 2px rgba(0,0,0,0.15)); }
+    .node text { font-size: 12px; fill: var(--text); }
+    .pin { fill: var(--panel); stroke: var(--border); }
+    .wire { fill: none; stroke-width: 2.5; }
+    .wire--sig { stroke: #3b82f6; }
+    .wire--pwr { stroke: #f59e0b; }
+    .wire--gnd { stroke: #10b981; stroke-dasharray: 4 2; }
+    .dest-label { font-size: 11px; fill: var(--muted); }
+
+    /* Termination Table */
+    .table-wrap { overflow: auto; height: 100%; }
+    table { width: 100%; border-collapse: collapse; }
+    thead th {
+      position: sticky; top: 0; z-index: 5;
+      background: var(--panel);
+      border-bottom: 1px solid var(--border);
+      padding: 10px; font-size: 12px; text-transform: uppercase; letter-spacing: .06em; color: var(--muted);
+    }
+    tbody td { border-top: 1px dashed var(--border); padding: 10px; }
+    tbody tr:nth-child(even) { background: var(--table-stripe); }
+    td[contenteditable="true"]:focus { outline: 2px solid var(--accent); background: color-mix(in oklab, var(--panel) 85%, var(--accent)); }
+
+    .row-select { width: 36px; text-align: center; }
+    .num { text-align: right; font-variant-numeric: tabular-nums; }
+
+    /* Utilities */
+    .input { padding: 8px 10px; border-radius: 10px; border: 1px solid var(--border); background: var(--panel); color: var(--text); }
+    .input:focus { outline: 2px solid var(--accent); border-color: transparent; }
+
+    /* Print styles */
+    @media print {
+      .topbar, .viewer__controls, .toolbar .btn, .toolbar input[type=file], .toolbar .input { display: none !important; }
+      .main { grid-template-rows: 40vh 1fr; }
+      body { background: white; }
+      .panel { box-shadow: none; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="topbar">
+      <div class="brand">Harness Termination List</div>
+      <span class="chip">Template</span>
+      <div class="spacer"></div>
+      <div class="toolbar">
+        <button class="btn" id="toggleTheme" title="Toggle light/dark">🌓 Theme</button>
+        <input id="search" class="input" placeholder="Filter rows (Signal, Wire ID, Connector, …)" />
+        <button class="btn" id="addRow">➕ Add row</button>
+        <button class="btn" id="deleteRows">🗑️ Delete selected</button>
+        <button class="btn" id="exportCsv">⬇️ Export CSV</button>
+        <button class="btn" id="exportJson">⬇️ Export JSON</button>
+        <label class="btn" for="importCsv">📥 Import CSV</label>
+        <input id="importCsv" type="file" accept=".csv" style="display:none" />
+        <label class="btn" for="importJson">📥 Import JSON</label>
+        <input id="importJson" type="file" accept="application/json,.json" style="display:none" />
+        <button class="btn btn--ghost" onclick="window.print()">🖨️ Print</button>
+      </div>
+    </div>
+
+    <main class="main">
+      <!-- Harness Viewer Panel -->
+      <section class="panel" aria-label="Harness viewer">
+        <div class="panel__header">
+          <div class="panel__title">Harness Rendering (SVG)</div>
+          <div class="viewer__controls">
+            <button class="btn" id="zoomIn" title="Zoom in">＋</button>
+            <button class="btn" id="zoomOut" title="Zoom out">－</button>
+            <button class="btn" id="resetView" title="Reset view">⤾</button>
+          </div>
+        </div>
+        <div class="panel__body viewer">
+          <div class="viewer__stage">
+            <svg id="harnessSvg" viewBox="0 0 1000 600" role="img" aria-label="Harness schematic">
+              <!-- Example nodes/connectors (replace with your real geometry) -->
+              <defs>
+                <marker id="arrow" markerWidth="8" markerHeight="8" refX="6" refY="3.5" orient="auto">
+                  <polygon points="0 0, 7 3.5, 0 7" fill="#64748b" />
+                </marker>
+              </defs>
+
+              <!-- Connector A -->
+              <g class="node" id="connA" transform="translate(120,80)">
+                <rect rx="8" ry="8" width="180" height="120" />
+                <text x="12" y="20">J1 – ECU</text>
+                <!-- pins -->
+                <g transform="translate(10,35)">
+                  <rect class="pin" x="0" y="0" width="16" height="16" rx="3" /><text x="24" y="12">Pin 1</text>
+                  <rect class="pin" x="0" y="26" width="16" height="16" rx="3" /><text x="24" y="38">Pin 2</text>
+                  <rect class="pin" x="0" y="52" width="16" height="16" rx="3" /><text x="24" y="64">Pin 3</text>
+                </g>
+              </g>
+
+              <!-- Connector B -->
+              <g class="node" id="connB" transform="translate(720,380)">
+                <rect rx="8" ry="8" width="180" height="120" />
+                <text x="12" y="20">J2 – Sensor Pack</text>
+                <g transform="translate(10,35)">
+                  <rect class="pin" x="0" y="0" width="16" height="16" rx="3" /><text x="24" y="12">Pin 12</text>
+                  <rect class="pin" x="0" y="26" width="16" height="16" rx="3" /><text x="24" y="38">Pin 5</text>
+                </g>
+              </g>
+
+              <!-- Connector C -->
+              <g class="node" id="connC" transform="translate(720,80)">
+                <rect rx="8" ry="8" width="180" height="120" />
+                <text x="12" y="20">J3 – Power Distr</text>
+                <g transform="translate(10,35)">
+                  <rect class="pin" x="0" y="0" width="16" height="16" rx="3" /><text x="24" y="12">+V</text>
+                  <rect class="pin" x="0" y="26" width="16" height="16" rx="3" /><text x="24" y="38">GND</text>
+                </g>
+              </g>
+
+              <!-- Wires (example routes) -->
+              <path class="wire wire--sig" d="M300 120 C 420 120, 560 420, 720 420" marker-end="url(#arrow)" />
+              <path class="wire wire--pwr" d="M300 140 C 430 140, 560 140, 720 120" marker-end="url(#arrow)" />
+              <path class="wire wire--gnd" d="M300 180 C 430 180, 560 180, 720 146" marker-end="url(#arrow)" />
+            </svg>
+          </div>
+          <aside class="viewer__aside">
+            <div class="legend">
+              <div class="panel__title">Legend</div>
+              <div class="legend__item"><span class="legend__swatch legend__swatch--sig"></span> Signal</div>
+              <div class="legend__item"><span class="legend__swatch legend__swatch--pwr"></span> Power</div>
+              <div class="legend__item"><span class="legend__swatch legend__swatch--gnd"></span> Ground</div>
+            </div>
+            <div style="align-self:end; display:grid; gap:8px;">
+              <div class="panel__title">Notes</div>
+              <div style="color:var(--muted); font-size:12px">This is a placeholder harness. Replace with your SVG exports, or draw via script.
+              You can pan with mouse drag and zoom using the buttons or Ctrl + mouse wheel.</div>
+            </div>
+          </aside>
+        </div>
+      </section>
+
+      <!-- Termination List Panel -->
+      <section class="panel" aria-label="Termination list">
+        <div class="panel__header">
+          <div class="panel__title">Termination List</div>
+          <div class="toolbar">
+            <span class="chip" id="rowCount">0 rows</span>
+            <span class="chip">Click a header to sort</span>
+          </div>
+        </div>
+        <div class="panel__body table-wrap">
+          <table id="termTable">
+            <thead>
+              <tr>
+                <th class="row-select"><input type="checkbox" id="selectAll"></th>
+                <th data-key="id">ID</th>
+                <th data-key="box">Box</th>
+                <th data-key="slot">Slot</th>
+                <th data-key="channel">Channel</th>
+                <th data-key="signal">Signal</th>
+                <th data-key="ioType">I/O Type</th>
+                <th data-key="connector">Connector</th>
+                <th data-key="pin">Pin</th>
+                <th data-key="wireId">Wire ID</th>
+                <th data-key="gauge">AWG</th>
+                <th data-key="color">Color</th>
+                <th data-key="dest">Destination</th>
+                <th data-key="length">Length (mm)</th>
+                <th data-key="notes">Notes</th>
+              </tr>
+            </thead>
+            <tbody>
+              <!-- Sample rows -->
+            </tbody>
+          </table>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script>
+    // ------ THEME ------
+    const root = document.documentElement;
+    const themeBtn = document.getElementById('toggleTheme');
+    const savedTheme = localStorage.getItem('harness.theme') || 'light';
+    root.setAttribute('data-theme', savedTheme);
+
+    themeBtn.addEventListener('click', () => {
+      const next = root.getAttribute('data-theme') === 'light' ? 'dark' : 'light';
+      root.setAttribute('data-theme', next);
+      localStorage.setItem('harness.theme', next);
+    });
+
+    // ------ HARNESS VIEWER (simple zoom + pan) ------
+    const svg = document.getElementById('harnessSvg');
+    let viewBox = { x: 0, y: 0, w: 1000, h: 600 };
+    const setViewBox = () => svg.setAttribute('viewBox', `${viewBox.x} ${viewBox.y} ${viewBox.w} ${viewBox.h}`);
+    setViewBox();
+
+    document.getElementById('zoomIn').onclick = () => { viewBox.w *= 0.9; viewBox.h *= 0.9; setViewBox(); };
+    document.getElementById('zoomOut').onclick = () => { viewBox.w /= 0.9; viewBox.h /= 0.9; setViewBox(); };
+    document.getElementById('resetView').onclick = () => { viewBox = { x:0, y:0, w:1000, h:600 }; setViewBox(); };
+
+    let isPanning = false, start = {x:0,y:0};
+    svg.addEventListener('mousedown', (e) => { isPanning = true; start = { x: e.clientX, y: e.clientY }; svg.style.cursor = 'grabbing'; });
+    window.addEventListener('mouseup', () => { isPanning = false; svg.style.cursor = 'default'; });
+    window.addEventListener('mousemove', (e) => {
+      if (!isPanning) return;
+      const dx = (e.clientX - start.x) * (viewBox.w / svg.clientWidth);
+      const dy = (e.clientY - start.y) * (viewBox.h / svg.clientHeight);
+      viewBox.x -= dx; viewBox.y -= dy; start = { x: e.clientX, y: e.clientY }; setViewBox();
+    });
+    svg.addEventListener('wheel', (e) => {
+      if (!e.ctrlKey) return; // ctrl+wheel to zoom for better page scroll behavior
+      e.preventDefault();
+      const factor = e.deltaY > 0 ? 1.1 : 0.9;
+      viewBox.w *= factor; viewBox.h *= factor; setViewBox();
+    }, { passive: false });
+
+    // ------ TABLE ------
+    const termTable = document.getElementById('termTable');
+    const tbody = termTable.querySelector('tbody');
+    const search = document.getElementById('search');
+    const rowCount = document.getElementById('rowCount');
+
+    const sample = [
+      { id: 1, box: 'UEI RACK 01', slot: '3', channel: 'AI0', signal: 'PT-201', ioType: 'AI', connector: 'J1', pin: '1', wireId: 'W-001', gauge: '22', color: 'RED', dest: 'Field PT-201', length: 450, notes: 'Pressure transducer' },
+      { id: 2, box: 'UEI RACK 01', slot: '3', channel: 'AI1', signal: 'PT-202', ioType: 'AI', connector: 'J1', pin: '2', wireId: 'W-002', gauge: '22', color: 'BLK', dest: 'Field PT-202', length: 480, notes: '' },
+      { id: 3, box: 'UEI RACK 01', slot: '5', channel: 'DO0', signal: 'SV-101 OPEN', ioType: 'DO', connector: 'J3', pin: '+V', wireId: 'W-003', gauge: '18', color: 'YLW', dest: 'SV-101 coil', length: 600, notes: 'Solenoid drive' }
+    ];
+
+    let data = JSON.parse(localStorage.getItem('harness.table') || 'null') || sample;
+    let sortState = { key: 'id', dir: 1 };
+
+    function render() {
+      const q = search.value.trim().toLowerCase();
+      const filtered = data.filter(r => !q || Object.values(r).join(' ').toLowerCase().includes(q));
+      tbody.innerHTML = '';
+      for (const r of filtered) {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td class="row-select"><input type="checkbox" data-id="${r.id}"></td>
+          <td class="num" data-key="id">${r.id}</td>
+          <td contenteditable="true" data-key="box">${r.box}</td>
+          <td contenteditable="true" data-key="slot">${r.slot}</td>
+          <td contenteditable="true" data-key="channel">${r.channel}</td>
+          <td contenteditable="true" data-key="signal">${r.signal}</td>
+          <td contenteditable="true" data-key="ioType">${r.ioType}</td>
+          <td contenteditable="true" data-key="connector">${r.connector}</td>
+          <td contenteditable="true" data-key="pin">${r.pin}</td>
+          <td contenteditable="true" data-key="wireId">${r.wireId}</td>
+          <td contenteditable="true" data-key="gauge">${r.gauge}</td>
+          <td contenteditable="true" data-key="color">${r.color}</td>
+          <td contenteditable="true" data-key="dest">${r.dest}</td>
+          <td contenteditable="true" data-key="length">${r.length}</td>
+          <td contenteditable="true" data-key="notes">${r.notes}</td>`;
+        tbody.appendChild(tr);
+      }
+      rowCount.textContent = `${filtered.length} row${filtered.length === 1 ? '' : 's'}`;
+      localStorage.setItem('harness.table', JSON.stringify(data));
+      updateHarnessSvgFromData();
+    }
+
+    function sortBy(key) {
+      sortState = { key, dir: sortState.key === key ? -sortState.dir : 1 };
+      data.sort((a,b) => (a[key] > b[key] ? 1 : a[key] < b[key] ? -1 : 0) * sortState.dir);
+      render();
+    }
+
+    // Header sort handlers
+    termTable.querySelectorAll('thead th[data-key]').forEach(th => {
+      th.style.cursor = 'pointer';
+      th.addEventListener('click', () => sortBy(th.dataset.key));
+    });
+
+    // Inline edit persistence
+    tbody.addEventListener('input', (e) => {
+      const cell = e.target.closest('[data-key]');
+      if (!cell) return;
+      const rowIdx = [...tbody.children].indexOf(cell.parentElement);
+      const filtered = data.filter(r => !search.value || Object.values(r).join(' ').toLowerCase().includes(search.value.toLowerCase()));
+      const realRow = filtered[rowIdx];
+      const idx = data.findIndex(r => r.id === realRow.id);
+      const key = cell.dataset.key;
+      let val = cell.textContent.trim();
+      if (key === 'length' || key === 'id') val = Number(val) || 0;
+      data[idx][key] = val;
+      localStorage.setItem('harness.table', JSON.stringify(data));
+    });
+
+    // Search filter
+    search.addEventListener('input', render);
+
+    // Add / Delete rows
+    document.getElementById('addRow').onclick = () => {
+      const nextId = (data.reduce((m, r) => Math.max(m, r.id), 0) + 1) || 1;
+      data.push({ id: nextId, box: '', slot: '', channel: '', signal: '', ioType: '', connector: '', pin: '', wireId: '', gauge: '', color: '', dest: '', length: 0, notes: '' });
+      sortBy('id');
+      render();
+    };
+
+    document.getElementById('deleteRows').onclick = () => {
+      const checks = [...document.querySelectorAll('tbody input[type=checkbox]:checked')].map(ch => Number(ch.dataset.id));
+      if (!checks.length) return;
+      data = data.filter(r => !checks.includes(r.id));
+      render();
+    };
+
+    // Select all
+    document.getElementById('selectAll').addEventListener('change', (e) => {
+      document.querySelectorAll('tbody input[type=checkbox]').forEach(ch => ch.checked = e.target.checked);
+    });
+
+    function updateHarnessSvgFromData() {
+      if (!svg) return;
+      const defs = svg.querySelector('defs');
+      while (svg.firstChild) svg.removeChild(svg.firstChild);
+      if (defs) svg.appendChild(defs);
+      setViewBox();
+
+      const modulesMap = new Map();
+      data.forEach(function(r) {
+        if (!r.box && !r.slot) return;
+        const key = (r.box || '') + '|' + (r.slot || '');
+        if (!modulesMap.has(key)) {
+          modulesMap.set(key, { box: r.box || '', slot: r.slot || '', channels: [] });
+        }
+        modulesMap.get(key).channels.push(r);
+      });
+
+      const modules = Array.from(modulesMap.values());
+      modules.sort(function(a, b) {
+        const ak = (a.box || '') + ' ' + (a.slot || '');
+        const bk = (b.box || '') + ' ' + (b.slot || '');
+        return ak < bk ? -1 : ak > bk ? 1 : 0;
+      });
+
+      const svgNS = 'http://www.w3.org/2000/svg';
+
+      modules.forEach(function(mod, idx) {
+        var baseX = 80 + idx * 260;
+        var baseY = 60;
+        var channelHeight = 20;
+        var headerHeight = 28;
+        var height = headerHeight + mod.channels.length * channelHeight + 16;
+
+        var g = document.createElementNS(svgNS, 'g');
+        g.setAttribute('class', 'node');
+        g.setAttribute('transform', 'translate(' + baseX + ',' + baseY + ')');
+
+        var rect = document.createElementNS(svgNS, 'rect');
+        rect.setAttribute('rx', '8');
+        rect.setAttribute('ry', '8');
+        rect.setAttribute('width', '200');
+        rect.setAttribute('height', String(height));
+        g.appendChild(rect);
+
+        var titleText = document.createElementNS(svgNS, 'text');
+        titleText.setAttribute('x', '12');
+        titleText.setAttribute('y', '18');
+        titleText.textContent = (mod.box || 'BOX') + ' – S' + (mod.slot || '');
+        g.appendChild(titleText);
+
+        mod.channels.forEach(function(ch, i) {
+          var y = headerHeight + i * channelHeight + 10;
+
+          var t = document.createElementNS(svgNS, 'text');
+          t.setAttribute('x', '16');
+          t.setAttribute('y', String(y + 4));
+          var label = (ch.channel || '') + ' ' + (ch.signal || '');
+          t.textContent = label.trim();
+          g.appendChild(t);
+
+          var pinCircle = document.createElementNS(svgNS, 'circle');
+          pinCircle.setAttribute('cx', '180');
+          pinCircle.setAttribute('cy', String(y));
+          pinCircle.setAttribute('r', '3');
+          pinCircle.setAttribute('class', 'pin');
+          g.appendChild(pinCircle);
+
+          var x1 = baseX + 180;
+          var yAbs = baseY + y;
+          var x2 = x1 + 60;
+
+          var path = document.createElementNS(svgNS, 'path');
+          path.setAttribute('d', 'M ' + x1 + ' ' + yAbs + ' L ' + x2 + ' ' + yAbs);
+
+          var wireClass = 'wire wire--sig';
+          var io = (ch.ioType || '').toUpperCase();
+          var sig = (ch.signal || '').toUpperCase();
+          if (io === 'PWR' || sig.indexOf('24V') !== -1 || sig.indexOf('PWR') !== -1 || sig.indexOf('POWER') !== -1) {
+            wireClass = 'wire wire--pwr';
+          } else if (io === 'GND' || sig.indexOf('GND') !== -1 || sig.indexOf('GROUND') !== -1) {
+            wireClass = 'wire wire--gnd';
+          }
+          path.setAttribute('class', wireClass);
+          path.setAttribute('marker-end', 'url(#arrow)');
+          svg.appendChild(path);
+
+          if (ch.dest) {
+            var destText = document.createElementNS(svgNS, 'text');
+            destText.setAttribute('x', String(x2 + 8));
+            destText.setAttribute('y', String(yAbs + 4));
+            destText.textContent = ch.dest;
+            destText.setAttribute('class', 'dest-label');
+            svg.appendChild(destText);
+          }
+        });
+
+        svg.appendChild(g);
+      });
+    }
+
+    // Export helpers
+    function download(filename, text) {
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(new Blob([text], {type: 'text/plain'}));
+      a.download = filename; a.click();
+      URL.revokeObjectURL(a.href);
+    }
+    document.getElementById('exportCsv').onclick = () => {
+      const cols = ['id','box','slot','channel','signal','ioType','connector','pin','wireId','gauge','color','dest','length','notes'];
+      const csv = [cols.join(',')].concat(data.map(r => cols.map(k => `"${String(r[k]).replaceAll('"','""')}"`).join(','))).join('\n');
+      download('termination-list.csv', csv);
+    };
+    document.getElementById('exportJson').onclick = () => {
+      download('termination-list.json', JSON.stringify(data, null, 2));
+    };
+
+    // Import CSV (simple, header required)
+    document.getElementById('importCsv').addEventListener('change', (e) => {
+      const file = e.target.files[0]; if (!file) return;
+      const reader = new FileReader();
+      reader.onload = () => {
+        const text = reader.result.trim();
+        const lines = text.split(/\r?\n/);
+        const header = lines.shift().split(',').map(h => h.replace(/^\"|\"$/g, ''));
+        const cols = ['id','box','slot','channel','signal','ioType','connector','pin','wireId','gauge','color','dest','length','notes'];
+        if (header.join(',') !== cols.join(',')) { alert('CSV header mismatch. Expected: ' + cols.join(',')); return; }
+        const rows = lines.map(line => {
+          const parts = line.match(/(\"(?:[^\"]|\"\")*\"|[^,]+)/g) || [];
+          const obj = {}; cols.forEach((k, i) => obj[k] = (parts[i]||'').replace(/^\"|\"$/g,'').replaceAll('""','"'));
+          obj.id = Number(obj.id)||0; obj.length = Number(obj.length)||0; return obj;
+        });
+        data = rows; render();
+      };
+      reader.readAsText(file);
+      e.target.value = '';
+    });
+
+    // Import JSON (revised reliable parser)
+    document.getElementById('importJson').addEventListener('change', (e) => {
+      const file = e.target.files[0]; if (!file) return;
+      const reader = new FileReader();
+      reader.onload = () => {
+        try {
+          let parsed = JSON.parse(reader.result);
+
+          // Accept array or {data:[]} or {rows:[]}
+          let rows = Array.isArray(parsed) ? parsed : parsed.data || parsed.rows;
+
+          if (!Array.isArray(rows)) {
+            alert('JSON format invalid. Expected an array or {data:[...]}');
+            return;
+          }
+
+          const required = ['id','box','slot','channel','signal','ioType','connector','pin','wireId','gauge','color','dest','length','notes'];
+
+          let normalized = rows.map((r, i) => {
+            let obj = {};
+            required.forEach(k => obj[k] = r[k] ?? '');
+            obj.id = Number(obj.id) || (i + 1);
+            obj.length = Number(obj.length) || 0;
+            return obj;
+          });
+
+          data = normalized;
+          sortBy('id');
+          render();
+        } catch (err) {
+          console.error(err);
+          alert('Failed to parse JSON: ' + err.message);
+        }
+      };
+      reader.readAsText(file);
+      e.target.value = '';
+    });
+
+    // Init
+    sortBy('id');
+    render();
+  </script>
+</body>
+</html>

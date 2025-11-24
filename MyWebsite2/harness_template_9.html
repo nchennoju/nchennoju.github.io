@@ -1,0 +1,1986 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Ground Harness Map – DAC → JBOX → Device</title>
+  <style>
+    :root {
+      --bg: #f7f7fb;
+      --panel: #ffffff;
+      --text: #020617;
+      --muted: #4b5563;
+      --border: #e5e7eb;
+      --accent: #3b82f6;
+      --accent-2: #10b981;
+      --warning: #f59e0b;
+      --shadow: 0 10px 25px rgba(15, 23, 42, 0.18);
+      --table-stripe: #f9fafb;
+      --chip: #eef2ff;
+      --bg-gradient: radial-gradient(circle at top left, #dbeafe 0, #f5f5f5 40%, #e0f2fe 100%);
+    }
+    [data-theme="dark"] {
+      --bg: #020617;
+      --panel: #020617;
+      --text: #f9fafb;
+      --muted: #cbd5f5;
+      --border: #1f2937;
+      --accent: #60a5fa;
+      --accent-2: #34d399;
+      --warning: #fbbf24;
+      --shadow: 0 8px 20px rgba(0,0,0,0.7);
+      --table-stripe: #0b1222;
+      --chip: #111827;
+      --bg-gradient: radial-gradient(circle at top left, #0f172a 0, #020617 35%, #020617 100%);
+    }
+
+    * { box-sizing: border-box; }
+    html, body { height: 100%; }
+
+    body {
+      margin: 0;
+      font: 13px/1.5 system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      color: var(--text);
+      background: var(--bg-gradient);
+    }
+
+    .container {
+      display: grid;
+      grid-template-rows: auto 1fr;
+      min-height: 100vh;
+      gap: 12px;
+    }
+
+    .topbar {
+      position: sticky; top: 0; z-index: 20;
+      display: flex; align-items: center; gap: 12px;
+      padding: 10px 16px;
+      background: color-mix(in srgb, var(--bg) 85%, #ffffff 15%);
+      border-bottom: 1px solid var(--border);
+      backdrop-filter: blur(8px);
+    }
+    .brand { font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase; font-size: 13px; }
+    .chip { padding: 2px 8px; border-radius: 999px; background: var(--chip); color: var(--muted); font-size: 11px; }
+    .spacer { flex: 1; }
+    .toolbar { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+
+    .btn {
+      appearance: none;
+      border: 1px solid var(--border);
+      background: var(--panel);
+      color: var(--text);
+      padding: 6px 10px;
+      border-radius: 10px;
+      cursor: pointer;
+      display: inline-flex;
+      gap: 6px;
+      align-items: center;
+      font-size: 12px;
+      box-shadow: var(--shadow);
+    }
+    .btn:hover { border-color: var(--accent); }
+    .btn--ghost { background: transparent; box-shadow: none; }
+
+    .input {
+      padding: 6px 10px;
+      border-radius: 10px;
+      border: 1px solid var(--border);
+      background: var(--panel);
+      color: var(--text);
+      font-size: 12px;
+      min-width: 160px;
+    }
+    .input:focus { outline: 2px solid var(--accent); border-color: transparent; }
+
+    .select {
+      padding: 6px 10px;
+      border-radius: 10px;
+      border: 1px solid var(--border);
+      background: var(--panel);
+      color: var(--text);
+      font-size: 12px;
+      min-width: 160px;
+    }
+
+    .main {
+      padding: 8px 16px 16px;
+      display: grid;
+      gap: 10px;
+      grid-template-rows: minmax(280px, 50vh) minmax(260px, 1fr);
+    }
+
+    .panel {
+      background: var(--panel);
+      border-radius: 16px;
+      border: 1px solid var(--border);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+      display: grid;
+      grid-template-rows: auto 1fr;
+      min-height: 0;
+      position: relative;
+    }
+    .panel__header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 8px 12px;
+      border-bottom: 1px solid var(--border);
+      column-gap: 8px;
+    }
+    .panel__title { font-weight: 600; font-size: 13px; }
+    .panel__body { position: relative; min-height: 0; }
+
+    .panel__header-right {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+
+    .facility-stage {
+      width: 100%;
+      height: 100%;
+      background:
+        radial-gradient(circle at top left, rgba(59,130,246,0.18), transparent 55%),
+        radial-gradient(circle at bottom right, rgba(16,185,129,0.18), transparent 55%),
+        linear-gradient(135deg, rgba(148,163,184,0.1), transparent);
+    }
+    [data-theme="dark"] .facility-stage {
+      background:
+        radial-gradient(circle at top left, rgba(37,99,235,0.45), transparent 55%),
+        radial-gradient(circle at bottom right, rgba(16,185,129,0.35), transparent 55%),
+        linear-gradient(135deg, #020617, #020617);
+    }
+
+    svg { width: 100%; height: 100%; display: block; }
+
+    .zone-rect {
+      fill: rgba(15, 23, 42, 0.08);
+      stroke: rgba(15, 23, 42, 0.80);
+      stroke-width: 1.6;
+      stroke-dasharray: 4 3;
+    }
+    [data-theme="dark"] .zone-rect {
+      fill: rgba(15, 23, 42, 0.55);
+      stroke: rgba(148, 163, 184, 0.95);
+      stroke-width: 1.4;
+      stroke-dasharray: 4 3;
+    }
+
+    .zone-label,
+    .pad-label {
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      fill: #111827;
+      paint-order: stroke;
+      stroke: rgba(255, 255, 255, 0.85);
+      stroke-width: 0.7;
+      stroke-linejoin: round;
+    }
+    [data-theme="dark"] .zone-label,
+    [data-theme="dark"] .pad-label {
+      fill: #e5e7eb;
+      stroke: rgba(15, 23, 42, 0.9);
+    }
+
+    .node {
+      filter: drop-shadow(0 1px 2px rgba(15,23,42,0.35));
+    }
+    .node-rect {
+      fill: var(--panel);
+      stroke: var(--border);
+      stroke-width: 1.4;
+      rx: 8;
+      ry: 8;
+    }
+    .node-title {
+      font-size: 11px;
+      font-weight: 600;
+      fill: var(--text);
+    }
+    .node-sub {
+      font-size: 10px;
+      fill: var(--muted);
+    }
+
+    .wire {
+      fill: none;
+      stroke-width: 2.2;
+    }
+    .wire--ai { stroke: #3b82f6; }
+    .wire--ao { stroke: #0ea5e9; stroke-dasharray: 5 4; }
+    .wire--di, .wire--do { stroke: #22c55e; }
+    .wire--pwr { stroke: #f97316; }
+    .wire--tc { stroke: #a855f7; stroke-dasharray: 3 3; }
+    .wire--other { stroke: #64748b; stroke-dasharray: 2 3; }
+
+    .rocket-stand-rect {
+      fill: #0f172a;
+      stroke: #f97316;
+      stroke-width: 1.2;
+      rx: 4;
+      ry: 4;
+    }
+    [data-theme="dark"] .rocket-stand-rect {
+      fill: #020617;
+    }
+    .rocket-stand-text {
+      font-size: 10px;
+      fill: #facc15;
+      font-weight: 600;
+    }
+
+    #satBg { opacity: 0.75; }
+    [data-theme="dark"] #satBg {
+      filter: brightness(0.45) saturate(0.6);
+    }
+
+    .device-node .node-rect { rx: 4; ry: 4; }
+    .device-terminal-line {
+      stroke: var(--border);
+      stroke-width: 1;
+    }
+    .device-terminal-label {
+      font-size: 9px;
+      fill: var(--muted);
+    }
+
+    .table-wrap { overflow: auto; height: 100%; }
+    table { width: 100%; border-collapse: collapse; }
+    thead th {
+      position: sticky;
+      top: 0;
+      z-index: 5;
+      background: var(--panel);
+      border-bottom: 1px solid var(--border);
+      padding: 8px;
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: .06em;
+      color: var(--muted);
+      white-space: nowrap;
+    }
+    tbody td {
+      border-top: 1px dashed var(--border);
+      padding: 6px 8px;
+      font-size: 12px;
+    }
+    tbody tr:nth-child(even) { background: var(--table-stripe); }
+    .row-select { text-align: center; width: 30px; }
+    .num { font-variant-numeric: tabular-nums; text-align: right; }
+
+    td[contenteditable="true"]:focus {
+      outline: 2px solid var(--accent);
+      background: color-mix(in srgb, var(--panel) 80%, var(--accent) 20%);
+    }
+    td[contenteditable="false"] {
+      cursor: default;
+    }
+    .row-selected {
+      outline: 2px solid var(--accent);
+      outline-offset: -2px;
+    }
+
+    .map-layer-labels {}
+    .map-layer-jboxes {}
+    .map-layer-devices {}
+    .map-layer-wires {}
+
+    .layer-toggle-label {
+      font-size: 11px;
+      color: var(--muted);
+      display: inline-flex;
+      align-items: center;
+      gap: 3px;
+    }
+
+    .inspector {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      width: 260px;
+      max-height: calc(100% - 20px);
+      background: color-mix(in srgb, var(--panel) 96%, #000000 4%);
+      border-radius: 14px;
+      border: 1px solid var(--border);
+      box-shadow: var(--shadow);
+      padding: 8px 10px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      font-size: 11px;
+      pointer-events: auto;
+    }
+    .inspector-title {
+      font-weight: 600;
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--muted);
+    }
+    .inspector-content {
+      font-size: 11px;
+      line-height: 1.4;
+      color: var(--text);
+      overflow: auto;
+    }
+    .inspector-content b {
+      font-weight: 600;
+    }
+    .inspector-qr {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 6px;
+      margin-top: 4px;
+    }
+    .inspector-qr-label {
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--muted);
+    }
+    #qrCode {
+      width: 96px;
+      height: 96px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: var(--panel);
+      border-radius: 8px;
+      border: 1px solid var(--border);
+    }
+
+    @media print {
+      .topbar, .toolbar .btn, .toolbar input[type=file], .toolbar .input, .toolbar .select,
+      .inspector { display: none !important; }
+      body { background: #ffffff; }
+      .main { grid-template-rows: 40vh 1fr; }
+      .panel { box-shadow: none; }
+    }
+  </style>
+</head>
+<body>
+<div class="container">
+  <div class="topbar">
+    <div class="brand">Ground Harness Map</div>
+    <span class="chip" id="configMetaChip">Rev A • Unset</span>
+    <button class="btn btn--ghost" id="editConfig">⚙️ Config</button>
+    <div class="spacer"></div>
+    <div class="toolbar">
+      <button class="btn" id="toggleTheme">🌓 Theme</button>
+      <button class="btn" id="addRow">➕ Row</button>
+      <button class="btn" id="deleteRows">🗑️ Delete</button>
+      <button class="btn" id="exportCsv">⬇️ CSV</button>
+      <button class="btn" id="exportJson">⬇️ JSON</button>
+      <label class="btn" for="importCsv">📥 CSV</label>
+      <input id="importCsv" type="file" accept=".csv" style="display:none" />
+      <label class="btn" for="importJson">📥 JSON</label>
+      <input id="importJson" type="file" accept="application/json,.json" style="display:none" />
+      <button class="btn btn--ghost" onclick="window.print()">🖨️ Print</button>
+    </div>
+  </div>
+
+  <main class="main">
+    <!-- Facility Map -->
+    <section class="panel">
+      <div class="panel__header">
+        <div class="panel__title">Facility Harness View</div>
+        <div class="panel__header-right">
+          <span class="chip" id="mapSummary">0 DACs</span>
+          <span class="chip" id="viewPath">All DACs</span>
+          <button class="btn" id="hierarchyReset" title="Back to all DACs">◀ DACs</button>
+
+          <label class="layer-toggle-label">
+            <input type="checkbox" id="layerLabels" checked /> Labels
+          </label>
+          <label class="layer-toggle-label">
+            <input type="checkbox" id="layerJboxes" checked /> JBOX
+          </label>
+          <label class="layer-toggle-label">
+            <input type="checkbox" id="layerDevices" checked /> Devices
+          </label>
+          <label class="layer-toggle-label">
+            <input type="checkbox" id="layerWires" checked /> Wires
+          </label>
+
+          <button class="btn" id="zoomIn" title="Zoom in">＋</button>
+          <button class="btn" id="zoomOut" title="Zoom out">－</button>
+          <button class="btn" id="resetView" title="Reset view">⤾</button>
+        </div>
+      </div>
+      <div class="panel__body facility-stage">
+        <svg id="mapSvg" viewBox="0 0 1200 500" role="img" aria-label="Launch pad harness map">
+          <defs>
+            <marker id="arrow" markerWidth="7" markerHeight="7" refX="5.5" refY="3.5" orient="auto">
+              <polygon points="0 0, 7 3.5, 0 7" fill="#64748b" />
+            </marker>
+          </defs>
+
+          <g id="viewGroup">
+            <!-- background image is 3× bigger for more map to pan around -->
+            <image
+              id="satBg"
+              href="lc14_satellite.png"
+              x="0" y="0"
+              width="3600" height="1500"
+              preserveAspectRatio="xMidYMid slice"
+            />
+          </g>
+        </svg>
+
+        <div id="inspector" class="inspector">
+          <div class="inspector-title">Path Inspector</div>
+          <div id="inspectorContent" class="inspector-content">
+            Click a table row, JBOX, or device to inspect the harness run.
+          </div>
+          <div class="inspector-qr">
+            <div class="inspector-qr-label">QR (offline) – ID string</div>
+            <div id="qrCode"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Termination List -->
+    <section class="panel">
+      <div class="panel__header">
+        <div class="panel__title">Termination List (Ground Harness Runs)</div>
+        <div class="panel__header-right">
+          <input id="search" class="input" placeholder="Global filter (any column…)" />
+          <input id="columnSearch" class="input" placeholder="Column filter…" />
+          <select id="columnSelect" class="select" title="Which columns to apply column filter to">
+            <option value="">Column filter: all columns</option>
+            <option value="box,boxLoc,slot,channel,signal,jbox,jboxLoc,dest,destLoc,testTag">Key path fields</option>
+            <option value="box">DAC Chassis</option>
+            <option value="boxLoc">DAC Location</option>
+            <option value="slot">Slot</option>
+            <option value="channel">Channel</option>
+            <option value="signal">Signal</option>
+            <option value="jbox">JBOX</option>
+            <option value="jboxLoc">JBOX Location</option>
+            <option value="dest">Destination (Refdes)</option>
+            <option value="destLoc">Destination Location</option>
+            <option value="wireId">Wire ID</option>
+            <option value="media">Media</option>
+            <option value="instrumentType">Instrument Type</option>
+            <option value="testTag">Test Tag</option>
+            <option value="notes">Notes</option>
+          </select>
+          <span class="chip" id="rowCount">0 rows</span>
+          <button class="btn btn--ghost" id="toggleEdit" title="Enable/disable table editing">🔒 View</button>
+        </div>
+      </div>
+      <div class="panel__body table-wrap">
+        <table id="termTable">
+          <thead>
+          <tr>
+            <th class="row-select"><input type="checkbox" id="selectAll"></th>
+            <th data-key="id">ID</th>
+            <th data-key="box">DAC Chassis</th>
+            <th data-key="boxLoc">DAC Location</th>
+            <th data-key="slot">Slot</th>
+            <th data-key="channel">Channel</th>
+            <th data-key="signal">Signal</th>
+            <th data-key="ioType">I/O</th>
+            <th data-key="jbox">JBOX</th>
+            <th data-key="jboxLoc">JBOX Location</th>
+            <th data-key="dest">Destination (Refdes)</th>
+            <th data-key="destLoc">Destination Location</th>
+            <th data-key="wireId">Wire ID</th>
+            <th data-key="gauge">AWG</th>
+            <th data-key="color">Color</th>
+            <th data-key="length">Length (mm)</th>
+            <th data-key="testTag">Test Tag</th>
+            <th data-key="instrumentType">Instrument Type</th>
+            <th data-key="range">Range</th>
+            <th data-key="calDue">Cal Due</th>
+            <th data-key="media">Media</th>
+            <th data-key="notes">Notes</th>
+          </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </section>
+  </main>
+</div>
+
+<!-- Offline minimal QR generator: version 1-L, alphanumeric mode -->
+<script>
+  (function() {
+    const ALPHABET = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ $%*+-./:';
+    const GF256_POLY = 0x11d;
+
+    function buildGF256Tables() {
+      const exp = new Array(512);
+      const log = new Array(256);
+      let x = 1;
+      for (let i = 0; i < 255; i++) {
+        exp[i] = x;
+        log[x] = i;
+        x <<= 1;
+        if (x & 0x100) x ^= GF256_POLY;
+      }
+      for (let i = 255; i < 512; i++) {
+        exp[i] = exp[i - 255];
+      }
+      return { exp, log };
+    }
+
+    const GF = buildGF256Tables();
+
+    function gfMul(a, b) {
+      if (a === 0 || b === 0) return 0;
+      return GF.exp[GF.log[a] + GF.log[b]];
+    }
+
+    function reedSolomonEncode(data, eccCount) {
+      const gen = buildGenerator(eccCount);
+      const ecc = new Array(eccCount).fill(0);
+      for (let i = 0; i < data.length; i++) {
+        const factor = data[i] ^ ecc[0];
+        ecc.shift();
+        ecc.push(0);
+        if (factor !== 0) {
+          for (let j = 0; j < gen.length; j++) {
+            ecc[j] ^= gfMul(gen[j], factor);
+          }
+        }
+      }
+      return ecc;
+    }
+
+    function buildGenerator(degree) {
+      let poly = [1];
+      for (let i = 0; i < degree; i++) {
+        const next = [1];
+        const expVal = GF.exp[i];
+        next.push(expVal);
+        const tmp = new Array(poly.length + 1).fill(0);
+        for (let j = 0; j < poly.length; j++) {
+          tmp[j] ^= poly[j];
+          tmp[j+1] ^= gfMul(poly[j], expVal);
+        }
+        poly = tmp;
+      }
+      return poly;
+    }
+
+    function encodeAlphanumeric(data) {
+      const bits = [];
+      bits.push(0,0,1,0); // mode 0010
+      const len = data.length;
+      for (let i = 8; i >= 0; i--) {
+        bits.push((len >> i) & 1);
+      }
+      let i = 0;
+      while (i + 1 < len) {
+        const v1 = ALPHABET.indexOf(data[i]);
+        const v2 = ALPHABET.indexOf(data[i+1]);
+        const v = 45 * v1 + v2;
+        for (let b = 10; b >= 0; b--) bits.push((v >> b) & 1);
+        i += 2;
+      }
+      if (i < len) {
+        const v = ALPHABET.indexOf(data[i]);
+        for (let b = 5; b >= 0; b--) bits.push((v >> b) & 1);
+      }
+      const MAX_DATA_BITS = 152; // version 1-L
+      const remaining = MAX_DATA_BITS - bits.length;
+      const terminator = Math.min(4, remaining);
+      for (let t = 0; t < terminator; t++) bits.push(0);
+      while (bits.length % 8 !== 0) bits.push(0);
+      const dataBytes = [];
+      for (let k = 0; k < bits.length; k += 8) {
+        let v = 0;
+        for (let b = 0; b < 8; b++) v = (v << 1) | bits[k + b];
+        dataBytes.push(v);
+      }
+      const MAX_DATA_CODEWORDS = 19;
+      const PAD_BYTES = [0xEC, 0x11];
+      let padIndex = 0;
+      while (dataBytes.length < MAX_DATA_CODEWORDS) {
+        dataBytes.push(PAD_BYTES[padIndex % 2]);
+        padIndex++;
+      }
+      return dataBytes;
+    }
+
+    function makeMatrix() {
+      const size = 21;
+      const m = [];
+      for (let r = 0; r < size; r++) {
+        const row = [];
+        for (let c = 0; c < size; c++) {
+          row.push(null);
+        }
+        m.push(row);
+      }
+      return m;
+    }
+
+    function placeFinder(matrix, row, col) {
+      const size = 7;
+      for (let r = 0; r < size; r++) {
+        for (let c = 0; c < size; c++) {
+          const rr = row + r;
+          const cc = col + c;
+          let val = (r === 0 || r === 6 || c === 0 || c === 6 || (r >= 2 && r <= 4 && c >= 2 && c <= 4));
+          if (r === 1 || r === 5 || c === 1 || c === 5) val = (r === 1 || r === 5 || c === 1 || c === 5) && (r === 0 || r === 6 || c === 0 || c === 6);
+          matrix[rr][cc] = val ? 1 : 0;
+        }
+      }
+      for (let r = -1; r <= 7; r++) {
+        for (let c = -1; c <= 7; c++) {
+          const rr = row + r;
+          const cc = col + c;
+          if (rr < 0 || rr >= 21 || cc < 0 || cc >= 21) continue;
+          if (matrix[rr][cc] === null) matrix[rr][cc] = 0;
+        }
+      }
+    }
+
+    function placeTimingPatterns(matrix) {
+      for (let i = 8; i < 21 - 8; i++) {
+        const bit = i % 2 === 0 ? 1 : 0;
+        if (matrix[6][i] === null) matrix[6][i] = bit;
+        if (matrix[i][6] === null) matrix[i][6] = bit;
+      }
+    }
+
+    function reserveFormatInfo(matrix) {
+      for (let i = 0; i < 9; i++) {
+        if (i !== 6) {
+          matrix[8][i] = matrix[8][i] ?? 0;
+          matrix[i][8] = matrix[i][8] ?? 0;
+        }
+      }
+      for (let i = 0; i < 8; i++) {
+        matrix[20 - i][8] = matrix[20 - i][8] ?? 0;
+        matrix[8][20 - i] = matrix[8][20 - i] ?? 0;
+      }
+    }
+
+    function placeDataBits(matrix, allCodewords) {
+      const size = 21;
+      let row = size - 1;
+      let col = size - 1;
+      let dir = -1;
+      let bitIndex = 0;
+      const totalBits = allCodewords.length * 8;
+
+      function isReserved(r,c) {
+        return matrix[r][c] !== null;
+      }
+
+      while (col > 0) {
+        if (col === 6) col--;
+        for (let i = 0; i < size; i++) {
+          const r = row + dir * i;
+          if (r < 0 || r >= size) continue;
+          for (let cOffset = 0; cOffset < 2; cOffset++) {
+            const c = col - cOffset;
+            if (isReserved(r,c)) continue;
+            let bit = 0;
+            if (bitIndex < totalBits) {
+              const byteIndex = bitIndex >> 3;
+              const bitPos = 7 - (bitIndex & 7);
+              bit = (allCodewords[byteIndex] >> bitPos) & 1;
+            }
+            const masked = ((r + c) % 2 === 0) ? (bit ^ 1) : bit;
+            matrix[r][c] = masked;
+            bitIndex++;
+          }
+        }
+        col -= 2;
+        dir = -dir;
+      }
+    }
+
+    function applyFormatInfo(matrix) {
+      const formatBits = 0b111011111000100; // Level L, mask 0
+      const size = 21;
+
+      for (let i = 0; i < 15; i++) {
+        const bit = (formatBits >> i) & 1;
+        if (i <= 5) {
+          matrix[8][i] = bit;
+        } else if (i === 6) {
+          matrix[8][7] = bit;
+        } else if (i === 7) {
+          matrix[8][8] = bit;
+        } else if (i === 8) {
+          matrix[7][8] = bit;
+        } else {
+          matrix[14 - i][8] = bit;
+        }
+      }
+      for (let i = 0; i < 15; i++) {
+        const bit = (formatBits >> i) & 1;
+        if (i <= 5) {
+          matrix[size - 1 - i][8] = bit;
+        } else if (i === 6) {
+          matrix[size - 7][8] = bit;
+        } else if (i === 7) {
+          matrix[8][size - 8] = bit;
+        } else if (i === 8) {
+          matrix[8][size - 7] = bit;
+        } else {
+          matrix[8][size - 1 - (14 - i)] = bit;
+        }
+      }
+    }
+
+    function generateMatrix(dataString) {
+      const m = makeMatrix();
+      placeFinder(m, 0, 0);
+      placeFinder(m, 0, 14);
+      placeFinder(m, 14, 0);
+      placeTimingPatterns(m);
+      reserveFormatInfo(m);
+
+      const dataBytes = encodeAlphanumeric(dataString);
+      const eccBytes = reedSolomonEncode(dataBytes, 7);
+      const allBytes = dataBytes.concat(eccBytes);
+
+      placeDataBits(m, allBytes);
+      applyFormatInfo(m);
+      return m;
+    }
+
+    function drawMatrix(matrix, container, size) {
+      container.innerHTML = '';
+      const n = matrix.length;
+      const scale = Math.floor(size / (n + 2));
+      const svgNS = 'http://www.w3.org/2000/svg';
+      const svg = document.createElementNS(svgNS, 'svg');
+      const dim = scale * (n + 2);
+      svg.setAttribute('width', dim);
+      svg.setAttribute('height', dim);
+      svg.setAttribute('viewBox', '0 0 ' + dim + ' ' + dim);
+      svg.style.display = 'block';
+
+      const bg = document.createElementNS(svgNS, 'rect');
+      bg.setAttribute('x', 0);
+      bg.setAttribute('y', 0);
+      bg.setAttribute('width', dim);
+      bg.setAttribute('height', dim);
+      bg.setAttribute('fill', '#ffffff');
+      svg.appendChild(bg);
+
+      for (let r = 0; r < n; r++) {
+        for (let c = 0; c < n; c++) {
+          if (matrix[r][c]) {
+            const rect = document.createElementNS(svgNS, 'rect');
+            rect.setAttribute('x', (c + 1) * scale);
+            rect.setAttribute('y', (r + 1) * scale);
+            rect.setAttribute('width', scale);
+            rect.setAttribute('height', scale);
+            rect.setAttribute('fill', '#000000');
+            svg.appendChild(rect);
+          }
+        }
+      }
+      container.appendChild(svg);
+    }
+
+    function generateQR(container, text) {
+      const normalized = text.toUpperCase().split('').map(ch => {
+        if (ALPHABET.indexOf(ch) !== -1) return ch;
+        return ' ';
+      }).join('');
+      const truncated = normalized.slice(0, 25);
+      const matrix = generateMatrix(truncated);
+      drawMatrix(matrix, container, 96);
+    }
+
+    window.generateQR = generateQR;
+  })();
+</script>
+
+<script>
+  const root = document.documentElement;
+  const themeBtn = document.getElementById('toggleTheme');
+  const savedTheme = localStorage.getItem('padHarness.theme') || 'light';
+  root.setAttribute('data-theme', savedTheme);
+  themeBtn.addEventListener('click', () => {
+    const next = root.getAttribute('data-theme') === 'light' ? 'dark' : 'light';
+    root.setAttribute('data-theme', next);
+    localStorage.setItem('padHarness.theme', next);
+  });
+
+  const termTable = document.getElementById('termTable');
+  const tbody = termTable.querySelector('tbody');
+  const searchInput = document.getElementById('search');
+  const columnSearchInput = document.getElementById('columnSearch');
+  const columnSelect = document.getElementById('columnSelect');
+  const rowCount = document.getElementById('rowCount');
+  const mapSummary = document.getElementById('mapSummary');
+  const viewPathEl = document.getElementById('viewPath');
+  const mapSvg = document.getElementById('mapSvg');
+  const viewGroup = document.getElementById('viewGroup');
+  const hierarchyReset = document.getElementById('hierarchyReset');
+  const toggleEditBtn = document.getElementById('toggleEdit');
+
+  const layerLabels = document.getElementById('layerLabels');
+  const layerJboxes = document.getElementById('layerJboxes');
+  const layerDevices = document.getElementById('layerDevices');
+  const layerWires = document.getElementById('layerWires');
+
+  const inspector = document.getElementById('inspector');
+  const inspectorContent = document.getElementById('inspectorContent');
+  const qrContainer = document.getElementById('qrCode');
+
+  const configMetaChip = document.getElementById('configMetaChip');
+  const editConfigBtn = document.getElementById('editConfig');
+
+  let viewLevel = 'box';
+  let selectedBox = null;
+  let selectedSlot = null;
+
+  let tableEditable = false;
+  let lastSelectedRowEl = null;
+
+  let configMeta = JSON.parse(localStorage.getItem('padHarness.meta') || 'null') || {
+    rev: 'A',
+    comment: 'Unset',
+    updated: new Date().toISOString().slice(0,10)
+  };
+
+  function updateConfigChip() {
+    configMetaChip.textContent = `Rev ${configMeta.rev} • ${configMeta.comment}`;
+  }
+  updateConfigChip();
+
+  editConfigBtn.addEventListener('click', () => {
+    const newRev = prompt('Config revision:', configMeta.rev) ?? configMeta.rev;
+    const newComment = prompt('Config comment / description:', configMeta.comment) ?? configMeta.comment;
+    configMeta.rev = newRev.trim() || configMeta.rev;
+    configMeta.comment = newComment.trim() || configMeta.comment;
+    configMeta.updated = new Date().toISOString().slice(0,10);
+    localStorage.setItem('padHarness.meta', JSON.stringify(configMeta));
+    updateConfigChip();
+  });
+
+  function updateEditButtonLabel() {
+    if (tableEditable) {
+      toggleEditBtn.textContent = '✏️ Editing';
+      toggleEditBtn.title = 'Click to lock table';
+    } else {
+      toggleEditBtn.textContent = '🔒 View';
+      toggleEditBtn.title = 'Click to enable editing';
+    }
+  }
+  updateEditButtonLabel();
+
+  toggleEditBtn.addEventListener('click', () => {
+    tableEditable = !tableEditable;
+    updateEditButtonLabel();
+    render();
+  });
+
+  let scale = 1;
+  let panX = 0;
+  let panY = 0;
+  const MIN_ZOOM = 0.4;
+  const MAX_ZOOM = 8.0;
+  const ZOOM_FACTOR = 1.18;
+
+  function updateTransform() {
+    viewGroup.setAttribute('transform', `translate(${panX},${panY}) scale(${scale})`);
+  }
+  updateTransform();
+
+  mapSvg.addEventListener('wheel', (e) => {
+    e.preventDefault();
+    const pt = mapSvg.createSVGPoint();
+    pt.x = e.clientX;
+    pt.y = e.clientY;
+    const cursor = pt.matrixTransform(mapSvg.getScreenCTM().inverse());
+
+    const delta = e.deltaY < 0 ? ZOOM_FACTOR : 1 / ZOOM_FACTOR;
+    const newScale = Math.min(MAX_ZOOM, Math.max(MIN_ZOOM, scale * delta));
+    if (newScale === scale) return;
+
+    const sx = cursor.x - (cursor.x - panX) * (newScale / scale);
+    const sy = cursor.y - (cursor.y - panY) * (newScale / scale);
+
+    scale = newScale;
+    panX = sx;
+    panY = sy;
+    updateTransform();
+  }, { passive: false });
+
+  let isPanning = false;
+  let lastX = 0, lastY = 0;
+  mapSvg.addEventListener('mousedown', (e) => {
+    isPanning = true;
+    lastX = e.clientX;
+    lastY = e.clientY;
+    mapSvg.style.cursor = 'grabbing';
+  });
+  window.addEventListener('mousemove', (e) => {
+    if (!isPanning) return;
+    const dx = e.clientX - lastX;
+    const dy = e.clientY - lastY;
+    panX += dx / scale;
+    panY += dy / scale;
+    lastX = e.clientX;
+    lastY = e.clientY;
+    updateTransform();
+  });
+  window.addEventListener('mouseup', () => {
+    isPanning = false;
+    mapSvg.style.cursor = 'default';
+  });
+
+  document.getElementById('zoomIn').onclick = () => {
+    const newScale = Math.min(MAX_ZOOM, scale * ZOOM_FACTOR);
+    if (newScale === scale) return;
+    scale = newScale;
+    updateTransform();
+  };
+  document.getElementById('zoomOut').onclick = () => {
+    const newScale = Math.max(MIN_ZOOM, scale / ZOOM_FACTOR);
+    if (newScale === scale) return;
+    scale = newScale;
+    updateTransform();
+  };
+  document.getElementById('resetView').onclick = () => {
+    scale = 1;
+    panX = 0;
+    panY = 0;
+    updateTransform();
+  };
+  hierarchyReset.addEventListener('click', () => {
+    viewLevel = 'box';
+    selectedBox = null;
+    selectedSlot = null;
+    updateMapFromData();
+  });
+
+  const deviceLibrary = {
+    pressure_tx_4_20: {
+      label: '4–20mA Pressure TX',
+      terminals: ['+24V', 'RTN', 'SIG+', 'SIG−']
+    },
+    tc: {
+      label: 'Thermocouple',
+      terminals: ['TC+', 'TC−']
+    },
+    rtd3: {
+      label: 'RTD (3-wire)',
+      terminals: ['RTD+', 'RTD−', 'RTD REF']
+    },
+    solenoid: {
+      label: 'Solenoid Valve',
+      terminals: ['+24V', '−24V']
+    },
+    vfd: {
+      label: 'VFD Command',
+      terminals: ['CMD+', 'CMD−', 'DI1', 'COM']
+    },
+    digital_input: {
+      label: 'Digital Input',
+      terminals: ['DI+', 'DI−']
+    },
+    digital_output: {
+      label: 'Digital Output',
+      terminals: ['DO+', 'DO−']
+    },
+    strain_bridge: {
+      label: 'Strain Gage Bridge',
+      terminals: ['CH+', 'CH−', 'EX+', 'EX−', 'SHLD']
+    },
+    estop: {
+      label: 'E-Stop Loop',
+      terminals: ['LOOP+', 'LOOP−']
+    },
+    generic: {
+      label: 'Field Device',
+      terminals: ['CH+', 'CH−']
+    }
+  };
+
+  function guessDeviceType(row) {
+    const sig = (row.signal || '').toUpperCase();
+    const dest = (row.dest || '').toUpperCase();
+    const notes = (row.notes || '').toUpperCase();
+    const io = (row.ioType || '').toUpperCase();
+
+    if (notes.includes('STRAIN') || sig.includes('SG') || notes.includes('BRIDGE')) return 'strain_bridge';
+    if (sig.includes('TC') || dest.startsWith('TC-') || notes.includes('TC')) return 'tc';
+    if (sig.includes('RTD') || dest.includes('RTD')) return 'rtd3';
+    if (sig.includes('VFD') || dest.includes('VFD')) return 'vfd';
+    if (sig.includes('SV-') || dest.includes('SV-') || sig.includes('VALVE')) return 'solenoid';
+    if (dest.startsWith('PT-') || sig.includes('PT-') || notes.includes('4-20')) return 'pressure_tx_4_20';
+    if (dest.startsWith('ES-') || sig.includes('ESTOP') || dest.includes('ESTOP')) return 'estop';
+    if (io === 'DI') return 'digital_input';
+    if (io === 'DO') return 'digital_output';
+    return 'generic';
+  }
+
+  const sample = [
+    {
+      id: 1,
+      box: 'UEI-GSE-01',
+      boxLoc: 'GSE',
+      slot: '1',
+      channel: 'AI0',
+      signal: 'Control Room Temp',
+      ioType: 'AI',
+      jbox: 'JBOX-GSE-01',
+      jboxLoc: 'GSE',
+      dest: 'TT-001',
+      destLoc: 'GSE',
+      wireId: 'H-GSE-TT001-01',
+      gauge: '22',
+      color: 'BLU',
+      length: 120,
+      testTag: 'SF-001',
+      instrumentType: 'RTD',
+      range: '-20–80°C',
+      calDue: '2026-01-01',
+      media: 'Ambient',
+      notes: 'Panel temp sensor'
+    },
+    {
+      id: 2,
+      box: 'UEI-GSE-01',
+      boxLoc: 'GSE',
+      slot: '1',
+      channel: 'AI1',
+      signal: 'Rack Inlet Temp',
+      ioType: 'AI',
+      jbox: 'JBOX-GSE-01',
+      jboxLoc: 'GSE',
+      dest: 'TT-002',
+      destLoc: 'GSE',
+      wireId: 'H-GSE-TT002-01',
+      gauge: '22',
+      color: 'GRN',
+      length: 140,
+      testTag: 'SF-001',
+      instrumentType: 'RTD',
+      range: '-20–80°C',
+      calDue: '2026-01-01',
+      media: 'Ambient',
+      notes: ''
+    },
+    {
+      id: 3,
+      box: 'UEI-LOX-01',
+      boxLoc: 'LOX FARM',
+      slot: '1',
+      channel: 'AI0',
+      signal: 'LOX Tank Pressure',
+      ioType: 'AI',
+      jbox: 'JBOX-LOX-01',
+      jboxLoc: 'LOX FARM',
+      dest: 'PT-201',
+      destLoc: 'LOX FARM',
+      wireId: 'H-LOX-PT201-01',
+      gauge: '22',
+      color: 'RED',
+      length: 420,
+      testTag: 'SF-001',
+      instrumentType: 'PT',
+      range: '0–3000 psig',
+      calDue: '2025-12-31',
+      media: 'LOX',
+      notes: '4-20mA'
+    },
+    {
+      id: 4,
+      box: 'UEI-LN2-01',
+      boxLoc: 'LN2 FARM',
+      slot: '1',
+      channel: 'AI0',
+      signal: 'LN2 Header Pressure',
+      ioType: 'AI',
+      jbox: 'JBOX-LN2-01',
+      jboxLoc: 'LN2 FARM',
+      dest: 'PT-401',
+      destLoc: 'LN2 FARM',
+      wireId: 'H-LN2-PT401-01',
+      gauge: '22',
+      color: 'RED',
+      length: 410,
+      testTag: 'SF-COOL',
+      instrumentType: 'PT',
+      range: '0–600 psig',
+      calDue: '2026-06-01',
+      media: 'LN2',
+      notes: ''
+    },
+    {
+      id: 5,
+      box: 'UEI-PAD-01',
+      boxLoc: 'PAD',
+      slot: '1',
+      channel: 'AI0',
+      signal: 'Engine Chamber Pressure',
+      ioType: 'AI',
+      jbox: 'JBOX-PAD-01',
+      jboxLoc: 'PAD',
+      dest: 'PT-601',
+      destLoc: 'PAD',
+      wireId: 'H-PAD-PT601-01',
+      gauge: '22',
+      color: 'RED',
+      length: 380,
+      testTag: 'HOTFIRE-01',
+      instrumentType: 'PT',
+      range: '0–5000 psig',
+      calDue: '2025-11-01',
+      media: 'Combustion',
+      notes: 'High-speed TX'
+    }
+  ];
+
+  let data = JSON.parse(localStorage.getItem('padHarness.table') || 'null') || sample;
+  let sortState = { key: 'id', dir: 1 };
+
+  function getFilteredData() {
+    const qGlobal = searchInput.value.trim().toLowerCase();
+    const qCol = columnSearchInput.value.trim().toLowerCase();
+    const colKeys = (columnSelect.value || '').split(',').map(s => s.trim()).filter(Boolean);
+
+    return data.filter(r => {
+      if (qGlobal) {
+        const hayGlobal = Object.values(r).join(' ').toLowerCase();
+        if (!hayGlobal.includes(qGlobal)) return false;
+      }
+      if (qCol && colKeys.length) {
+        const hay = colKeys.map(k => (r[k] ?? '')).join(' ').toLowerCase();
+        if (!hay.includes(qCol)) return false;
+      } else if (qCol && !colKeys.length) {
+        const hayAll = Object.values(r).join(' ').toLowerCase();
+        if (!hayAll.includes(qCol)) return false;
+      }
+      return true;
+    });
+  }
+
+  function render() {
+    const filtered = getFilteredData();
+    tbody.innerHTML = '';
+    for (const r of filtered) {
+      const tr = document.createElement('tr');
+      tr.dataset.id = r.id;
+      tr.innerHTML = `
+        <td class="row-select"><input type="checkbox" data-id="${r.id}"></td>
+        <td class="num" data-key="id">${r.id}</td>
+        <td contenteditable="${tableEditable}" data-key="box">${r.box ?? ''}</td>
+        <td contenteditable="${tableEditable}" data-key="boxLoc">${r.boxLoc ?? ''}</td>
+        <td contenteditable="${tableEditable}" data-key="slot">${r.slot ?? ''}</td>
+        <td contenteditable="${tableEditable}" data-key="channel">${r.channel ?? ''}</td>
+        <td contenteditable="${tableEditable}" data-key="signal">${r.signal ?? ''}</td>
+        <td contenteditable="${tableEditable}" data-key="ioType">${r.ioType ?? ''}</td>
+        <td contenteditable="${tableEditable}" data-key="jbox">${r.jbox ?? ''}</td>
+        <td contenteditable="${tableEditable}" data-key="jboxLoc">${r.jboxLoc ?? ''}</td>
+        <td contenteditable="${tableEditable}" data-key="dest">${r.dest ?? ''}</td>
+        <td contenteditable="${tableEditable}" data-key="destLoc">${r.destLoc ?? ''}</td>
+        <td contenteditable="${tableEditable}" data-key="wireId">${r.wireId ?? ''}</td>
+        <td contenteditable="${tableEditable}" data-key="gauge">${r.gauge ?? ''}</td>
+        <td contenteditable="${tableEditable}" data-key="color">${r.color ?? ''}</td>
+        <td contenteditable="${tableEditable}" data-key="length">${r.length ?? ''}</td>
+        <td contenteditable="${tableEditable}" data-key="testTag">${r.testTag ?? ''}</td>
+        <td contenteditable="${tableEditable}" data-key="instrumentType">${r.instrumentType ?? ''}</td>
+        <td contenteditable="${tableEditable}" data-key="range">${r.range ?? ''}</td>
+        <td contenteditable="${tableEditable}" data-key="calDue">${r.calDue ?? ''}</td>
+        <td contenteditable="${tableEditable}" data-key="media">${r.media ?? ''}</td>
+        <td contenteditable="${tableEditable}" data-key="notes">${r.notes ?? ''}</td>`;
+      tbody.appendChild(tr);
+    }
+    rowCount.textContent = `${filtered.length} row${filtered.length === 1 ? '' : 's'}`;
+    localStorage.setItem('padHarness.table', JSON.stringify(data));
+    updateMapFromData();
+    applyLayerVisibility();
+  }
+
+  function sortBy(key) {
+    sortState = { key, dir: sortState.key === key ? -sortState.dir : 1 };
+    data.sort((a,b) => {
+      const av = a[key] ?? '';
+      const bv = b[key] ?? '';
+      return (av > bv ? 1 : av < bv ? -1 : 0) * sortState.dir;
+    });
+    render();
+  }
+
+  termTable.querySelectorAll('thead th[data-key]').forEach(th => {
+    th.style.cursor = 'pointer';
+    th.addEventListener('click', () => sortBy(th.dataset.key));
+  });
+
+  tbody.addEventListener('input', e => {
+    if (!tableEditable) return;
+    const cell = e.target.closest('[data-key]');
+    if (!cell) return;
+    const rowEl = cell.parentElement;
+    const id = Number(rowEl.dataset.id);
+    const idx = data.findIndex(r => r.id === id);
+    if (idx === -1) return;
+    const key = cell.dataset.key;
+    let val = cell.textContent.trim();
+    if (key === 'id' || key === 'length') val = Number(val) || 0;
+    data[idx][key] = val;
+    localStorage.setItem('padHarness.table', JSON.stringify(data));
+    updateMapFromData();
+  });
+
+  tbody.addEventListener('click', e => {
+    if (e.target.tagName === 'INPUT') return;
+    const rowEl = e.target.closest('tr');
+    if (!rowEl) return;
+    const id = Number(rowEl.dataset.id);
+    const row = data.find(r => r.id === id);
+    if (!row) return;
+
+    if (lastSelectedRowEl) lastSelectedRowEl.classList.remove('row-selected');
+    rowEl.classList.add('row-selected');
+    lastSelectedRowEl = rowEl;
+
+    showInspectorForRows([row], 'Channel');
+  });
+
+  searchInput.addEventListener('input', render);
+  columnSearchInput.addEventListener('input', render);
+  columnSelect.addEventListener('change', render);
+
+  document.getElementById('addRow').onclick = () => {
+    const nextId = (data.reduce((m, r) => Math.max(m, r.id), 0) + 1) || 1;
+    data.push({
+      id: nextId,
+      box: '',
+      boxLoc: '',
+      slot: '',
+      channel: '',
+      signal: '',
+      ioType: '',
+      jbox: '',
+      jboxLoc: '',
+      dest: '',
+      destLoc: '',
+      wireId: '',
+      gauge: '',
+      color: '',
+      length: 0,
+      testTag: '',
+      instrumentType: '',
+      range: '',
+      calDue: '',
+      media: '',
+      notes: ''
+    });
+    sortBy('id');
+  };
+
+  document.getElementById('deleteRows').onclick = () => {
+    const ids = [...document.querySelectorAll('tbody input[type=checkbox]:checked')]
+      .map(ch => Number(ch.dataset.id));
+    if (!ids.length) return;
+    data = data.filter(r => !ids.includes(r.id));
+    render();
+  };
+
+  document.getElementById('selectAll').addEventListener('change', e => {
+    document.querySelectorAll('tbody input[type=checkbox]').forEach(ch => ch.checked = e.target.checked);
+  });
+
+  function updateMapFromData() {
+    if (!mapSvg || !viewGroup) return;
+    const rows = getFilteredData();
+
+    const boxMap = new Map();
+    rows.forEach(r => {
+      const boxName = (r.box || '').trim();
+      if (!boxName) return;
+      if (!boxMap.has(boxName)) {
+        boxMap.set(boxName, {
+          box: boxName,
+          loc: (r.boxLoc || 'GSE').toUpperCase(),
+          slots: new Map()
+        });
+      }
+      const slotName = (r.slot || '').trim();
+      if (!slotName) return;
+      const boxEntry = boxMap.get(boxName);
+      if (!boxEntry.slots.has(slotName)) {
+        boxEntry.slots.set(slotName, { slot: slotName, rows: [] });
+      }
+      boxEntry.slots.get(slotName).rows.push(r);
+    });
+
+    if (boxMap.size === 0) {
+      mapSummary.textContent = 'No DAC data (filter cleared everything)';
+      viewPathEl.textContent = 'All DACs';
+      return;
+    }
+
+    if (viewLevel !== 'box' && (!selectedBox || !boxMap.has(selectedBox))) {
+      viewLevel = 'box';
+      selectedBox = null;
+      selectedSlot = null;
+    }
+    if (viewLevel === 'channel') {
+      const boxEntry = boxMap.get(selectedBox);
+      if (!boxEntry || !boxEntry.slots.has(selectedSlot)) {
+        viewLevel = 'slot';
+        selectedSlot = null;
+      }
+    }
+
+    const satBg = viewGroup.querySelector('#satBg');
+    while (viewGroup.firstChild) viewGroup.removeChild(viewGroup.firstChild);
+    if (satBg) viewGroup.appendChild(satBg);
+
+    const svgNS = 'http://www.w3.org/2000/svg';
+
+    const zones = [
+      { id: 'GSE',       label: 'GSE BUILDING', x: 900,  y: 500, w: 350, h: 300 },
+      { id: 'LN2 FARM',  label: 'LN₂ FARM',     x: 500, y: 150, w: 350, h: 300 },
+      { id: 'LOX FARM',  label: 'LOX FARM',     x: 900, y: 150, w: 350, h: 300 },
+      { id: 'LH2 FARM',  label: 'LH₂ FARM',     x: 1900, y: 500, w: 350, h: 300 },
+      { id: 'LNG FARM',  label: 'LNG FARM',     x: 1400, y: 1000, w: 350, h: 300 },
+      { id: 'PAD',       label: 'PAD / STAND',  x: 1300, y: 500,  w: 350, h: 300 }
+    ];
+
+    zones.forEach(z => {
+      const g = document.createElementNS(svgNS, 'g');
+      g.setAttribute('class', 'map-layer-labels');
+      const r = document.createElementNS(svgNS, 'rect');
+      r.setAttribute('x', z.x);
+      r.setAttribute('y', z.y);
+      r.setAttribute('width', z.w);
+      r.setAttribute('height', z.h);
+      r.setAttribute('class', 'zone-rect');
+      g.appendChild(r);
+      const t = document.createElementNS(svgNS, 'text');
+      t.setAttribute('x', z.x + 10);
+      t.setAttribute('y', z.y + 16);
+      t.textContent = z.label;
+      t.setAttribute('class', z.id === 'PAD' ? 'pad-label' : 'zone-label');
+      g.appendChild(t);
+      viewGroup.appendChild(g);
+    });
+
+    function zoneCenter(id) {
+      const z = zones.find(zz => zz.id.toUpperCase() === (id || '').toUpperCase());
+      const target = z || zones.find(zz => zz.id === 'GSE') || zones[0];
+      return { x: target.x + target.w / 2, y: target.y + target.h / 2 };
+    }
+
+    (function drawPadStand() {
+      const pad = zones.find(z => z.id === 'PAD');
+      if (!pad) return;
+      const centerX = pad.x + pad.w * 0.2;
+      const baseY = pad.y + pad.h - 8;
+
+      const g = document.createElementNS(svgNS, 'g');
+      g.setAttribute('class', 'map-layer-labels');
+
+
+      viewGroup.appendChild(g);
+    })();
+
+    if (viewLevel === 'box') {
+      viewPathEl.textContent = 'All DACs';
+      mapSummary.textContent = `${boxMap.size} DAC module(s)`;
+      const zoneIdx = {};
+
+      [...boxMap.values()].forEach(b => {
+        const center = zoneCenter(b.loc || 'GSE');
+        const idx = (zoneIdx[b.loc || 'GSE'] = (zoneIdx[b.loc || 'GSE'] || 0) + 1);
+
+        const x = center.x - 80;
+        const y = center.y - 60 + (idx - 1) * 45;
+
+        const g = document.createElementNS(svgNS, 'g');
+        g.setAttribute('class', 'node map-layer-devices');
+        g.style.cursor = 'pointer';
+
+        const rect = document.createElementNS(svgNS, 'rect');
+        rect.setAttribute('class', 'node-rect');
+        rect.setAttribute('x', x - 70);
+        rect.setAttribute('y', y - 18);
+        rect.setAttribute('width', 140);
+        rect.setAttribute('height', 40);
+        g.appendChild(rect);
+
+        const t1 = document.createElementNS(svgNS, 'text');
+        t1.setAttribute('x', x - 60);
+        t1.setAttribute('y', y - 4);
+        t1.textContent = b.box;
+        t1.setAttribute('class', 'node-title');
+        g.appendChild(t1);
+
+        const t2 = document.createElementNS(svgNS, 'text');
+        t2.setAttribute('x', x - 60);
+        t2.setAttribute('y', y + 10);
+        t2.textContent = `${b.slots.size} slot${b.slots.size === 1 ? '' : 's'} • ${b.loc || 'GSE'}`;
+        t2.setAttribute('class', 'node-sub');
+        g.appendChild(t2);
+
+        const title = document.createElementNS(svgNS, 'title');
+        title.textContent = `${b.box} @ ${b.loc || 'GSE'} – ${b.slots.size} slot(s)`;
+        g.appendChild(title);
+
+        g.addEventListener('click', () => {
+          viewLevel = 'slot';
+          selectedBox = b.box;
+          selectedSlot = null;
+          updateMapFromData();
+        });
+
+        viewGroup.appendChild(g);
+      });
+      return;
+    }
+
+    const boxEntry = boxMap.get(selectedBox);
+    if (!boxEntry) return;
+
+    if (viewLevel === 'slot') {
+      viewPathEl.textContent = `${selectedBox} – slots`;
+      mapSummary.textContent = `${boxMap.size} DAC module(s) – viewing ${selectedBox} @ ${boxEntry.loc || 'GSE'}`;
+
+      const center = zoneCenter(boxEntry.loc || 'GSE');
+      const x = center.x - 150;
+      const y = center.y - 20;
+
+      const dacGroup = document.createElementNS(svgNS, 'g');
+      dacGroup.setAttribute('class', 'node map-layer-devices');
+      dacGroup.style.cursor = 'pointer';
+
+      const dacRect = document.createElementNS(svgNS, 'rect');
+      dacRect.setAttribute('class', 'node-rect');
+      dacRect.setAttribute('x', x - 80);
+      dacRect.setAttribute('y', y - 26);
+      dacRect.setAttribute('width', 160);
+      dacRect.setAttribute('height', 52);
+      dacGroup.appendChild(dacRect);
+
+      const t1 = document.createElementNS(svgNS, 'text');
+      t1.setAttribute('x', x - 68);
+      t1.setAttribute('y', y - 6);
+      t1.textContent = boxEntry.box;
+      t1.setAttribute('class', 'node-title');
+      dacGroup.appendChild(t1);
+
+      const t2 = document.createElementNS(svgNS, 'text');
+      t2.setAttribute('x', x - 68);
+      t2.setAttribute('y', y + 10);
+      t2.textContent = `${boxEntry.slots.size} slot${boxEntry.slots.size === 1 ? '' : 's'} • ${boxEntry.loc || 'GSE'}`;
+      t2.setAttribute('class', 'node-sub');
+      dacGroup.appendChild(t2);
+
+      const title = document.createElementNS(svgNS, 'title');
+      title.textContent = `${boxEntry.box} @ ${boxEntry.loc || 'GSE'} – ${boxEntry.slots.size} slot(s)`;
+      dacGroup.appendChild(title);
+
+      dacGroup.addEventListener('click', () => {
+        viewLevel = 'box';
+        selectedBox = null;
+        selectedSlot = null;
+        updateMapFromData();
+      });
+
+      viewGroup.appendChild(dacGroup);
+
+      const slotsArr = [...boxEntry.slots.values()].sort((a,b) =>
+        (a.slot || '').localeCompare(b.slot || '', undefined, {numeric:true})
+      );
+      slotsArr.forEach((s, idx) => {
+        const sx = x + 140;
+        const sy = center.y - 60 + idx * 40;
+
+        const g = document.createElementNS(svgNS, 'g');
+        g.setAttribute('class', 'node map-layer-devices');
+        g.style.cursor = 'pointer';
+
+        const rect = document.createElementNS(svgNS, 'rect');
+        rect.setAttribute('class', 'node-rect');
+        rect.setAttribute('x', sx - 55);
+        rect.setAttribute('y', sy - 16);
+        rect.setAttribute('width', 110);
+        rect.setAttribute('height', 32);
+        g.appendChild(rect);
+
+        const tt = document.createElementNS(svgNS, 'text');
+        tt.setAttribute('x', sx - 45);
+        tt.setAttribute('y', sy - 2);
+        tt.textContent = `Slot ${s.slot}`;
+        tt.setAttribute('class', 'node-title');
+        g.appendChild(tt);
+
+        const sub = document.createElementNS(svgNS, 'text');
+        sub.setAttribute('x', sx - 45);
+        sub.setAttribute('y', sy + 10);
+        sub.textContent = `${s.rows.length} ch`;
+        sub.setAttribute('class', 'node-sub');
+        g.appendChild(sub);
+
+        const title = document.createElementNS(svgNS, 'title');
+        title.textContent = `${boxEntry.box} / Slot ${s.slot} – ${s.rows.length} channel(s)`;
+        g.appendChild(title);
+
+        g.addEventListener('click', () => {
+          viewLevel = 'channel';
+          selectedSlot = s.slot;
+          updateMapFromData();
+        });
+
+        const link = document.createElementNS(svgNS, 'path');
+        link.setAttribute('d', `M ${x+80} ${y} L ${sx-55} ${sy}`);
+        link.setAttribute('class', 'wire wire--other map-layer-wires');
+        link.setAttribute('marker-end', 'url(#arrow)');
+        viewGroup.appendChild(link);
+
+        viewGroup.appendChild(g);
+      });
+      return;
+    }
+
+    if (viewLevel === 'channel') {
+      const slotEntry = boxEntry.slots.get(selectedSlot);
+      if (!slotEntry) return;
+      const rowsForSlot = slotEntry.rows;
+
+      viewPathEl.textContent = `${selectedBox} ▸ Slot ${selectedSlot}`;
+      mapSummary.textContent = `${boxMap.size} DAC module(s) – slot ${selectedSlot}, ${rowsForSlot.length} ch @ ${boxEntry.loc || 'GSE'}`;
+
+      const center = zoneCenter(boxEntry.loc || 'GSE');
+      const mod = { box: selectedBox, slot: selectedSlot, x: center.x - 150, y: center.y - 20 };
+
+      const moduleGroup = document.createElementNS(svgNS, 'g');
+      moduleGroup.setAttribute('class', 'node map-layer-devices');
+      moduleGroup.style.cursor = 'pointer';
+
+      const rect = document.createElementNS(svgNS, 'rect');
+      rect.setAttribute('class', 'node-rect');
+      rect.setAttribute('x', mod.x - 80);
+      rect.setAttribute('y', mod.y - 26);
+      rect.setAttribute('width', 160);
+      rect.setAttribute('height', 52);
+      moduleGroup.appendChild(rect);
+
+      const t1 = document.createElementNS(svgNS, 'text');
+      t1.setAttribute('x', mod.x - 70);
+      t1.setAttribute('y', mod.y - 6);
+      t1.textContent = `${mod.box} – S${mod.slot}`;
+      t1.setAttribute('class', 'node-title');
+      moduleGroup.appendChild(t1);
+
+      const t2 = document.createElementNS(svgNS, 'text');
+      t2.setAttribute('x', mod.x - 70);
+      t2.setAttribute('y', mod.y + 10);
+      t2.textContent = `${rowsForSlot.length} channel${rowsForSlot.length === 1 ? '' : 's'} • ${boxEntry.loc || 'GSE'}`;
+      t2.setAttribute('class', 'node-sub');
+      moduleGroup.appendChild(t2);
+
+      const title = document.createElementNS(svgNS, 'title');
+      title.textContent = `${boxEntry.box} / Slot ${mod.slot} – ${rowsForSlot.length} channel(s)`;
+      moduleGroup.appendChild(title);
+
+      moduleGroup.addEventListener('click', () => {
+        viewLevel = 'slot';
+        selectedSlot = null;
+        updateMapFromData();
+      });
+
+      viewGroup.appendChild(moduleGroup);
+
+      const jboxMap = new Map();
+      const jboxSlots = {};
+      rowsForSlot.forEach(r => {
+        const jbKey = (r.jbox || '').trim();
+        if (!jbKey) return;
+        if (!jboxMap.has(jbKey)) {
+          jboxMap.set(jbKey, {
+            jbox: jbKey,
+            loc: (r.jboxLoc || r.boxLoc || 'GSE').toUpperCase()
+          });
+        }
+      });
+
+      jboxMap.forEach((jb, key) => {
+        const centerZ = zoneCenter(jb.loc);
+        const idx = (jboxSlots[jb.loc] = (jboxSlots[jb.loc] || 0) + 1);
+        const x = centerZ.x;
+        const y = centerZ.y - 60 + (idx - 1) * 40;
+        jb.x = x;
+        jb.y = y;
+        jboxMap.set(key, jb);
+
+        const g = document.createElementNS(svgNS, 'g');
+        g.setAttribute('class', 'node map-layer-jboxes');
+        g.style.cursor = 'pointer';
+
+        const rect = document.createElementNS(svgNS, 'rect');
+        rect.setAttribute('class', 'node-rect');
+        rect.setAttribute('x', x - 70);
+        rect.setAttribute('y', y - 16);
+        rect.setAttribute('width', 140);
+        rect.setAttribute('height', 34);
+        g.appendChild(rect);
+
+        const t = document.createElementNS(svgNS, 'text');
+        t.setAttribute('x', x - 60);
+        t.setAttribute('y', y - 2);
+        t.textContent = jb.jbox;
+        t.setAttribute('class', 'node-title');
+        g.appendChild(t);
+
+        const sub = document.createElementNS(svgNS, 'text');
+        sub.setAttribute('x', x - 60);
+        sub.setAttribute('y', y + 10);
+        sub.textContent = jb.loc;
+        sub.setAttribute('class', 'node-sub');
+        g.appendChild(sub);
+
+        const title = document.createElementNS(svgNS, 'title');
+        const count = rowsForSlot.filter(r => (r.jbox || '').trim() === jb.jbox).length;
+        title.textContent = `${jb.jbox} @ ${jb.loc} – ${count} harness run(s)`;
+        g.appendChild(title);
+
+        g.addEventListener('click', () => {
+          const rowsForJbox = rowsForSlot.filter(r => (r.jbox || '').trim() === jb.jbox);
+          showInspectorForRows(rowsForJbox, 'JBOX');
+        });
+
+        viewGroup.appendChild(g);
+      });
+
+      const deviceGroups = new Map();
+      rowsForSlot.forEach(r => {
+        const destKey = (r.dest || '').trim();
+        if (!destKey) return;
+        if (!deviceGroups.has(destKey)) deviceGroups.set(destKey, []);
+        deviceGroups.get(destKey).push(r);
+      });
+
+      const devicePositions = new Map();
+      const devZoneSlots = {};
+
+      deviceGroups.forEach((rowsForDest, destKey) => {
+        const first = rowsForDest[0];
+        const jbKey = (first.jbox || '').trim();
+        const jb = jbKey ? jboxMap.get(jbKey) : null;
+
+        const destZoneId = (first.destLoc || first.jboxLoc || first.boxLoc || 'PAD').toUpperCase();
+        const destCenter = zoneCenter(destZoneId);
+
+        let baseX, baseY;
+        if (jb) {
+          baseX = destCenter.x + 120;
+          baseY = destCenter.y;
+        } else {
+          const idx = (devZoneSlots[destZoneId] = (devZoneSlots[destZoneId] || 0) + 1);
+          baseX = destCenter.x + 120;
+          baseY = destCenter.y - 40 + (idx - 1) * 40;
+        }
+
+        const typeKey = guessDeviceType(first);
+        const def = deviceLibrary[typeKey] || deviceLibrary.generic;
+
+        const g = document.createElementNS(svgNS, 'g');
+        g.setAttribute('class', 'node device-node map-layer-devices');
+        g.style.cursor = 'pointer';
+
+        const rect = document.createElementNS(svgNS, 'rect');
+        rect.setAttribute('class', 'node-rect');
+        rect.setAttribute('x', baseX - 70);
+        rect.setAttribute('y', baseY - 24);
+        rect.setAttribute('width', 140);
+        rect.setAttribute('height', 48);
+        g.appendChild(rect);
+
+        const titleText = document.createElementNS(svgNS, 'text');
+        titleText.setAttribute('x', baseX - 62);
+        titleText.setAttribute('y', baseY - 6);
+        titleText.textContent = destKey;
+        titleText.setAttribute('class', 'node-title');
+        g.appendChild(titleText);
+
+        const sub = document.createElementNS(svgNS, 'text');
+        sub.setAttribute('x', baseX - 62);
+        sub.setAttribute('y', baseY + 10);
+        sub.textContent = def.label + ' • ' + destZoneId;
+        sub.setAttribute('class', 'node-sub');
+        g.appendChild(sub);
+
+        const titleNode = document.createElementNS(svgNS, 'title');
+        const count = rowsForDest.length;
+        titleNode.textContent = `${destKey} @ ${destZoneId} – ${def.label}, ${count} harness run(s)`;
+        g.appendChild(titleNode);
+
+        const termCount = def.terminals.length;
+        const startY = baseY - 12;
+        const spacing = termCount > 1 ? 24 / (termCount - 1) : 0;
+
+        def.terminals.forEach((name, idx) => {
+          const ty = startY + idx * spacing;
+          const x1 = baseX + 50;
+          const x2 = baseX + 60;
+
+          const line = document.createElementNS(svgNS, 'line');
+          line.setAttribute('x1', x1);
+          line.setAttribute('y1', ty);
+          line.setAttribute('x2', x2);
+          line.setAttribute('y2', ty);
+          line.setAttribute('class', 'device-terminal-line');
+          g.appendChild(line);
+
+          const label = document.createElementNS(svgNS, 'text');
+          label.setAttribute('x', x2 + 4);
+          label.setAttribute('y', ty + 3);
+          label.textContent = name;
+          label.setAttribute('class', 'device-terminal-label');
+          g.appendChild(label);
+        });
+
+        g.addEventListener('click', () => {
+          showInspectorForRows(rowsForDest, 'Device');
+        });
+
+        viewGroup.appendChild(g);
+        devicePositions.set(destKey, { x: baseX, y: baseY, rows: rowsForDest });
+      });
+
+      rowsForSlot.forEach((r, index) => {
+        const io = (r.ioType || '').toUpperCase();
+        let cls = 'wire--other';
+        if (io === 'AI') cls = 'wire--ai';
+        else if (io === 'AO') cls = 'wire--ao';
+        else if (io === 'DI' || io === 'DO') cls = 'wire--di';
+        else if (io === 'PWR') cls = 'wire--pwr';
+        if ((r.signal || '').toUpperCase().includes('TC')) cls = 'wire--tc';
+
+        const jbKey = (r.jbox || '').trim();
+        const jb = jbKey ? jboxMap.get(jbKey) : null;
+        const devPos = devicePositions.get((r.dest || '').trim());
+
+        const startX = mod.x + 80;
+        const startY = mod.y - 10 + index * 5;
+
+        if (jb) {
+          const midX = (startX + jb.x - 70) / 2;
+          const midY = startY - 20;
+
+          const path1 = document.createElementNS(svgNS, 'path');
+          path1.setAttribute('d', `M ${startX} ${startY} Q ${midX} ${midY} ${jb.x - 70} ${jb.y}`);
+          path1.setAttribute('class', `wire ${cls} map-layer-wires`);
+          path1.setAttribute('marker-end', 'url(#arrow)');
+          viewGroup.appendChild(path1);
+
+          if (devPos) {
+            const devX = devPos.x - 70;
+            const devY = devPos.y - 6 + index * 3;
+
+            const path2 = document.createElementNS(svgNS, 'path');
+            path2.setAttribute('d', `M ${jb.x + 70} ${jb.y} L ${devX} ${devY}`);
+            path2.setAttribute('class', `wire ${cls} map-layer-wires`);
+            path2.setAttribute('marker-end', 'url(#arrow)');
+            viewGroup.appendChild(path2);
+          }
+        } else if (devPos) {
+          const devX = devPos.x - 70;
+          const devY = devPos.y;
+          const midX = (startX + devX) / 2;
+          const midY = startY - 20;
+
+          const path = document.createElementNS(svgNS, 'path');
+          path.setAttribute('d', `M ${startX} ${startY} Q ${midX} ${midY} ${devX} ${devY}`);
+          path.setAttribute('class', `wire ${cls} map-layer-wires`);
+          path.setAttribute('marker-end', 'url(#arrow)');
+          viewGroup.appendChild(path);
+        }
+      });
+
+      return;
+    }
+  }
+
+  function applyLayerVisibility() {
+    const showLabels = layerLabels.checked;
+    const showJboxes = layerJboxes.checked;
+    const showDevices = layerDevices.checked;
+    const showWires = layerWires.checked;
+
+    mapSvg.querySelectorAll('.map-layer-labels').forEach(el => {
+      el.style.display = showLabels ? '' : 'none';
+    });
+    mapSvg.querySelectorAll('.map-layer-jboxes').forEach(el => {
+      el.style.display = showJboxes ? '' : 'none';
+    });
+    mapSvg.querySelectorAll('.map-layer-devices').forEach(el => {
+      el.style.display = showDevices ? '' : 'none';
+    });
+    mapSvg.querySelectorAll('.map-layer-wires').forEach(el => {
+      el.style.display = showWires ? '' : 'none';
+    });
+  }
+
+  layerLabels.addEventListener('change', applyLayerVisibility);
+  layerJboxes.addEventListener('change', applyLayerVisibility);
+  layerDevices.addEventListener('change', applyLayerVisibility);
+  layerWires.addEventListener('change', applyLayerVisibility);
+
+  function clearQR() {
+    if (qrContainer) qrContainer.innerHTML = '';
+  }
+
+  function showInspectorForRows(rows, context) {
+    if (!rows || !rows.length) {
+      inspectorContent.textContent = 'No rows for selection.';
+      clearQR();
+      return;
+    }
+    const r0 = rows[0];
+
+    const uniqueTestTags = [...new Set(rows.map(r => r.testTag).filter(Boolean))];
+    const uniqueMedia = [...new Set(rows.map(r => r.media).filter(Boolean))];
+    const uniqueDest = [...new Set(rows.map(r => r.dest).filter(Boolean))];
+
+    const listSignals = rows.slice(0,6).map(r => `${r.channel || ''} – ${r.signal || ''}`).join('<br>');
+
+    const instrLabel = r0.instrumentType || (deviceLibrary[guessDeviceType(r0)]?.label ?? '');
+    const ctxLabel = context || 'Selection';
+
+    inspectorContent.innerHTML = `
+      <div><b>${ctxLabel}</b> – ${rows.length} run${rows.length === 1 ? '' : 's'}</div>
+      <div style="margin-top:4px;">
+        <b>DAC:</b> ${r0.box || '—'} @ ${r0.boxLoc || '—'}<br>
+        <b>Slot:</b> ${r0.slot || '—'}
+      </div>
+      <div style="margin-top:4px;">
+        <b>JBOX:</b> ${r0.jbox || '—'} @ ${r0.jboxLoc || '—'}<br>
+        <b>Dest:</b> ${uniqueDest.join(', ') || '—'} @ ${r0.destLoc || '—'}
+      </div>
+      <div style="margin-top:4px;">
+        <b>Instr:</b> ${instrLabel || '—'}<br>
+        <b>Range:</b> ${r0.range || '—'}<br>
+        <b>Media:</b> ${uniqueMedia.join(', ') || '—'}
+      </div>
+      <div style="margin-top:4px;">
+        <b>Wire:</b> ${r0.wireId || '—'} • ${r0.gauge || '—'} AWG • ${r0.color || '—'} • ${r0.length || 0} mm
+      </div>
+      <div style="margin-top:4px;">
+        <b>Test Tag(s):</b> ${uniqueTestTags.join(', ') || '—'}
+      </div>
+      <div style="margin-top:4px;">
+        <b>Signals:</b><br>${listSignals || '—'}
+      </div>
+      <div style="margin-top:4px;">
+        <b>Notes:</b> ${r0.notes || '—'}
+      </div>
+    `;
+
+    clearQR();
+    const boxId = (r0.box || '').split('-').slice(-1)[0] || r0.box || '';
+    const payload = `REV:${configMeta.rev};ID:${r0.id};BOX:${boxId};CH:${r0.slot}/${r0.channel}`;
+    generateQR(qrContainer, payload);
+  }
+
+  function download(name, text) {
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(new Blob([text], { type: 'text/plain' }));
+    a.download = name;
+    a.click();
+    URL.revokeObjectURL(a.href);
+  }
+
+  document.getElementById('exportCsv').onclick = () => {
+    const cols = ['id','box','boxLoc','slot','channel','signal','ioType','jbox','jboxLoc','dest','destLoc','wireId','gauge','color','length','testTag','instrumentType','range','calDue','media','notes'];
+    const lines = [cols.join(',')];
+    data.forEach(r => {
+      const line = cols.map(k => `"${String(r[k] ?? '').replace(/"/g, '""')}"`).join(',');
+      lines.push(line);
+    });
+    download('ground_harness.csv', lines.join('\n'));
+  };
+
+  document.getElementById('exportJson').onclick = () => {
+    const obj = { meta: configMeta, data };
+    download('ground_harness.json', JSON.stringify(obj, null, 2));
+  };
+
+  document.getElementById('importCsv').addEventListener('change', e => {
+    const file = e.target.files[0]; if (!file) return;
+    const reader = new FileReader();
+    reader.onload = () => {
+      const text = reader.result.trim();
+      const lines = text.split(/\r?\n/);
+      const header = lines.shift().split(',').map(h => h.replace(/^"|"$/g, ''));
+      const cols = ['id','box','boxLoc','slot','channel','signal','ioType','jbox','jboxLoc','dest','destLoc','wireId','gauge','color','length','testTag','instrumentType','range','calDue','media','notes'];
+      if (header.join(',') !== cols.join(',')) {
+        alert('CSV header mismatch.\nExpected:\n' + cols.join(','));
+        return;
+      }
+      const rows = lines.map(line => {
+        const parts = line.match(/("([^"]|"")*"|[^,]+)/g) || [];
+        const obj = {};
+        cols.forEach((k, i) => {
+          let v = (parts[i] || '').replace(/^"|"$/g,'').replace(/""/g,'"');
+          obj[k] = v;
+        });
+        obj.id = Number(obj.id) || 0;
+        obj.length = Number(obj.length) || 0;
+        return obj;
+      });
+      data = rows;
+      render();
+    };
+    reader.readAsText(file);
+    e.target.value = '';
+  });
+
+  document.getElementById('importJson').addEventListener('change', e => {
+    const file = e.target.files[0]; if (!file) return;
+    const reader = new FileReader();
+    reader.onload = () => {
+      try {
+        let parsed = JSON.parse(reader.result);
+        let rows;
+        if (Array.isArray(parsed)) {
+          rows = parsed;
+        } else {
+          if (parsed.meta) {
+            configMeta = parsed.meta;
+            localStorage.setItem('padHarness.meta', JSON.stringify(configMeta));
+            updateConfigChip();
+          }
+          rows = parsed.data || parsed.rows || [];
+        }
+        if (!Array.isArray(rows)) {
+          alert('JSON must be an array or {data:[...]} / {rows:[...]}');
+          return;
+        }
+        const cols = ['id','box','boxLoc','slot','channel','signal','ioType','jbox','jboxLoc','dest','destLoc','wireId','gauge','color','length','testTag','instrumentType','range','calDue','media','notes'];
+        data = rows.map((r, i) => {
+          const obj = {};
+          cols.forEach(k => obj[k] = r[k] ?? '');
+          obj.id = Number(obj.id) || (i + 1);
+          obj.length = Number(obj.length) || 0;
+          return obj;
+        });
+        render();
+      } catch (err) {
+        console.error(err);
+        alert('Failed to parse JSON: ' + err.message);
+      }
+    };
+    reader.readAsText(file);
+    e.target.value = '';
+  });
+
+  sortBy('id');
+</script>
+</body>
+</html>
