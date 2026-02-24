@@ -1,0 +1,503 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"/>
+<title>Happy Birthday Grandpa — Ford’s Garage</title>
+
+<style>
+  :root{
+    --cream: #f6f1e6;
+    --ink: #111;
+    --radius: 22px;
+    --shadow: 0 28px 70px rgba(0,0,0,.60);
+
+    --safe-top: env(safe-area-inset-top);
+    --safe-right: env(safe-area-inset-right);
+    --safe-bottom: env(safe-area-inset-bottom);
+    --safe-left: env(safe-area-inset-left);
+  }
+
+  *{ box-sizing:border-box; margin:0; padding:0; }
+  html, body { height:100%; }
+
+  body{
+    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro Display",
+                 system-ui, Segoe UI, Roboto, Helvetica, Arial;
+    background:
+      radial-gradient(1200px 700px at 20% 20%, rgba(255,255,255,.07), transparent 55%),
+      radial-gradient(900px 600px at 80% 70%, rgba(255,255,255,.05), transparent 60%),
+      linear-gradient(180deg, #07080a 0%, #10141a 55%, #0b0f14 100%);
+    color: #fff;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:
+      calc(14px + var(--safe-top))
+      calc(14px + var(--safe-right))
+      calc(14px + var(--safe-bottom))
+      calc(14px + var(--safe-left));
+  }
+
+  .stage{
+    width: min(980px, 100%);
+    perspective: 1400px;
+    position: relative;
+  }
+
+  /* Large on phone, comfy on desktop */
+  .card{
+    width: 100%;
+    height: min(95vh, 820px);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    transform-style: preserve-3d;
+    transition: transform 850ms cubic-bezier(.2,.8,.2,1);
+    position: relative;
+    outline: none;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .card.flip{ transform: rotateY(180deg); }
+
+  .face{
+    position:absolute;
+    inset:0;
+    border-radius: var(--radius);
+    overflow:hidden;
+    backface-visibility:hidden;
+    background: #11151b;
+  }
+  .back{ transform: rotateY(180deg); }
+
+  /* Confetti above everything */
+  #confettiCanvas{
+    position:absolute;
+    inset:0;
+    pointer-events:none;
+    border-radius: var(--radius);
+    z-index: 50;
+  }
+
+  /* ---------- FRONT ---------- */
+  .front{
+    background: url("mustang.png") center/cover no-repeat;
+    filter: contrast(1.05) brightness(.95) saturate(.85);
+  }
+  .front::after{
+    content:"";
+    position:absolute;
+    inset:0;
+    background:
+      linear-gradient(180deg, rgba(0,0,0,.10) 0%, rgba(0,0,0,.85) 78%),
+      linear-gradient(90deg, rgba(0,0,0,.60) 0%, rgba(0,0,0,.12) 60%, rgba(0,0,0,.55) 100%);
+  }
+
+  .frontContent{
+    position:absolute;
+    left: 18px; right: 18px; bottom: 18px;
+    z-index: 2;
+    max-width: 52rem;
+    display:grid;
+    gap: 12px;
+  }
+
+  /* Big readable headline */
+  .frontContent h1{
+    font-weight: 950;
+    line-height: 1.02;
+    letter-spacing: .2px;
+    font-size: clamp(2.2rem, 6.8vw, 3.4rem);
+    text-shadow: 0 10px 34px rgba(0,0,0,.55);
+  }
+
+  /* Big readable subtitle */
+  .frontContent p{
+    opacity: .95;
+    line-height: 1.45;
+    font-size: clamp(1.2rem, 4.1vw, 1.45rem);
+    max-width: 60ch;
+  }
+
+  /* ---------- BACK ---------- */
+  .back{
+    background: url("garage.png") center/cover no-repeat;
+    filter: contrast(1.03) brightness(.92) saturate(.75);
+  }
+  .back::after{
+    content:"";
+    position:absolute;
+    inset:0;
+    background:
+      linear-gradient(180deg, rgba(0,0,0,.20) 0%, rgba(0,0,0,.72) 100%),
+      radial-gradient(800px 500px at 70% 20%, rgba(255,255,255,.09), transparent 60%);
+  }
+
+  /* Scrollable paper (so photos always reachable) */
+  .paper{
+    position:absolute;
+    inset: 14px;
+    border-radius: calc(var(--radius) - 8px);
+    background: linear-gradient(180deg, rgba(246,241,230,.99), rgba(246,241,230,.94));
+    color: var(--ink);
+    box-shadow: inset 0 1px 0 rgba(255,255,255,.60), 0 18px 60px rgba(0,0,0,.35);
+    z-index: 2;
+
+    padding:
+      calc(18px + var(--safe-top))
+      calc(18px + var(--safe-right))
+      calc(18px + var(--safe-bottom))
+      calc(18px + var(--safe-left));
+
+    overflow: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .paper::before{
+    content:"";
+    position:absolute;
+    inset:-60px;
+    background:
+      radial-gradient(270px 230px at 10% 20%, rgba(0,0,0,.12), transparent 60%),
+      radial-gradient(340px 280px at 85% 80%, rgba(0,0,0,.10), transparent 65%),
+      radial-gradient(240px 240px at 80% 25%, rgba(0,0,0,.07), transparent 60%);
+    mix-blend-mode: multiply;
+    opacity:.38;
+    pointer-events:none;
+  }
+
+  .inner{
+    position: relative;
+    min-height: 100%;
+    display:flex;
+    flex-direction:column;
+    gap: 16px;
+  }
+
+  .title{
+    font-weight: 950;
+    line-height: 1.05;
+    font-size: clamp(1.8rem, 5.8vw, 2.5rem);
+  }
+
+  /* Big, comfortable reading */
+  .message{
+    font-size: clamp(1.25rem, 4.4vw, 1.55rem);
+    line-height: 1.65;
+    color: rgba(11,13,16,.92);
+    white-space: pre-line;
+  }
+
+  .signature{
+    font-weight: 950;
+    font-size: clamp(1.1rem, 3.8vw, 1.25rem);
+    margin-top: 4px;
+  }
+
+  /* Photos big and obvious */
+  .photos{
+    display:flex;
+    gap: 14px;
+    margin-top: 10px;
+    flex: 0 0 auto;
+  }
+  .photo{
+    flex:1;
+    height: 190px;
+    border-radius: 16px;
+    background: #111 center/cover no-repeat;
+    box-shadow: 0 14px 28px rgba(0,0,0,.18);
+    border: 1px solid rgba(0,0,0,.10);
+  }
+  .mustang{ background-image: url("mustang.png"); }
+  .f150{ background-image: url("f150.png"); }
+
+  /* Big buttons (tap targets) */
+  .btnRow{
+    display:flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin-top: 4px;
+  }
+  .bigBtn{
+    appearance:none;
+    border: none;
+    border-radius: 16px;
+    padding: 14px 16px;
+    font-weight: 950;
+    letter-spacing: .3px;
+    font-size: clamp(1.05rem, 3.6vw, 1.2rem);
+    cursor:pointer;
+    user-select:none;
+  }
+
+  .bigBtn.primary{
+    background: rgba(255,255,255,.18);
+    color: #fff;
+    border: 2px solid rgba(255,255,255,.25);
+    backdrop-filter: blur(10px);
+  }
+  .bigBtn.primary:active{ transform: scale(.99); }
+
+  .bigBtn.cream{
+    background: #111;
+    color: var(--cream);
+    border: 2px solid rgba(0,0,0,.20);
+  }
+  .bigBtn.cream:active{ transform: scale(.99); }
+
+  /* Clear instructions */
+  .helper{
+    display:flex;
+    align-items:center;
+    gap: 10px;
+    opacity: .95;
+    font-weight: 900;
+    font-size: clamp(1.05rem, 3.6vw, 1.15rem);
+  }
+  .helper .pill{
+    background: rgba(255,255,255,.18);
+    border: 1px solid rgba(255,255,255,.22);
+    padding: 8px 10px;
+    border-radius: 999px;
+  }
+
+  .scrollHint{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    gap: 10px;
+    font-weight: 950;
+    font-size: clamp(1.0rem, 3.4vw, 1.1rem);
+    color: rgba(11,13,16,.70);
+    margin-top: 8px;
+    flex: 0 0 auto;
+  }
+  .scrollHint .arrow{
+    font-size: 1.25em;
+  }
+
+  /* Mobile layout: stack photos for maximum clarity */
+  @media (max-width: 700px){
+    .card{ height: 95vh; }
+    .paper{ inset: 12px; }
+    .photos{ flex-direction:column; }
+    .photo{ height: 210px; }
+  }
+
+  /* Reduced motion: no flip animation, no confetti animation */
+  @media (prefers-reduced-motion: reduce){
+    .card{ transition: none; }
+    .dot{ animation: none; }
+  }
+</style>
+</head>
+
+<body>
+  <div class="stage">
+    <canvas id="confettiCanvas"></canvas>
+
+    <div class="card" id="card" role="group" aria-label="Birthday card">
+      <!-- FRONT -->
+      <div class="face front" aria-label="Front of card">
+        <div class="frontContent">
+          <h1>Happy Birthday, Popop</h1>
+          <p>Ford’s Garage Birthday Edition — made with love.</p>
+
+          <div class="btnRow" style="margin-top:10px;">
+            <button class="bigBtn primary" id="flipOpenBtn" type="button">FLIP CARD</button>
+          </div>
+
+          <div class="helper" style="margin-top:6px;">
+            <span class="pill">Tip:</span>
+            <span>Tap the <b>FLIP CARD</b> button to read the message.</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- BACK -->
+      <div class="face back" aria-label="Back of card">
+        <div class="paper" id="paper">
+          <div class="inner">
+            <div class="title">To our favorite Ford guy</div>
+
+            <div class="message" id="message">
+Happy Birthday, Popop!
+
+We are so grateful for you.
+Thank you for the stories, the laughs, and the way you always show up for the people you love.
+
+We hope today treats you like a classic Ford:
+a smooth start, a strong engine, and a ride that feels just right.
+
+We love you so much.
+            </div>
+
+            <div class="signature">— Your Granddaughter &amp; Grandson-in-law</div>
+
+            <div class="scrollHint" aria-hidden="true">
+              <span><span class="arrow">↓</span> Scroll for photos</span>
+              <span>Then tap “FLIP BACK”</span>
+            </div>
+
+            <div class="photos" aria-hidden="true">
+              <div class="photo mustang" title="Mustang"></div>
+              <div class="photo f150" title="F-150"></div>
+            </div>
+
+            <div class="btnRow" style="margin-top:12px;">
+              <button class="bigBtn cream" id="flipBackBtn" type="button">FLIP BACK</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+<script>
+  const card = document.getElementById('card');
+  const paper = document.getElementById('paper');
+  const openBtn = document.getElementById('flipOpenBtn');
+  const backBtn = document.getElementById('flipBackBtn');
+
+  // Confetti
+  const canvas = document.getElementById('confettiCanvas');
+  const ctx = canvas.getContext('2d');
+  let confetti = [];
+  let animId = null;
+
+  const reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  function resizeCanvas(){
+    const stage = document.querySelector('.stage');
+    const rect = stage.getBoundingClientRect();
+    const dpr = Math.max(1, window.devicePixelRatio || 1);
+    canvas.width = Math.floor(rect.width * dpr);
+    canvas.height = Math.floor(rect.height * dpr);
+    canvas.style.width = rect.width + "px";
+    canvas.style.height = rect.height + "px";
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  }
+  window.addEventListener('resize', resizeCanvas);
+  resizeCanvas();
+
+  function rand(min, max){ return Math.random() * (max - min) + min; }
+
+  // Gentle "garage" palette
+  const palette = [
+    "rgba(246,241,230,.95)", // cream
+    "rgba(220,220,220,.95)", // chrome
+    "rgba(180,180,180,.95)", // steel
+    "rgba(120,120,120,.95)"  // graphite
+  ];
+
+  function launchConfetti(){
+    if (reduceMotion) return; // be nice to folks who hate motion
+
+    confetti = [];
+    if (animId) cancelAnimationFrame(animId);
+
+    const w = canvas.clientWidth;
+    const h = canvas.clientHeight;
+
+    const originX = w * 0.5;
+    const originY = h * 0.18;
+
+    // Gentler, fewer pieces than before
+    const count = Math.round(Math.min(140, Math.max(90, w * 0.18)));
+
+    for (let i=0; i<count; i++){
+      const size = rand(6, 11);
+      const angle = rand(-Math.PI, 0);
+      const speed = rand(3.8, 8.2);
+
+      confetti.push({
+        x: originX + rand(-18, 18),
+        y: originY + rand(-10, 10),
+        vx: Math.cos(angle) * speed + rand(-1.0, 1.0),
+        vy: Math.sin(angle) * speed - rand(1.8, 4.0),
+        g: rand(0.10, 0.14),
+        size,
+        rot: rand(0, Math.PI*2),
+        vr: rand(-0.18, 0.18),
+        life: rand(70, 110),
+        color: palette[Math.floor(rand(0, palette.length))]
+      });
+    }
+
+    const start = performance.now();
+    function tick(now){
+      const dt = Math.min(2, (now - start) / 16.67);
+      ctx.clearRect(0,0,canvas.clientWidth, canvas.clientHeight);
+
+      confetti.forEach(p => {
+        p.vy += p.g * dt;
+        p.x += p.vx * dt;
+        p.y += p.vy * dt;
+        p.rot += p.vr * dt;
+        p.life -= 1 * dt;
+
+        p.vx *= (0.996 ** dt);
+        p.vy *= (0.996 ** dt);
+
+        ctx.save();
+        ctx.translate(p.x, p.y);
+        ctx.rotate(p.rot);
+        ctx.fillStyle = p.color;
+        ctx.fillRect(-p.size/2, -p.size/2, p.size, p.size * 0.65);
+        ctx.restore();
+      });
+
+      confetti = confetti.filter(p => p.life > 0 && p.y < canvas.clientHeight + 30);
+
+      if (confetti.length > 0 && (now - start) < 1900){
+        animId = requestAnimationFrame(tick);
+      } else {
+        ctx.clearRect(0,0,canvas.clientWidth, canvas.clientHeight);
+        animId = null;
+      }
+    }
+    animId = requestAnimationFrame(tick);
+  }
+
+  function openCard(){
+    card.classList.add('flip');
+    // Reset scroll to top so Grandpa sees the message first
+    paper.scrollTop = 0;
+    launchConfetti();
+  }
+
+  function closeCard(){
+    card.classList.remove('flip');
+  }
+
+  // Big obvious buttons
+  openBtn.addEventListener('click', (e) => { e.stopPropagation(); openCard(); });
+  backBtn.addEventListener('click', (e) => { e.stopPropagation(); closeCard(); });
+
+  // Also allow tapping anywhere (but buttons are the "obvious" path)
+  card.addEventListener('click', () => {
+    const isOpen = card.classList.contains('flip');
+    if (!isOpen) openCard();
+    else closeCard();
+  });
+
+  // Touch: prevent iOS weirdness
+  card.addEventListener('touchend', (e) => { e.preventDefault(); }, { passive:false });
+
+  // Graceful fallbacks if images missing
+  function bgFallback(selector, fallback){
+    const el = document.querySelector(selector);
+    const img = new Image();
+    const url = getComputedStyle(el).backgroundImage;
+    const match = url && url.match(/url\(["']?(.*?)["']?\)/);
+    const src = match && match[1] ? match[1] : null;
+    if (!src) return;
+    img.src = src;
+    img.onerror = () => { el.style.background = fallback; };
+  }
+  bgFallback('.front', 'linear-gradient(120deg, #1a2029, #0f141b)');
+  bgFallback('.back', 'linear-gradient(120deg, #151a21, #0b0f14)');
+</script>
+</body>
+</html>
