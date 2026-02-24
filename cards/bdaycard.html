@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"/>
-<title>Happy Birthday Grandpa — Ford’s Garage</title>
+<title>Happy Birthday Popop — Ford’s Garage</title>
 
 <style>
   :root{
@@ -45,7 +45,6 @@
     position: relative;
   }
 
-  /* Large on phone, comfy on desktop */
   .card{
     width: 100%;
     height: min(95vh, 820px);
@@ -88,7 +87,7 @@
     position:absolute;
     inset:0;
     background:
-      linear-gradient(180deg, rgba(0,0,0,.10) 0%, rgba(0,0,0,.85) 78%),
+      linear-gradient(180deg, rgba(0,0,0,.10) 0%, rgba(0,0,0,.86) 78%),
       linear-gradient(90deg, rgba(0,0,0,.60) 0%, rgba(0,0,0,.12) 60%, rgba(0,0,0,.55) 100%);
   }
 
@@ -101,7 +100,6 @@
     gap: 12px;
   }
 
-  /* Big readable headline */
   .frontContent h1{
     font-weight: 950;
     line-height: 1.02;
@@ -110,12 +108,53 @@
     text-shadow: 0 10px 34px rgba(0,0,0,.55);
   }
 
-  /* Big readable subtitle */
   .frontContent p{
     opacity: .95;
     line-height: 1.45;
     font-size: clamp(1.2rem, 4.1vw, 1.45rem);
     max-width: 60ch;
+  }
+
+  /* Big buttons (tap targets) */
+  .btnRow{
+    display:flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin-top: 6px;
+  }
+  .bigBtn{
+    appearance:none;
+    border: none;
+    border-radius: 16px;
+    padding: 14px 16px;
+    font-weight: 950;
+    letter-spacing: .3px;
+    font-size: clamp(1.05rem, 3.6vw, 1.2rem);
+    cursor:pointer;
+    user-select:none;
+  }
+
+  .bigBtn.primary{
+    background: rgba(255,255,255,.18);
+    color: #fff;
+    border: 2px solid rgba(255,255,255,.25);
+    backdrop-filter: blur(10px);
+  }
+  .bigBtn.primary:active{ transform: scale(.99); }
+
+  .helper{
+    display:flex;
+    align-items:center;
+    gap: 10px;
+    opacity: .97;
+    font-weight: 900;
+    font-size: clamp(1.05rem, 3.6vw, 1.15rem);
+  }
+  .helper .pill{
+    background: rgba(255,255,255,.18);
+    border: 1px solid rgba(255,255,255,.22);
+    padding: 8px 10px;
+    border-radius: 999px;
   }
 
   /* ---------- BACK ---------- */
@@ -150,6 +189,7 @@
 
     overflow: auto;
     -webkit-overflow-scrolling: touch;
+    touch-action: pan-y; /* important for iPhone scrolling */
   }
 
   .paper::before{
@@ -179,7 +219,6 @@
     font-size: clamp(1.8rem, 5.8vw, 2.5rem);
   }
 
-  /* Big, comfortable reading */
   .message{
     font-size: clamp(1.25rem, 4.4vw, 1.55rem);
     line-height: 1.65;
@@ -190,10 +229,22 @@
   .signature{
     font-weight: 950;
     font-size: clamp(1.1rem, 3.8vw, 1.25rem);
-    margin-top: 4px;
+    margin-top: 2px;
   }
 
-  /* Photos big and obvious */
+  .scrollHint{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    gap: 10px;
+    font-weight: 950;
+    font-size: clamp(1.0rem, 3.4vw, 1.1rem);
+    color: rgba(11,13,16,.70);
+    margin-top: 6px;
+    flex: 0 0 auto;
+  }
+  .scrollHint .arrow{ font-size: 1.25em; }
+
   .photos{
     display:flex;
     gap: 14px;
@@ -211,33 +262,6 @@
   .mustang{ background-image: url("mustang.png"); }
   .f150{ background-image: url("f150.png"); }
 
-  /* Big buttons (tap targets) */
-  .btnRow{
-    display:flex;
-    gap: 12px;
-    flex-wrap: wrap;
-    margin-top: 4px;
-  }
-  .bigBtn{
-    appearance:none;
-    border: none;
-    border-radius: 16px;
-    padding: 14px 16px;
-    font-weight: 950;
-    letter-spacing: .3px;
-    font-size: clamp(1.05rem, 3.6vw, 1.2rem);
-    cursor:pointer;
-    user-select:none;
-  }
-
-  .bigBtn.primary{
-    background: rgba(255,255,255,.18);
-    color: #fff;
-    border: 2px solid rgba(255,255,255,.25);
-    backdrop-filter: blur(10px);
-  }
-  .bigBtn.primary:active{ transform: scale(.99); }
-
   .bigBtn.cream{
     background: #111;
     color: var(--cream);
@@ -245,38 +269,6 @@
   }
   .bigBtn.cream:active{ transform: scale(.99); }
 
-  /* Clear instructions */
-  .helper{
-    display:flex;
-    align-items:center;
-    gap: 10px;
-    opacity: .95;
-    font-weight: 900;
-    font-size: clamp(1.05rem, 3.6vw, 1.15rem);
-  }
-  .helper .pill{
-    background: rgba(255,255,255,.18);
-    border: 1px solid rgba(255,255,255,.22);
-    padding: 8px 10px;
-    border-radius: 999px;
-  }
-
-  .scrollHint{
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-    gap: 10px;
-    font-weight: 950;
-    font-size: clamp(1.0rem, 3.4vw, 1.1rem);
-    color: rgba(11,13,16,.70);
-    margin-top: 8px;
-    flex: 0 0 auto;
-  }
-  .scrollHint .arrow{
-    font-size: 1.25em;
-  }
-
-  /* Mobile layout: stack photos for maximum clarity */
   @media (max-width: 700px){
     .card{ height: 95vh; }
     .paper{ inset: 12px; }
@@ -284,10 +276,8 @@
     .photo{ height: 210px; }
   }
 
-  /* Reduced motion: no flip animation, no confetti animation */
   @media (prefers-reduced-motion: reduce){
     .card{ transition: none; }
-    .dot{ animation: none; }
   }
 </style>
 </head>
@@ -301,13 +291,13 @@
       <div class="face front" aria-label="Front of card">
         <div class="frontContent">
           <h1>Happy Birthday, Popop</h1>
-          <p>Ford’s Garage Birthday Edition — made with love.</p>
+          <p>Popop Birthday Card — made with love.</p>
 
-          <div class="btnRow" style="margin-top:10px;">
+          <div class="btnRow">
             <button class="bigBtn primary" id="flipOpenBtn" type="button">FLIP CARD</button>
           </div>
 
-          <div class="helper" style="margin-top:6px;">
+          <div class="helper">
             <span class="pill">Tip:</span>
             <span>Tap the <b>FLIP CARD</b> button to read the message.</span>
           </div>
@@ -323,8 +313,8 @@
             <div class="message" id="message">
 Happy Birthday, Popop!
 
-We are so grateful for you.
-Thank you for the stories, the laughs, and the way you always show up for the people you love.
+We're so grateful for you.
+Thank you for the stories and the laughs.
 
 We hope today treats you like a classic Ford:
 a smooth start, a strong engine, and a ride that feels just right.
@@ -383,27 +373,24 @@ We love you so much.
 
   function rand(min, max){ return Math.random() * (max - min) + min; }
 
-  // Gentle "garage" palette
   const palette = [
-    "rgba(246,241,230,.95)", // cream
-    "rgba(220,220,220,.95)", // chrome
-    "rgba(180,180,180,.95)", // steel
-    "rgba(120,120,120,.95)"  // graphite
+    "rgba(246,241,230,.95)",
+    "rgba(220,220,220,.95)",
+    "rgba(180,180,180,.95)",
+    "rgba(120,120,120,.95)"
   ];
 
   function launchConfetti(){
-    if (reduceMotion) return; // be nice to folks who hate motion
+    if (reduceMotion) return;
 
     confetti = [];
     if (animId) cancelAnimationFrame(animId);
 
     const w = canvas.clientWidth;
     const h = canvas.clientHeight;
-
     const originX = w * 0.5;
     const originY = h * 0.18;
 
-    // Gentler, fewer pieces than before
     const count = Math.round(Math.min(140, Math.max(90, w * 0.18)));
 
     for (let i=0; i<count; i++){
@@ -462,8 +449,7 @@ We love you so much.
 
   function openCard(){
     card.classList.add('flip');
-    // Reset scroll to top so Grandpa sees the message first
-    paper.scrollTop = 0;
+    paper.scrollTop = 0; // show message first
     launchConfetti();
   }
 
@@ -471,19 +457,18 @@ We love you so much.
     card.classList.remove('flip');
   }
 
-  // Big obvious buttons
+  // Buttons are the primary (old-person friendly) interaction
   openBtn.addEventListener('click', (e) => { e.stopPropagation(); openCard(); });
   backBtn.addEventListener('click', (e) => { e.stopPropagation(); closeCard(); });
 
-  // Also allow tapping anywhere (but buttons are the "obvious" path)
-  card.addEventListener('click', () => {
+  // Pointer events: reliable on iPhone + desktop
+  // Only flip when tapping the card background (not when scrolling inside the paper).
+  card.addEventListener('pointerup', (e) => {
+    if (paper.contains(e.target)) return; // don't flip while scrolling/reading
     const isOpen = card.classList.contains('flip');
     if (!isOpen) openCard();
     else closeCard();
   });
-
-  // Touch: prevent iOS weirdness
-  card.addEventListener('touchend', (e) => { e.preventDefault(); }, { passive:false });
 
   // Graceful fallbacks if images missing
   function bgFallback(selector, fallback){
