@@ -1,0 +1,1866 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>QuikDrawers Modern Homepage Concept with Pantry Visuals</title>
+  <style>
+    :root {
+      --bg: #f7f4ef;
+      --ink: #1d2320;
+      --muted: #67716c;
+      --card: #ffffff;
+      --wood: #c89b64;
+      --wood-dark: #8a5a2b;
+      --green: #2f6b4f;
+      --green-dark: #1f4d38;
+      --line: #e4ddd2;
+      --shadow: 0 24px 70px rgba(31, 42, 35, 0.14);
+      --radius: 28px;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      color: var(--ink);
+      background:
+        radial-gradient(circle at 20% 0%, rgba(200, 155, 100, 0.18), transparent 34rem),
+        linear-gradient(180deg, #fffaf3 0%, var(--bg) 42%, #ffffff 100%);
+      line-height: 1.45;
+    }
+
+    a { color: inherit; text-decoration: none; }
+
+    .topbar {
+      background: #1d2320;
+      color: #fff;
+      font-size: 0.85rem;
+      padding: 0.7rem 6vw;
+      display: flex;
+      justify-content: space-between;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+
+    .nav {
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1.1rem 6vw;
+      background: rgba(255,255,255,0.82);
+      backdrop-filter: blur(18px);
+      border-bottom: 1px solid rgba(228,221,210,0.8);
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 0.7rem;
+      font-weight: 850;
+      letter-spacing: -0.03em;
+      font-size: 1.35rem;
+    }
+
+    .logo-mark {
+      width: 42px;
+      height: 42px;
+      border-radius: 13px;
+      background:
+        linear-gradient(135deg, var(--wood) 0 45%, #e8c898 45% 55%, var(--green) 55%);
+      box-shadow: inset 0 0 0 2px rgba(255,255,255,0.45);
+    }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 1.4rem;
+      font-size: 0.95rem;
+      color: var(--muted);
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.45rem;
+      min-height: 44px;
+      padding: 0.85rem 1.2rem;
+      border-radius: 999px;
+      border: 1px solid transparent;
+      font-weight: 750;
+      cursor: pointer;
+      transition: transform 180ms ease, box-shadow 180ms ease, background 180ms ease;
+    }
+
+    .btn:hover { transform: translateY(-1px); }
+
+    .btn-primary {
+      background: var(--green);
+      color: #fff;
+      box-shadow: 0 14px 28px rgba(47, 107, 79, 0.22);
+    }
+
+    .btn-primary:hover { background: var(--green-dark); }
+
+    .btn-secondary {
+      background: #fff;
+      border-color: var(--line);
+      color: var(--ink);
+    }
+
+    .hero {
+      display: grid;
+      grid-template-columns: minmax(0, 1.05fr) minmax(360px, 0.95fr);
+      gap: 4rem;
+      align-items: center;
+      padding: 5.2rem 6vw 4rem;
+      max-width: 1440px;
+      margin: 0 auto;
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.45rem;
+      padding: 0.45rem 0.75rem;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      background: rgba(255,255,255,0.72);
+      color: var(--green);
+      font-weight: 750;
+      font-size: 0.84rem;
+      margin-bottom: 1.4rem;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: clamp(3rem, 6vw, 6.4rem);
+      line-height: 0.92;
+      letter-spacing: -0.075em;
+    }
+
+    .hero p {
+      max-width: 680px;
+      color: var(--muted);
+      font-size: 1.18rem;
+      margin: 1.5rem 0 2rem;
+    }
+
+    .hero-actions {
+      display: flex;
+      gap: 0.85rem;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+
+    .trust-row {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 0.9rem;
+      margin-top: 2rem;
+      max-width: 720px;
+    }
+
+    .trust-card {
+      background: rgba(255,255,255,0.72);
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      padding: 1rem;
+    }
+
+    .trust-card strong { display: block; }
+    .trust-card span { color: var(--muted); font-size: 0.88rem; }
+
+    .pantry-stage {
+      position: relative;
+      min-height: 620px;
+      border-radius: var(--radius);
+      background:
+        linear-gradient(140deg, rgba(255,255,255,0.65), rgba(255,255,255,0.2)),
+        radial-gradient(circle at top left, rgba(47,107,79,0.14), transparent 24rem);
+      border: 1px solid rgba(228,221,210,0.8);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+      padding: 2rem;
+    }
+
+    .closet {
+      position: absolute;
+      left: 50%;
+      bottom: 2rem;
+      transform: translateX(-50%);
+      width: 74%;
+      max-width: 390px;
+      height: 540px;
+      border: 18px solid #f4efe6;
+      border-bottom-width: 24px;
+      background:
+        linear-gradient(90deg, rgba(255,255,255,0.5), transparent 12%, transparent 88%, rgba(255,255,255,0.6)),
+        #fdfbf8;
+      border-radius: 24px 24px 16px 16px;
+      box-shadow:
+        inset 0 0 0 2px #e1d6c5,
+        0 25px 55px rgba(31,35,32,0.15);
+      padding: 28px 22px 20px;
+      display: grid;
+      gap: 12px;
+      grid-template-rows: 0.8fr 0.9fr 0.8fr 1fr 1.08fr 1.08fr;
+    }
+
+    .rail {
+      position: absolute;
+      top: 44px;
+      bottom: 26px;
+      width: 8px;
+      background: repeating-linear-gradient(180deg, #fff 0 8px, #d7d1c8 8px 11px);
+      border-radius: 99px;
+      opacity: 0.9;
+    }
+
+    .rail.left { left: 18px; }
+    .rail.right { right: 18px; }
+
+    .shelf {
+      position: relative;
+      border-radius: 14px;
+      background:
+        linear-gradient(90deg, #ba8150, #e2bd85 12%, #d39e62 52%, #f0cc99 100%);
+      box-shadow:
+        inset 0 0 0 1px rgba(91,57,24,0.25),
+        0 7px 13px rgba(84,60,34,0.12);
+      padding: 8px 13px;
+      display: flex;
+      align-items: flex-end;
+      gap: 8px;
+      overflow: hidden;
+    }
+
+    .shelf::before {
+      content: "";
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      height: var(--lip, 26px);
+      background: linear-gradient(180deg, rgba(138,90,43,0.1), rgba(112,65,23,0.36));
+      border-top: 1px solid rgba(255,255,255,0.28);
+    }
+
+    .item {
+      position: relative;
+      z-index: 1;
+      border-radius: 6px 6px 3px 3px;
+      background: var(--c);
+      width: var(--w, 28px);
+      height: var(--h, 52px);
+      box-shadow: inset 0 -9px 0 rgba(0,0,0,0.08), 0 2px 5px rgba(0,0,0,0.12);
+    }
+
+    .can { border-radius: 999px 999px 8px 8px; }
+    .box { border-radius: 5px; }
+    .bottle::before {
+      content: "";
+      position: absolute;
+      top: -10px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 38%;
+      height: 14px;
+      background: inherit;
+      border-radius: 4px 4px 1px 1px;
+    }
+
+    .callout {
+      position: absolute;
+      right: 1.4rem;
+      top: 1.4rem;
+      width: 190px;
+      background: #fff;
+      border: 1px solid var(--line);
+      box-shadow: 0 18px 38px rgba(31,42,35,0.12);
+      border-radius: 18px;
+      padding: 1rem;
+      font-size: 0.88rem;
+    }
+
+    .callout strong { display: block; margin-bottom: 0.25rem; }
+    .callout span { color: var(--muted); }
+
+    section {
+      padding: 5rem 6vw;
+      max-width: 1440px;
+      margin: 0 auto;
+    }
+
+    .section-head {
+      display: flex;
+      justify-content: space-between;
+      gap: 2rem;
+      align-items: end;
+      margin-bottom: 2rem;
+    }
+
+    .section-head h2 {
+      margin: 0;
+      font-size: clamp(2rem, 4vw, 3.8rem);
+      letter-spacing: -0.06em;
+      line-height: 0.98;
+      max-width: 760px;
+    }
+
+    .section-head p {
+      color: var(--muted);
+      max-width: 460px;
+      margin: 0;
+    }
+
+    .cards {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 1rem;
+    }
+
+    .product-card {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 24px;
+      padding: 1.1rem;
+      box-shadow: 0 14px 35px rgba(31,42,35,0.08);
+      min-height: 310px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .product-art {
+      height: 150px;
+      border-radius: 18px;
+      margin-bottom: 1rem;
+      background:
+        linear-gradient(135deg, rgba(47,107,79,0.1), transparent),
+        repeating-linear-gradient(90deg, #c9965b 0 18px, #ddb47c 18px 36px);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .product-art::after {
+      content: "";
+      position: absolute;
+      inset: 22px;
+      border: 9px solid rgba(255,255,255,0.72);
+      border-radius: 12px;
+      box-shadow: inset 0 0 0 2px rgba(138,90,43,0.25);
+    }
+
+    .product-card h3 { margin: 0 0 0.4rem; }
+    .product-card p { margin: 0; color: var(--muted); font-size: 0.92rem; }
+
+    .builder {
+      background: #17211b;
+      color: #fff;
+      border-radius: 36px;
+      padding: 2rem;
+      display: grid;
+      grid-template-columns: 0.8fr 1.2fr;
+      gap: 2rem;
+      box-shadow: var(--shadow);
+      overflow: hidden;
+    }
+
+    .builder h2 {
+      margin: 0 0 1rem;
+      font-size: clamp(2rem, 4vw, 3.7rem);
+      letter-spacing: -0.06em;
+      line-height: 0.98;
+    }
+
+    .builder p { color: #cdd8d1; }
+
+    .control {
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.12);
+      border-radius: 18px;
+      padding: 1rem;
+      margin: 0.85rem 0;
+    }
+
+    .control label {
+      display: flex;
+      justify-content: space-between;
+      color: #eaf2ee;
+      font-weight: 700;
+      margin-bottom: 0.55rem;
+    }
+
+    input[type="range"] { width: 100%; accent-color: #e2bd85; }
+
+    .fit-result {
+      margin-top: 1.2rem;
+      background: #fff;
+      color: var(--ink);
+      border-radius: 22px;
+      padding: 1.2rem;
+    }
+
+    .visual-card {
+      background:
+        linear-gradient(135deg, rgba(255,255,255,0.14), rgba(255,255,255,0.04));
+      border: 1px solid rgba(255,255,255,0.12);
+      border-radius: 28px;
+      min-height: 460px;
+      padding: 1.4rem;
+      position: relative;
+    }
+
+    .dimension-box {
+      position: absolute;
+      left: 50%;
+      top: 54%;
+      transform: translate(-50%, -50%);
+      width: min(440px, 80%);
+      height: 330px;
+      border: 3px solid rgba(255,255,255,0.75);
+      border-radius: 20px;
+      background: rgba(255,255,255,0.05);
+      display: grid;
+      place-items: center;
+    }
+
+    .dimension-box::after {
+      content: "";
+      width: 70%;
+      height: 74%;
+      border-radius: 18px;
+      border: 18px solid #ddb47c;
+      background: rgba(255,255,255,0.18);
+      box-shadow: inset 0 0 0 3px rgba(255,255,255,0.34);
+    }
+
+    .badge {
+      display: inline-flex;
+      padding: 0.45rem 0.7rem;
+      border-radius: 999px;
+      font-size: 0.8rem;
+      font-weight: 850;
+      background: rgba(226,189,133,0.16);
+      color: #f4cf96;
+      border: 1px solid rgba(226,189,133,0.28);
+    }
+
+    .steps {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1rem;
+    }
+
+    .step {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 24px;
+      padding: 1.4rem;
+      min-height: 230px;
+      box-shadow: 0 14px 35px rgba(31,42,35,0.06);
+    }
+
+    .step-num {
+      width: 46px;
+      height: 46px;
+      display: grid;
+      place-items: center;
+      border-radius: 14px;
+      background: var(--green);
+      color: #fff;
+      font-weight: 900;
+      margin-bottom: 1rem;
+    }
+
+    .testimonial {
+      background: #fff;
+      border: 1px solid var(--line);
+      border-radius: 34px;
+      padding: 2.5rem;
+      display: grid;
+      grid-template-columns: 1fr 0.9fr;
+      gap: 2rem;
+      align-items: center;
+      box-shadow: var(--shadow);
+    }
+
+    blockquote {
+      margin: 0;
+      font-size: clamp(1.6rem, 3vw, 3rem);
+      letter-spacing: -0.055em;
+      line-height: 1;
+      font-weight: 830;
+    }
+
+    .quote-meta { color: var(--muted); margin-top: 1rem; }
+
+    .footer-cta {
+      text-align: center;
+      padding: 5rem 6vw 6rem;
+    }
+
+    .footer-cta .panel {
+      max-width: 980px;
+      margin: auto;
+      border-radius: 42px;
+      background:
+        linear-gradient(135deg, rgba(47,107,79,0.92), rgba(31,77,56,0.96)),
+        radial-gradient(circle at 20% 20%, rgba(226,189,133,0.28), transparent 22rem);
+      color: #fff;
+      padding: 4rem 2rem;
+      box-shadow: var(--shadow);
+    }
+
+    .footer-cta h2 {
+      margin: 0;
+      font-size: clamp(2.4rem, 5vw, 5rem);
+      line-height: 0.95;
+      letter-spacing: -0.07em;
+    }
+
+    .footer-cta p { color: #dfece5; max-width: 640px; margin: 1rem auto 1.6rem; }
+
+    .note {
+      margin: 1rem auto 0;
+      max-width: 980px;
+      color: var(--muted);
+      font-size: 0.85rem;
+      text-align: center;
+    }
+
+
+
+    .parallax-layer {
+      will-change: transform;
+      transition: transform 80ms linear;
+    }
+
+    .fit-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 0.85rem;
+      margin-top: 1rem;
+    }
+
+    .fit-card {
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.13);
+      border-radius: 18px;
+      padding: 0.9rem;
+    }
+
+    .fit-card strong {
+      display: block;
+      font-size: 1.35rem;
+      color: #fff;
+      letter-spacing: -0.03em;
+    }
+
+    .fit-card span {
+      color: #cdd8d1;
+      font-size: 0.82rem;
+    }
+
+    .radio-row {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 0.55rem;
+      margin-top: 0.65rem;
+    }
+
+    .radio-pill {
+      position: relative;
+    }
+
+    .radio-pill input {
+      position: absolute;
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    .radio-pill span {
+      display: grid;
+      place-items: center;
+      min-height: 42px;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.14);
+      color: #eaf2ee;
+      font-weight: 800;
+      font-size: 0.86rem;
+      cursor: pointer;
+    }
+
+    .radio-pill input:checked + span {
+      background: #e2bd85;
+      border-color: #e2bd85;
+      color: #17211b;
+    }
+
+    .fit-result.good {
+      border-left: 6px solid #3ea66b;
+    }
+
+    .fit-result.warn {
+      border-left: 6px solid #e2bd85;
+    }
+
+    .fit-result.bad {
+      border-left: 6px solid #d86a5a;
+    }
+
+    .fit-list {
+      margin: 0.75rem 0 0;
+      padding-left: 1.1rem;
+      color: #67716c;
+    }
+
+    .phone-preview {
+      display: none;
+      margin-top: 1rem;
+      background: #fff;
+      color: var(--ink);
+      border-radius: 22px;
+      padding: 1rem;
+      border: 1px solid var(--line);
+      box-shadow: 0 14px 35px rgba(31,42,35,0.09);
+    }
+
+    .mini-pantry {
+      height: 300px;
+      border: 10px solid #f4efe6;
+      border-radius: 20px;
+      background: #fffaf3;
+      padding: 16px 12px;
+      display: grid;
+      gap: 7px;
+      margin-top: 0.9rem;
+    }
+
+    .mini-shelf {
+      border-radius: 10px;
+      background: linear-gradient(90deg, #ba8150, #e2bd85 40%, #d39e62);
+      position: relative;
+      box-shadow: inset 0 0 0 1px rgba(91,57,24,0.18);
+    }
+
+    .mini-shelf::after {
+      content: "";
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      height: var(--wall, 28%);
+      border-radius: 0 0 10px 10px;
+      background: rgba(92, 55, 22, 0.25);
+    }
+
+    .mini-bottle {
+      position: absolute;
+      bottom: 5px;
+      left: 50%;
+      width: 18px;
+      height: var(--bh, 55px);
+      transform: translateX(-50%);
+      border-radius: 6px 6px 3px 3px;
+      background: #315d76;
+      z-index: 2;
+      box-shadow: inset 0 -8px 0 rgba(0,0,0,0.1);
+    }
+
+    .mini-bottle::before {
+      content: "";
+      position: absolute;
+      top: -8px;
+      left: 50%;
+      width: 8px;
+      height: 10px;
+      transform: translateX(-50%);
+      background: #315d76;
+      border-radius: 3px 3px 1px 1px;
+    }
+
+    @media (max-width: 760px) {
+      body {
+        background:
+          radial-gradient(circle at 15% 0%, rgba(200, 155, 100, 0.2), transparent 22rem),
+          linear-gradient(180deg, #fffaf3 0%, var(--bg) 50%, #ffffff 100%);
+      }
+
+      .topbar {
+        padding: 0.7rem 1rem;
+        font-size: 0.78rem;
+      }
+
+      .nav {
+        padding: 0.85rem 1rem;
+      }
+
+      .logo {
+        font-size: 1.1rem;
+      }
+
+      .logo-mark {
+        width: 34px;
+        height: 34px;
+        border-radius: 10px;
+      }
+
+      .hero {
+        padding: 2.4rem 1rem 2rem;
+        gap: 2rem;
+      }
+
+      h1 {
+        font-size: clamp(2.7rem, 17vw, 4.4rem);
+      }
+
+      .hero p {
+        font-size: 1rem;
+      }
+
+      .btn {
+        width: 100%;
+      }
+
+      .hero-actions {
+        display: grid;
+        grid-template-columns: 1fr;
+      }
+
+      .hero-reference .image-frame {
+        height: 210px;
+      }
+
+      .pantry-stage {
+        min-height: 520px;
+        padding: 1rem;
+        border-radius: 24px;
+      }
+
+      .closet {
+        width: 92%;
+        height: 430px;
+        bottom: 1rem;
+        padding: 22px 18px 16px;
+        border-width: 12px;
+        border-bottom-width: 18px;
+      }
+
+      section {
+        padding: 3.2rem 1rem;
+      }
+
+      .section-head h2 {
+        font-size: clamp(2rem, 11vw, 3.2rem);
+      }
+
+      .builder {
+        padding: 1rem;
+        border-radius: 24px;
+      }
+
+      .builder h2 {
+        font-size: clamp(2rem, 11vw, 3.1rem);
+      }
+
+      .control {
+        padding: 0.9rem;
+      }
+
+      .fit-grid {
+        grid-template-columns: 1fr 1fr;
+      }
+
+      .radio-row {
+        grid-template-columns: 1fr;
+      }
+
+      .visual-card {
+        min-height: auto;
+      }
+
+      .visual-card .image-frame {
+        height: 260px;
+      }
+
+      .phone-preview {
+        display: block;
+      }
+
+      .testimonial,
+      .footer-cta .panel {
+        padding: 1.4rem;
+        border-radius: 24px;
+      }
+
+      blockquote {
+        font-size: 1.7rem;
+      }
+    }
+
+
+
+    .fit-visualizer {
+      position: relative;
+      margin-top: 1rem;
+      min-height: 520px;
+      border-radius: 26px;
+      background:
+        radial-gradient(circle at 50% 10%, rgba(226,189,133,0.16), transparent 20rem),
+        linear-gradient(180deg, rgba(255,255,255,0.09), rgba(255,255,255,0.035));
+      border: 1px solid rgba(255,255,255,0.14);
+      overflow: hidden;
+      padding: 1rem;
+    }
+
+    .fit-cabinet {
+      position: absolute;
+      left: 50%;
+      top: 52%;
+      transform: translate(-50%, -50%);
+      width: min(360px, 82%);
+      height: 405px;
+      border: 14px solid #f4efe6;
+      border-radius: 22px;
+      background: #fffaf3;
+      box-shadow:
+        inset 0 0 0 2px #dfd4c3,
+        0 26px 50px rgba(0,0,0,0.28);
+      padding: 24px 18px 18px;
+      display: grid;
+      grid-template-rows: .75fr .9fr .75fr .9fr 1.08fr 1.08fr;
+      gap: 9px;
+    }
+
+    .fit-rail {
+      position: absolute;
+      top: 24px;
+      bottom: 18px;
+      width: 7px;
+      background: repeating-linear-gradient(180deg, #fff 0 7px, #cfc7bb 7px 10px);
+      border-radius: 99px;
+      opacity: .95;
+    }
+
+    .fit-rail.left { left: 9px; }
+    .fit-rail.right { right: 9px; }
+
+    .fit-shelf {
+      position: relative;
+      border-radius: 12px;
+      background: linear-gradient(90deg, #ba8150, #e2bd85 42%, #d39e62);
+      box-shadow:
+        inset 0 0 0 1px rgba(91,57,24,0.22),
+        0 7px 14px rgba(0,0,0,0.14);
+      overflow: hidden;
+      display: flex;
+      align-items: flex-end;
+      gap: 7px;
+      padding: 7px 11px;
+    }
+
+    .fit-shelf::after {
+      content: "";
+      position: absolute;
+      inset-inline: 0;
+      bottom: 0;
+      height: var(--wall, 30%);
+      background: linear-gradient(180deg, rgba(255,255,255,0.1), rgba(104,62,26,0.36));
+      border-top: 1px solid rgba(255,255,255,0.25);
+      z-index: 1;
+    }
+
+    .fit-shelf.shallow { --wall: 30%; }
+    .fit-shelf.medium { --wall: 48%; }
+    .fit-shelf.tall { --wall: 62%; }
+
+    .fit-shelf.active {
+      outline: 3px solid rgba(226,189,133,0.85);
+      outline-offset: 3px;
+    }
+
+    .fit-item {
+      position: relative;
+      z-index: 2;
+      display: block;
+      width: 24px;
+      height: 42px;
+      border-radius: 7px 7px 4px 4px;
+      background: var(--c);
+      box-shadow: inset 0 -8px 0 rgba(0,0,0,0.09);
+    }
+
+    .fit-item.small { height: 34px; width: 22px; }
+    .fit-item.can { height: 34px; width: 24px; border-radius: 999px 999px 7px 7px; }
+    .fit-item.box { width: 34px; height: 40px; border-radius: 6px; }
+    .fit-item.bottle { height: 55px; width: 25px; }
+    .fit-item.tall-bottle { height: var(--bottle-height, 76px); width: 27px; }
+
+    .fit-item.bottle::before,
+    .fit-item.tall-bottle::before {
+      content: "";
+      position: absolute;
+      top: -8px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 40%;
+      height: 11px;
+      border-radius: 4px 4px 1px 1px;
+      background: inherit;
+    }
+
+    .fit-item.green { --c:#2f6b4f; }
+    .fit-item.tan { --c:#d9b169; }
+    .fit-item.brown { --c:#8f6f55; }
+    .fit-item.orange { --c:#d98d53; }
+    .fit-item.cream { --c:#ecd39b; }
+    .fit-item.red { --c:#b45b51; }
+    .fit-item.yellow { --c:#e5b754; }
+    .fit-item.blue { --c:#315d76; }
+    .fit-item.pink { --c:#d46885; }
+
+    .fit-opening-tag,
+    .fit-depth-tag {
+      position: absolute;
+      z-index: 4;
+      background: rgba(255,255,255,0.92);
+      color: #17211b;
+      border-radius: 999px;
+      padding: .55rem .75rem;
+      font-size: .82rem;
+      font-weight: 850;
+      box-shadow: 0 12px 28px rgba(0,0,0,0.15);
+      border: 1px solid rgba(255,255,255,0.55);
+    }
+
+    .fit-opening-tag { left: 1rem; top: 1rem; }
+    .fit-depth-tag { right: 1rem; top: 1rem; }
+
+    .fit-legend {
+      position: absolute;
+      left: 1rem;
+      right: 1rem;
+      bottom: 1rem;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: .75rem;
+      z-index: 5;
+    }
+
+    .fit-legend div {
+      background: rgba(255,255,255,0.92);
+      border: 1px solid rgba(255,255,255,0.6);
+      border-radius: 16px;
+      padding: .85rem;
+      color: #17211b;
+      box-shadow: 0 12px 28px rgba(0,0,0,0.13);
+    }
+
+    .fit-legend strong {
+      display: block;
+      font-size: 1.35rem;
+      line-height: 1;
+    }
+
+    .fit-legend span {
+      display: block;
+      color: #67716c;
+      font-size: .78rem;
+      margin-top: .25rem;
+    }
+
+    @media (max-width: 760px) {
+      .fit-visualizer {
+        min-height: 500px;
+        padding: .75rem;
+      }
+
+      .fit-cabinet {
+        width: min(330px, 86%);
+        height: 360px;
+        top: 49%;
+      }
+
+      .fit-opening-tag,
+      .fit-depth-tag {
+        font-size: .74rem;
+        padding: .45rem .6rem;
+      }
+
+      .fit-legend {
+        grid-template-columns: 1fr;
+        gap: .45rem;
+      }
+
+      .fit-legend div {
+        padding: .55rem .7rem;
+      }
+
+      .fit-legend strong {
+        font-size: 1rem;
+      }
+    }
+
+
+    /* live fit finder dynamic sizing */
+    .fit-visualizer {
+      --cabinet-scale-x: 1;
+      --cabinet-scale-y: 1;
+      --door-scale-x: 1;
+      --depth-shift: 0px;
+      --shelf-depth-opacity: .22;
+      --bottle-height: 76px;
+      --active-row-scale: 1;
+    }
+
+    .fit-door-frame {
+      position: absolute;
+      left: 50%;
+      top: 52%;
+      width: min(410px, 90%);
+      height: 440px;
+      transform: translate(-50%, -50%) scaleX(var(--door-scale-x));
+      transform-origin: center;
+      border: 6px solid rgba(255,255,255,0.35);
+      border-radius: 30px;
+      box-shadow:
+        inset 0 0 0 2px rgba(226,189,133,0.18),
+        0 22px 46px rgba(0,0,0,0.16);
+      pointer-events: none;
+      transition: transform 180ms ease;
+      z-index: 1;
+    }
+
+    .fit-cabinet {
+      width: min(360px, 82%);
+      transform: translate(-50%, -50%) scaleX(var(--cabinet-scale-x)) scaleY(var(--cabinet-scale-y));
+      transform-origin: center bottom;
+      transition: transform 180ms ease, width 180ms ease, height 180ms ease;
+      z-index: 2;
+    }
+
+    .fit-cabinet::before {
+      content: "";
+      position: absolute;
+      inset: 18px -28px 18px 18px;
+      transform: translateX(var(--depth-shift));
+      background: linear-gradient(90deg, rgba(226,189,133,var(--shelf-depth-opacity)), transparent);
+      border-radius: 18px;
+      z-index: -1;
+      transition: transform 180ms ease, opacity 180ms ease;
+    }
+
+    .fit-shelf {
+      transition: transform 180ms ease, min-height 180ms ease;
+    }
+
+    .fit-shelf.active {
+      transform: scaleY(var(--active-row-scale));
+      z-index: 3;
+    }
+
+    .fit-item.tall-bottle {
+      height: var(--bottle-height);
+      transition: height 180ms ease;
+    }
+
+    .shelf-depth-ruler {
+      position: absolute;
+      left: 50%;
+      bottom: 86px;
+      width: min(360px, 78%);
+      height: 26px;
+      transform: translateX(-50%) scaleX(var(--depth-ruler-scale, 1));
+      transform-origin: left center;
+      border-bottom: 3px solid rgba(226,189,133,.9);
+      z-index: 6;
+      pointer-events: none;
+      transition: transform 180ms ease;
+    }
+
+    .shelf-depth-ruler::before,
+    .shelf-depth-ruler::after {
+      content: "";
+      position: absolute;
+      bottom: -8px;
+      width: 3px;
+      height: 16px;
+      background: rgba(226,189,133,.9);
+    }
+
+    .shelf-depth-ruler::before { left: 0; }
+    .shelf-depth-ruler::after { right: 0; }
+
+    .door-warning {
+      position: absolute;
+      left: 1rem;
+      right: 1rem;
+      bottom: 78px;
+      z-index: 7;
+      display: none;
+      background: rgba(216,106,90,.95);
+      color: white;
+      padding: .65rem .85rem;
+      border-radius: 14px;
+      font-size: .82rem;
+      font-weight: 800;
+      box-shadow: 0 12px 28px rgba(0,0,0,.22);
+    }
+
+    .door-warning.show {
+      display: block;
+    }
+
+    @media (max-width: 760px) {
+      .fit-door-frame {
+        width: min(350px, 92%);
+        height: 390px;
+        top: 49%;
+      }
+
+      .shelf-depth-ruler {
+        bottom: 128px;
+        width: min(300px, 72%);
+      }
+
+      .door-warning {
+        bottom: 110px;
+      }
+    }
+
+    /* overlap fix */
+    .pantry-stage {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 1rem;
+    }
+
+    .pantry-stage .callout {
+      position: relative;
+      top: auto;
+      right: auto;
+      width: min(100%, 360px);
+      align-self: flex-end;
+      z-index: 3;
+      margin: 0;
+    }
+
+    .pantry-stage .closet {
+      position: relative;
+      left: auto;
+      bottom: auto;
+      transform: none;
+      width: min(74%, 390px);
+      flex: 0 0 540px;
+    }
+
+    .visual-card .dimension-box {
+      display: none;
+    }
+
+    .visual-card .image-frame {
+      z-index: 1;
+    }
+
+    @media (max-width: 760px) {
+      .pantry-stage {
+        min-height: auto;
+      }
+
+      .pantry-stage .callout {
+        width: 100%;
+        align-self: stretch;
+      }
+
+      .pantry-stage .closet {
+        width: 100%;
+        height: 430px;
+        flex-basis: 430px;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .parallax-layer, .btn, * {
+        transition: none !important;
+        scroll-behavior: auto !important;
+      }
+    }
+
+    .image-frame {
+      position: relative;
+      overflow: hidden;
+      border-radius: 24px;
+      border: 1px solid var(--line);
+      background: #fff;
+      box-shadow: 0 18px 45px rgba(31,42,35,0.12);
+    }
+
+    .image-frame img {
+      width: 100%;
+      height: 100%;
+      display: block;
+      object-fit: cover;
+    }
+
+    .hero-reference {
+      margin-top: 2rem;
+      max-width: 720px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+    }
+
+    .hero-reference .image-frame {
+      height: 180px;
+    }
+
+    .image-label {
+      position: absolute;
+      left: 0.85rem;
+      bottom: 0.85rem;
+      right: 0.85rem;
+      padding: 0.65rem 0.75rem;
+      border-radius: 14px;
+      background: rgba(29,35,32,0.76);
+      color: #fff;
+      font-size: 0.82rem;
+      font-weight: 800;
+      backdrop-filter: blur(12px);
+    }
+
+    .demo-gallery {
+      display: grid;
+      grid-template-columns: 1.1fr 0.9fr;
+      gap: 1rem;
+      margin-top: 2rem;
+    }
+
+    .demo-gallery .image-frame {
+      min-height: 360px;
+    }
+
+    .demo-gallery .image-frame.small {
+      min-height: 175px;
+    }
+
+    .stacked-images {
+      display: grid;
+      gap: 1rem;
+    }
+
+    .visual-card .image-frame {
+      position: absolute;
+      inset: 5rem 1.4rem 1.4rem;
+      border-color: rgba(255,255,255,0.16);
+      background: rgba(255,255,255,0.08);
+    }
+
+    .visual-card .image-frame img {
+      object-fit: cover;
+      opacity: 0.92;
+    }
+
+    @media (max-width: 980px) {
+      .hero-reference, .demo-gallery { grid-template-columns: 1fr; }
+      .visual-card .image-frame { position: relative; inset: auto; height: 360px; margin-top: 1rem; }
+      .dimension-box { display: none; }
+    }
+
+    @media (max-width: 980px) {
+      .hero, .builder, .testimonial { grid-template-columns: 1fr; }
+      .cards { grid-template-columns: repeat(2, 1fr); }
+      .nav-links { display: none; }
+      .pantry-stage { min-height: 560px; }
+      .section-head { display: block; }
+      .section-head p { margin-top: 1rem; }
+      .steps { grid-template-columns: 1fr; }
+    }
+
+    @media (max-width: 600px) {
+      .cards { grid-template-columns: 1fr; }
+      .trust-row { grid-template-columns: 1fr; }
+      .hero { padding-top: 3.2rem; }
+      .closet { width: 86%; }
+      .callout { position: static; width: auto; margin-bottom: 1rem; }
+    }
+  </style>
+</head>
+<body>
+  <div class="topbar">
+    <span>Made-to-order cabinet drawers, rollouts, doors, shelves, and organizers</span>
+    <span>Kingwood, TX · Call (866) 937-7429 · Mon–Fri 9am–4pm CST</span>
+  </div>
+
+  <nav class="nav">
+    <a class="logo" href="#">
+      <span class="logo-mark" aria-hidden="true"></span>
+      <span>QuikDrawers</span>
+    </a>
+
+    <div class="nav-links">
+      <a href="#products">Products</a>
+      <a href="#builder">Fit Finder</a>
+      <a href="#process">How it Works</a>
+      <a href="#support">Support</a>
+      <a class="btn btn-primary" href="#builder">Start Measuring</a>
+    </div>
+  </nav>
+
+  <main>
+    <section class="hero">
+      <div>
+        <div class="eyebrow">Custom cabinet solutions, simplified</div>
+        <h1>Premium rollouts built to fit your cabinet.</h1>
+        <p>
+          Replace hard-to-reach shelves with made-to-order wood rollouts, drawer boxes,
+          pantry kits, cabinet doors, and organizers. Measure your opening, choose your
+          style, and get a cleaner cabinet without the guesswork.
+        </p>
+
+        <div class="hero-actions">
+          <a class="btn btn-primary" href="#builder">Find My Fit</a>
+          <a class="btn btn-secondary" href="#products">Shop Categories</a>
+        </div>
+
+        <div class="trust-row">
+          <div class="trust-card">
+            <strong>Made to order</strong>
+            <span>Custom sizes for real cabinets, not fantasy showroom dimensions.</span>
+          </div>
+          <div class="trust-card">
+            <strong>Solid wood options</strong>
+            <span>Birch, maple, rubberwood, and other cabinet-grade choices.</span>
+          </div>
+          <div class="trust-card">
+            <strong>Support before checkout</strong>
+            <span>Clear measuring guidance and compatibility warnings.</span>
+          </div>
+        </div>
+        <div class="hero-reference parallax-layer" data-speed="-0.03">
+          <div class="image-frame">
+            <img src="a_bright_organized_pantry_makeover_infographic_ph.png" alt="Modern pantry makeover concept with pull-out shelves" />
+            <div class="image-label">Modern pantry concept</div>
+          </div>
+          <div class="image-frame">
+            <img src="a_high_resolution_marketing_infographic_product.png" alt="Pantry can and beverage organization concept" />
+            <div class="image-label">Beverage + can organization</div>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="pantry-stage parallax-layer" data-speed="0.06" aria-label="Modern pantry rollout visualization">
+        <div class="callout">
+          <strong>Live configuration preview</strong>
+          <span>Show shelf height, item fit, depth, and opening clearance before customers order.</span>
+        </div>
+        <div class="closet">
+          <span class="rail left"></span>
+          <span class="rail right"></span>
+
+          <div class="shelf" style="--lip: 22px;">
+            <span class="item can" style="--c:#5f8d6b; --h:38px; --w:24px;"></span>
+            <span class="item box" style="--c:#d9b169; --h:46px; --w:34px;"></span>
+            <span class="item can" style="--c:#8f6f55; --h:38px; --w:24px;"></span>
+          </div>
+
+          <div class="shelf" style="--lip: 36px;">
+            <span class="item bottle" style="--c:#2f6b4f; --h:62px;"></span>
+            <span class="item bottle" style="--c:#d98d53; --h:64px;"></span>
+            <span class="item box" style="--c:#ecd39b; --h:48px; --w:36px;"></span>
+          </div>
+
+          <div class="shelf" style="--lip: 22px;">
+            <span class="item can" style="--c:#8f6f55; --h:38px; --w:24px;"></span>
+            <span class="item can" style="--c:#2f6b4f; --h:38px; --w:24px;"></span>
+            <span class="item can" style="--c:#d9b169; --h:38px; --w:24px;"></span>
+            <span class="item box" style="--c:#e9c8a0; --h:44px; --w:32px;"></span>
+          </div>
+
+          <div class="shelf" style="--lip: 36px;">
+            <span class="item bottle" style="--c:#d46885; --h:82px; --w:30px;"></span>
+            <span class="item bottle" style="--c:#e5b754; --h:72px; --w:30px;"></span>
+            <span class="item bottle" style="--c:#7caa80; --h:74px; --w:30px;"></span>
+          </div>
+
+          <div class="shelf" style="--lip: 54px;">
+            <span class="item bottle" style="--c:#b45b51; --h:92px; --w:28px;"></span>
+            <span class="item bottle" style="--c:#315d76; --h:92px; --w:28px;"></span>
+            <span class="item bottle" style="--c:#d46885; --h:92px; --w:28px;"></span>
+          </div>
+
+          <div class="shelf" style="--lip: 54px;">
+            <span class="item can" style="--c:#315d76; --h:46px; --w:28px;"></span>
+            <span class="item can" style="--c:#b45b51; --h:46px; --w:28px;"></span>
+            <span class="item bottle" style="--c:#2f6b4f; --h:82px; --w:32px;"></span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="products">
+      <div class="section-head">
+        <h2>Shop by project, not by confusing part numbers.</h2>
+        <p>
+          A cleaner category system helps homeowners and cabinet shops quickly find
+          the right product without hunting through long legacy menus.
+        </p>
+      </div>
+
+      <div class="cards">
+        <article class="product-card">
+          <div class="product-art"></div>
+          <div>
+            <h3>Pullout Shelving</h3>
+            <p>Custom rollout trays for base cabinets, pantries, and hard-to-reach storage.</p>
+          </div>
+        </article>
+
+        <article class="product-card">
+          <div class="product-art"></div>
+          <div>
+            <h3>QuikTRAY Kits</h3>
+            <p>All-in-one organizer systems with adjustable layouts and easier fit guidance.</p>
+          </div>
+        </article>
+
+        <article class="product-card">
+          <div class="product-art"></div>
+          <div>
+            <h3>Drawer Boxes</h3>
+            <p>Replacement dovetail drawer boxes sized for cabinet repair and remodels.</p>
+          </div>
+        </article>
+
+        <article class="product-card">
+          <div class="product-art"></div>
+          <div>
+            <h3>Cabinet Doors</h3>
+            <p>Replacement cabinet doors, drawer fronts, samples, panels, and face frames.</p>
+          </div>
+        </article>
+      </div>
+    </section>
+
+
+    <section>
+      <div class="section-head">
+        <h2>Show the product before asking customers to configure it.</h2>
+        <p>
+          These visual sections would help customers understand tray depth, shelf spacing,
+          high-back options, beverage storage, and real-world pantry fit before checkout.
+        </p>
+      </div>
+
+      <div class="demo-gallery parallax-layer" data-speed="0.035">
+        <div class="image-frame">
+          <img src="a_clean_infographic_diagram_style_image_showing_a.png" alt="Six shelf QuikTRAY style pantry layout with dimensions" />
+          <div class="image-label">Configured six-shelf pantry layout</div>
+        </div>
+
+        <div class="stacked-images">
+          <div class="image-frame small">
+            <img src="a_clean_infographic_product_configuration_diagra.png" alt="Pantry configuration diagram with shelf specs" />
+            <div class="image-label">Shelf spacing + compatibility diagram</div>
+          </div>
+          <div class="image-frame small">
+            <img src="a_high_resolution_marketing_infographic_product.png" alt="Can and soda storage organization concept" />
+            <div class="image-label">Can, soda, and tall bottle organization</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="builder">
+      <div class="builder">
+        <div>
+          <span class="badge">Concept feature</span>
+          <h2>Fit Finder that reduces support calls.</h2>
+          <p>
+            Customers enter cabinet dimensions, door opening, and item height. The page
+            instantly warns about clearance issues and recommends shelf spacing.
+          </p>
+
+          <div class="control">
+            <label for="opening">Door opening width <span id="openingVal">23"</span></label>
+            <input id="opening" type="range" min="10" max="36" value="23" />
+          </div>
+
+          <div class="control">
+            <label for="cabinetWidth">Inside cabinet width <span id="cabinetWidthVal">26"</span></label>
+            <input id="cabinetWidth" type="range" min="12" max="42" value="26" />
+          </div>
+
+          <div class="control">
+            <label for="depth">Cabinet depth <span id="depthVal">33"</span></label>
+            <input id="depth" type="range" min="18" max="36" value="33" />
+          </div>
+
+          <div class="control">
+            <label for="item">Tallest item height <span id="itemVal">13"</span></label>
+            <input id="item" type="range" min="5" max="18" value="13" />
+          </div>
+
+          <div class="control">
+            <label>Shelf wall style</label>
+            <div class="radio-row">
+              <label class="radio-pill"><input type="radio" name="wall" value="3.5"><span>3.5" tray</span></label>
+              <label class="radio-pill"><input type="radio" name="wall" value="6"><span>6" high back</span></label>
+              <label class="radio-pill"><input type="radio" name="wall" value="8" checked><span>8" high back</span></label>
+            </div>
+          </div>
+
+          <div class="fit-grid">
+            <div class="fit-card">
+              <strong id="shelfDepthOut">26"</strong>
+              <span>recommended shelf depth</span>
+            </div>
+            <div class="fit-card">
+              <strong id="shelfWidthOut">21"</strong>
+              <span>recommended shelf width</span>
+            </div>
+            <div class="fit-card">
+              <strong id="clearanceOut">14.5"</strong>
+              <span>needed clear opening</span>
+            </div>
+            <div class="fit-card">
+              <strong id="fitStatusOut">Good</strong>
+              <span>fit confidence</span>
+            </div>
+          </div>
+
+          <div class="fit-result good" id="fitResult">
+            Recommended: 26" deep rollouts, 20–21" width, and one 14.5" opening for tall bottles.
+          </div>
+
+          <div class="phone-preview">
+            <strong>Mobile preview</strong>
+            <div class="mini-pantry" id="miniPantry">
+              <div class="mini-shelf" style="--wall:24%;"></div>
+              <div class="mini-shelf" style="--wall:38%;"></div>
+              <div class="mini-shelf" style="--wall:24%;"></div>
+              <div class="mini-shelf" style="--wall:38%;"></div>
+              <div class="mini-shelf" style="--wall:52%;"><span class="mini-bottle" id="miniBottle"></span></div>
+              <div class="mini-shelf" style="--wall:52%;"></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="visual-card parallax-layer" data-speed="-0.025">
+          <span class="badge">Visual sizing preview</span>
+          <p style="color:#cdd8d1;margin:.8rem 0 0;font-size:.92rem;">Move the sliders — doorway, cabinet width, shelf depth, and bottle height resize live.</p>
+
+          <div class="fit-visualizer" id="fitVisualizer">
+            <div class="fit-door-frame" id="fitDoorFrame"></div>
+            <div class="shelf-depth-ruler" id="shelfDepthRuler"></div>
+            <div class="door-warning" id="doorWarning">Shelf is too wide for the door opening. Reduce width or choose a narrower kit.</div>
+            <div class="fit-opening-tag" id="openingTag">23" door opening</div>
+            <div class="fit-depth-tag" id="depthTag">33" pantry depth</div>
+
+            <div class="fit-cabinet">
+              <span class="fit-rail left"></span>
+              <span class="fit-rail right"></span>
+
+              <div class="fit-shelf shallow">
+                <span class="fit-item small green"></span>
+                <span class="fit-item small tan"></span>
+                <span class="fit-item small brown"></span>
+              </div>
+
+              <div class="fit-shelf medium">
+                <span class="fit-item bottle green"></span>
+                <span class="fit-item bottle orange"></span>
+                <span class="fit-item box cream"></span>
+              </div>
+
+              <div class="fit-shelf shallow">
+                <span class="fit-item can red"></span>
+                <span class="fit-item can yellow"></span>
+                <span class="fit-item can blue"></span>
+                <span class="fit-item can green"></span>
+              </div>
+
+              <div class="fit-shelf medium">
+                <span class="fit-item bottle red"></span>
+                <span class="fit-item bottle yellow"></span>
+                <span class="fit-item bottle green"></span>
+              </div>
+
+              <div class="fit-shelf tall active" id="activeShelf">
+                <span class="fit-item tall-bottle pink" id="visualBottle"></span>
+                <span class="fit-item can red"></span>
+                <span class="fit-item can blue"></span>
+              </div>
+
+              <div class="fit-shelf tall">
+                <span class="fit-item tall-bottle green"></span>
+                <span class="fit-item can yellow"></span>
+                <span class="fit-item can red"></span>
+              </div>
+            </div>
+
+            <div class="fit-legend">
+              <div><strong id="visualShelfDepth">26"</strong><span>Shelf depth</span></div>
+              <div><strong id="visualClearance">14.5"</strong><span>Clear opening</span></div>
+              <div><strong id="visualShelfWidth">21"</strong><span>Shelf width</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="process">
+      <div class="section-head">
+        <h2>Make the buying process feel safe.</h2>
+        <p>
+          The redesign focuses on confidence: measure, verify, customize, and install.
+        </p>
+      </div>
+
+      <div class="steps">
+        <div class="step">
+          <div class="step-num">1</div>
+          <h3>Measure the opening</h3>
+          <p>Customers see exactly where to measure width, depth, height, and door clearance.</p>
+        </div>
+        <div class="step">
+          <div class="step-num">2</div>
+          <h3>Configure visually</h3>
+          <p>Each option updates a live product preview so terms like “high back” are obvious.</p>
+        </div>
+        <div class="step">
+          <div class="step-num">3</div>
+          <h3>Order with confidence</h3>
+          <p>Compatibility checks catch common mistakes before checkout, not after delivery.</p>
+        </div>
+      </div>
+    </section>
+
+    <section id="support">
+      <div class="testimonial">
+        <div>
+          <blockquote>
+            “I understood the product after I saw it configured around my own pantry dimensions.”
+          </blockquote>
+          <div class="quote-meta">
+            Demo customer journey: 23" door opening · 33" deep pantry · 13" bottles · adjustable QuikTRAY rollout shelves
+          </div>
+        </div>
+        <div>
+          <h3>Why this helps QuikDrawers</h3>
+          <p style="color:var(--muted);">
+            The current products are practical, but the buying flow can be intimidating.
+            A modern homepage plus a smarter configurator can reduce hesitation,
+            reduce repetitive support questions, and make the product feel as premium
+            as the hardware actually is.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <div class="footer-cta">
+      <div class="panel">
+        <h2>Custom storage should feel easy to order.</h2>
+        <p>
+          This sample keeps the existing QuikDrawers product categories, but presents them
+          with clearer hierarchy, better trust signals, and a more conversion-focused path.
+        </p>
+        <a class="btn btn-secondary" href="#builder">View Demo Fit Finder</a>
+      </div>
+
+      <p class="note">
+        Unofficial concept mockup created as a redesign sample. Product names and brand references belong to QuikDrawers/The Cabinet Guy.
+      </p>
+    </div>
+  </main>
+
+  <script>
+    const opening = document.getElementById("opening");
+    const cabinetWidth = document.getElementById("cabinetWidth");
+    const depth = document.getElementById("depth");
+    const item = document.getElementById("item");
+
+    const openingVal = document.getElementById("openingVal");
+    const cabinetWidthVal = document.getElementById("cabinetWidthVal");
+    const depthVal = document.getElementById("depthVal");
+    const itemVal = document.getElementById("itemVal");
+
+    const shelfDepthOut = document.getElementById("shelfDepthOut");
+    const shelfWidthOut = document.getElementById("shelfWidthOut");
+    const clearanceOut = document.getElementById("clearanceOut");
+    const fitStatusOut = document.getElementById("fitStatusOut");
+    const fitResult = document.getElementById("fitResult");
+    const miniBottle = document.getElementById("miniBottle");
+
+    function getWallHeight() {
+      const checked = document.querySelector('input[name="wall"]:checked');
+      return checked ? Number(checked.value) : 8;
+    }
+
+    function updateFit() {
+      const doorOpening = Number(opening.value);
+      const insideWidth = Number(cabinetWidth.value);
+      const cabinetDepth = Number(depth.value);
+      const itemHeight = Number(item.value);
+      const wallHeight = getWallHeight();
+
+      openingVal.textContent = doorOpening + '"';
+      cabinetWidthVal.textContent = insideWidth + '"';
+      depthVal.textContent = cabinetDepth + '"';
+      itemVal.textContent = itemHeight + '"';
+
+      const limitingWidth = Math.min(doorOpening, insideWidth);
+      const recommendedWidth = Math.max(8, Math.min(limitingWidth - 2, 21));
+      const recommendedDepth = cabinetDepth >= 31 ? 26 : cabinetDepth >= 27 ? 24 : cabinetDepth >= 24 ? 22 : 20;
+      const rearClearance = Math.max(0, cabinetDepth - recommendedDepth);
+      const clearOpening = itemHeight + 1.5;
+
+      // Visual scaling:
+      // Cabinet width slider visibly changes cabinet width.
+      // Door opening slider changes the doorway frame.
+      // Depth slider changes the depth shadow/ruler.
+      // Item height slider changes bottle height and the active shelf opening.
+      const visualizer = document.getElementById("fitVisualizer");
+      const doorWarning = document.getElementById("doorWarning");
+
+      const cabinetScaleX = Math.max(0.62, Math.min(1.18, insideWidth / 26));
+      const doorScaleX = Math.max(0.55, Math.min(1.18, doorOpening / 23));
+      const depthScale = Math.max(0.72, Math.min(1.22, recommendedDepth / 26));
+      const depthShift = Math.max(4, Math.min(34, (cabinetDepth - 18) * 1.8));
+      const itemScale = Math.max(0.72, Math.min(1.22, clearOpening / 14.5));
+
+      if (visualizer) {
+        visualizer.style.setProperty("--cabinet-scale-x", cabinetScaleX.toFixed(3));
+        visualizer.style.setProperty("--door-scale-x", doorScaleX.toFixed(3));
+        visualizer.style.setProperty("--depth-ruler-scale", depthScale.toFixed(3));
+        visualizer.style.setProperty("--depth-shift", depthShift.toFixed(1) + "px");
+        visualizer.style.setProperty("--shelf-depth-opacity", Math.max(.12, Math.min(.38, recommendedDepth / 80)).toFixed(3));
+        visualizer.style.setProperty("--active-row-scale", itemScale.toFixed(3));
+      }
+
+      if (doorWarning) {
+        doorWarning.classList.toggle("show", recommendedWidth > doorOpening - 1);
+      }
+
+      let status = "Good";
+      let className = "good";
+      let notes = [];
+
+      if (recommendedWidth < 14) {
+        status = "Tight";
+        className = "bad";
+        notes.push("Opening is narrow. Use smaller rollouts and confirm side clearance.");
+      } else if (recommendedWidth < 18) {
+        status = "Check";
+        className = "warn";
+        notes.push("Opening is usable but tight. Leave extra clearance for trim and door racks.");
+      } else {
+        notes.push("Width looks good for a custom rollout shelf.");
+      }
+
+      if (cabinetDepth >= 31) {
+        notes.push(`Use 26" deep shelves. You still keep about ${rearClearance}" behind the trays for wall clearance.`);
+      } else {
+        notes.push(`Use about ${recommendedDepth}" deep shelves for this cabinet depth.`);
+      }
+
+      if (itemHeight >= 13) {
+        notes.push(`Reserve at least ${clearOpening.toFixed(1)}" vertical opening for tall bottles.`);
+      }
+
+      if (wallHeight >= 8 && itemHeight >= 12) {
+        notes.push('8" high back is ideal for tall bottles because it stabilizes them without limiting height.');
+      } else if (wallHeight <= 3.5 && itemHeight >= 12) {
+        className = className === "bad" ? "bad" : "warn";
+        status = status === "Good" ? "Check" : status;
+        notes.push("A 3.5 inch tray wall may let tall bottles tip when the shelf moves.");
+      }
+
+      shelfDepthOut.textContent = recommendedDepth + '"';
+      shelfWidthOut.textContent = recommendedWidth.toFixed(0) + '"';
+      clearanceOut.textContent = clearOpening.toFixed(1) + '"';
+      fitStatusOut.textContent = status;
+
+      fitResult.className = "fit-result " + className;
+      fitResult.innerHTML =
+        `<strong>${status} fit:</strong> recommend ${recommendedDepth}" deep rollouts, ` +
+        `${recommendedWidth.toFixed(0)}" max shelf width, and at least ` +
+        `${clearOpening.toFixed(1)}" clear shelf opening.` +
+        `<ul class="fit-list">${notes.map(note => `<li>${note}</li>`).join("")}</ul>`;
+
+      if (miniBottle) {
+        const scaled = Math.max(40, Math.min(105, itemHeight * 7));
+        miniBottle.style.setProperty("--bh", scaled + "px");
+      }
+
+      const visualBottle = document.getElementById("visualBottle");
+      const openingTag = document.getElementById("openingTag");
+      const depthTag = document.getElementById("depthTag");
+      const visualShelfDepth = document.getElementById("visualShelfDepth");
+      const visualClearance = document.getElementById("visualClearance");
+      const visualShelfWidth = document.getElementById("visualShelfWidth");
+
+      if (visualBottle) {
+        const bottlePx = Math.max(46, Math.min(105, itemHeight * 6.2));
+        visualBottle.style.setProperty("--bottle-height", bottlePx + "px");
+        const visualizer = document.getElementById("fitVisualizer");
+        if (visualizer) visualizer.style.setProperty("--bottle-height", bottlePx + "px");
+      }
+      if (openingTag) openingTag.textContent = doorOpening + '\" door opening';
+      if (depthTag) depthTag.textContent = cabinetDepth + '\" pantry depth';
+      if (visualShelfDepth) visualShelfDepth.textContent = recommendedDepth + '\"';
+      if (visualClearance) visualClearance.textContent = clearOpening.toFixed(1) + '\"';
+      if (visualShelfWidth) visualShelfWidth.textContent = recommendedWidth.toFixed(0) + '\"';
+    }
+
+    [opening, cabinetWidth, depth, item].forEach(input => input.addEventListener("input", updateFit));
+    document.querySelectorAll('input[name="wall"]').forEach(input => input.addEventListener("change", updateFit));
+    updateFit();
+
+    const parallaxEls = [...document.querySelectorAll(".parallax-layer")];
+    let ticking = false;
+
+    function updateParallax() {
+      const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+      const isMobile = window.innerWidth < 760;
+
+      if (reduceMotion || isMobile) {
+        parallaxEls.forEach(el => el.style.transform = "");
+        ticking = false;
+        return;
+      }
+
+      const scrollY = window.scrollY || window.pageYOffset;
+      parallaxEls.forEach(el => {
+        const speed = Number(el.dataset.speed || 0);
+        const rect = el.getBoundingClientRect();
+        const centerOffset = rect.top + rect.height / 2 - window.innerHeight / 2;
+        const y = -centerOffset * speed;
+        el.style.transform = `translate3d(0, ${y.toFixed(1)}px, 0)`;
+      });
+
+      ticking = false;
+    }
+
+    window.addEventListener("scroll", () => {
+      if (!ticking) {
+        window.requestAnimationFrame(updateParallax);
+        ticking = true;
+      }
+    }, { passive: true });
+
+    window.addEventListener("resize", updateParallax);
+    updateParallax();
+  </script>
+</body>
+</html>
