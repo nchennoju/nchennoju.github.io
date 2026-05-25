@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Hues & Cues Chaos Generator</title>
+<title>Hues & Cues Chaos</title>
 
 <style>
 body{
@@ -36,6 +36,7 @@ h1{
     font-size:2rem;
     margin:40px 0;
     min-height:100px;
+    line-height:1.4;
 }
 
 button{
@@ -60,26 +61,29 @@ button:hover{
 }
 
 .colorPreview{
-    width:180px;
-    height:180px;
+    width:220px;
+    height:220px;
     border-radius:16px;
     margin:20px auto;
-    border:4px solid white;
+    border:5px solid white;
 }
 
 .code{
-    font-size:2rem;
+    font-size:3rem;
     font-weight:bold;
+    margin-top:10px;
 }
 
 .hex{
     opacity:0.8;
     margin-top:10px;
+    font-size:1.1rem;
 }
 
 .small{
     opacity:0.6;
     font-size:0.9rem;
+    margin-top:5px;
 }
 </style>
 </head>
@@ -91,7 +95,7 @@ button:hover{
 <h1>🎨 Hues & Cues Chaos</h1>
 
 <div class="prompt" id="prompt">
-Press Generate
+Press Generate Prompt
 </div>
 
 <button onclick="generatePrompt()">Generate Prompt</button>
@@ -106,7 +110,7 @@ Press Generate
 <div class="hex" id="hexCode"></div>
 
 <div class="small">
-Closest board color match
+Closest Hues & Cues board match
 </div>
 
 </div>
@@ -115,109 +119,250 @@ Closest board color match
 
 <script>
 
-const nouns = [
-"gas station hot dog",
-"wet cardboard",
-"expired guacamole",
-"pool noodle",
-"old banana peel",
-"hospital blanket",
-"airport carpet",
-"tennis ball",
-"sunburnt lawn chair",
-"cheap motel wall",
-"grandma candy wrapper",
-"dirty snow cone",
-"faded walmart sign",
-"parking garage puddle",
-"old ketchup packet",
-"ipad kid cough syrup",
-"burnt grilled cheese",
-"microwave pizza",
-"old bruise",
-"rusty playground slide",
-"old croc shoe",
-"stale cheeto",
-"boat dock rope",
-"pool water",
-"truck stop bathroom tile",
-"sun faded beach toy",
-"dusty chalk",
-"old newspaper",
-"foggy windshield",
-"garden hose water",
-"cheap sunscreen",
-"old traffic cone",
-"melted popsicle",
-"cracked iphone case",
-"old bandaid",
-"moldy bread corner",
-"dirty aquarium rock",
-"warm sprite",
-"old tennis court",
-"broken flip flop"
+const prompts = [
+
+{
+text:"old newspaper freshly cleaned",
+hue:45,
+sat:15,
+light:78
+},
+
+{
+text:"expired guacamole left in the sun",
+hue:85,
+sat:45,
+light:42
+},
+
+{
+text:"gas station hot dog at 2 AM",
+hue:28,
+sat:65,
+light:48
+},
+
+{
+text:"pool noodle after summer",
+hue:12,
+sat:85,
+light:60
+},
+
+{
+text:"hospital blanket under fluorescent lights",
+hue:195,
+sat:18,
+light:72
+},
+
+{
+text:"dirty snow cone",
+hue:315,
+sat:55,
+light:58
+},
+
+{
+text:"airport carpet from 2003",
+hue:240,
+sat:35,
+light:30
+},
+
+{
+text:"sun faded walmart sign",
+hue:210,
+sat:55,
+light:68
+},
+
+{
+text:"old tennis ball after rain",
+hue:72,
+sat:58,
+light:52
+},
+
+{
+text:"melted popsicle on concrete",
+hue:345,
+sat:82,
+light:61
+},
+
+{
+text:"cheap motel wall paint",
+hue:32,
+sat:22,
+light:70
+},
+
+{
+text:"wet cardboard in florida humidity",
+hue:30,
+sat:30,
+light:55
+},
+
+{
+text:"boat dock rope after a storm",
+hue:38,
+sat:35,
+light:40
+},
+
+{
+text:"microwave pizza from a gas station",
+hue:18,
+sat:78,
+light:48
+},
+
+{
+text:"foggy windshield at sunrise",
+hue:205,
+sat:28,
+light:82
+},
+
+{
+text:"old bandaid in a parking lot",
+hue:22,
+sat:35,
+light:64
+},
+
+{
+text:"warm sprite under LED lights",
+hue:60,
+sat:12,
+light:90
+},
+
+{
+text:"stale cheeto dust",
+hue:34,
+sat:90,
+light:56
+},
+
+{
+text:"garden hose water",
+hue:192,
+sat:40,
+light:70
+},
+
+{
+text:"rusty playground slide",
+hue:14,
+sat:65,
+light:44
+},
+
+{
+text:"burnt grilled cheese",
+hue:24,
+sat:55,
+light:25
+},
+
+{
+text:"old bruise after healing",
+hue:285,
+sat:35,
+light:48
+},
+
+{
+text:"sunburnt lawn chair",
+hue:8,
+sat:75,
+light:64
+},
+
+{
+text:"dusty chalk in a classroom",
+hue:50,
+sat:10,
+light:88
+},
+
+{
+text:"dirty aquarium rock",
+hue:175,
+sat:22,
+light:42
+}
+
 ];
 
-const variants = [
-"left in the sun",
-"at 2 AM",
-"after rain",
-"under fluorescent lights",
-"in Florida humidity",
-"behind a gas station",
-"covered in dust",
-"freshly cleaned",
-"after being microwaved",
-"after a road trip",
-"from 2007",
-"after sitting outside",
-"in a school cafeteria",
-"under LED lights",
-"during summer",
-"in a motel room",
-"at the beach",
-"from a thrift store",
-"after being dropped",
-"after 10 years"
-];
-
-let currentColor = "#ffffff";
-let currentCode = "A1";
+let currentColor = "";
+let currentCode = "";
 
 function generatePrompt(){
 
-    const noun = nouns[Math.floor(Math.random()*nouns.length)];
-    const variant = variants[Math.floor(Math.random()*variants.length)];
+    const selected =
+        prompts[Math.floor(Math.random() * prompts.length)];
 
     document.getElementById("prompt").innerText =
-        `${noun} ${variant}`;
+        selected.text;
 
-    document.getElementById("answerBox").style.display = "none";
+    document.getElementById("answerBox").style.display =
+        "none";
 
-    generateMatchingColor();
+    const snapped = snapToBoard(
+        selected.hue,
+        selected.sat,
+        selected.light
+    );
+
+    currentColor = snapped.color;
+    currentCode = snapped.code;
 }
 
-function generateMatchingColor(){
+function snapToBoard(h,s,l){
 
     const cols = 30;
     const rows = 16;
 
-    const colLetters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+    const letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 
-    const x = Math.floor(Math.random()*cols);
-    const y = Math.floor(Math.random()*rows);
+    const col =
+        Math.floor((h / 360) * cols);
 
-    const hue = (x / cols) * 360;
-    const light = 25 + (y / rows) * 50;
+    const row =
+        Math.floor(((l - 20) / 70) * rows);
 
-    currentColor = `hsl(${hue}, 70%, ${light}%)`;
+    const safeCol =
+        Math.max(0, Math.min(cols - 1, col));
 
-    currentCode = `${colLetters[Math.floor(x/2)]}${y+1}`;
+    const safeRow =
+        Math.max(0, Math.min(rows - 1, row));
+
+    const snappedHue =
+        (safeCol / cols) * 360;
+
+    const snappedLight =
+        20 + (safeRow / rows) * 70;
+
+    const color =
+        `hsl(${snappedHue}, ${s}%, ${snappedLight}%)`;
+
+    const code =
+        `${letters[Math.floor(safeCol / 2)]}${safeRow + 1}`;
+
+    return {
+        color,
+        code
+    };
 }
 
 function showAnswer(){
 
-    document.getElementById("answerBox").style.display = "block";
+    document.getElementById("answerBox").style.display =
+        "block";
 
     document.getElementById("colorPreview").style.background =
         currentColor;
@@ -228,6 +373,8 @@ function showAnswer(){
     document.getElementById("hexCode").innerText =
         currentColor;
 }
+
+generatePrompt();
 
 </script>
 
