@@ -322,36 +322,29 @@ function generatePrompt(){
     currentCode = snapped.code;
 }
 
-function snapToBoard(h,s,l){
+function snapToBoard(h, s, l){
 
-    const cols = 30;
-    const rows = 16;
+    const cols = 30;   // numbers 1-30
+    const rows = 16;   // letters A-P
 
-    const letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+    const rowLetters = "ABCDEFGHIJKLMNOP";
 
-    const col =
-        Math.floor((h / 360) * cols);
+    // Hues go left-to-right across columns
+    const col = Math.round((h / 360) * (cols - 1));
 
-    const row =
-        Math.floor(((l - 20) / 70) * rows);
+    // Lightness maps top-to-bottom.
+    // Lighter colors near A, darker/saturated lower toward P.
+    const row = Math.round(((100 - l) / 100) * (rows - 1));
 
-    const safeCol =
-        Math.max(0, Math.min(cols - 1, col));
+    const safeCol = Math.max(0, Math.min(cols - 1, col));
+    const safeRow = Math.max(0, Math.min(rows - 1, row));
 
-    const safeRow =
-        Math.max(0, Math.min(rows - 1, row));
+    const snappedHue = (safeCol / (cols - 1)) * 360;
+    const snappedLight = 100 - ((safeRow / (rows - 1)) * 100);
 
-    const snappedHue =
-        (safeCol / cols) * 360;
+    const color = `hsl(${snappedHue}, ${s}%, ${snappedLight}%)`;
 
-    const snappedLight =
-        20 + (safeRow / rows) * 70;
-
-    const color =
-        `hsl(${snappedHue}, ${s}%, ${snappedLight}%)`;
-
-    const code =
-        `${letters[Math.floor(safeCol / 2)]}${safeRow + 1}`;
+    const code = `${rowLetters[safeRow]}${safeCol + 1}`;
 
     return {
         color,
