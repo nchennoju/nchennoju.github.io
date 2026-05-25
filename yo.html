@@ -1,375 +1,219 @@
+Paste this whole thing into yo.html:
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Hues & Cues Chaos</title>
-
+<title>Hues & Cues Prompt Game</title>
 <style>
 body{
-    margin:0;
-    font-family:Arial,Helvetica,sans-serif;
-    background:#111;
-    color:white;
-    display:flex;
-    justify-content:center;
-    align-items:center;
-    min-height:100vh;
+  margin:0;
+  font-family:Arial,Helvetica,sans-serif;
+  background:#111;
+  color:white;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  min-height:100vh;
 }
-
 .container{
-    width:90%;
-    max-width:800px;
-    text-align:center;
-    background:#1b1b1b;
-    padding:30px;
-    border-radius:20px;
-    box-shadow:0 0 25px rgba(0,0,0,0.5);
+  width:90%;
+  max-width:850px;
+  text-align:center;
+  background:#1b1b1b;
+  padding:30px;
+  border-radius:20px;
 }
-
-h1{
-    margin-top:0;
-    font-size:2.5rem;
-}
-
+h1{font-size:2.4rem}
 .prompt{
-    font-size:2rem;
-    margin:40px 0;
-    min-height:100px;
-    line-height:1.4;
+  font-size:2.4rem;
+  margin:35px 0;
+  min-height:90px;
 }
-
 button{
-    background:#fff;
-    color:#000;
-    border:none;
-    padding:15px 25px;
-    margin:10px;
-    border-radius:12px;
-    cursor:pointer;
-    font-size:1rem;
-    transition:0.2s;
+  background:white;
+  color:black;
+  border:none;
+  padding:15px 24px;
+  margin:8px;
+  border-radius:12px;
+  cursor:pointer;
+  font-size:1rem;
 }
-
-button:hover{
-    transform:scale(1.05);
-}
-
-.answerBox{
-    margin-top:30px;
-    display:none;
-}
-
+.answerBox{display:none;margin-top:30px}
 .colorPreview{
-    width:220px;
-    height:220px;
-    border-radius:16px;
-    margin:20px auto;
-    border:5px solid white;
+  width:220px;
+  height:220px;
+  border:5px solid white;
+  border-radius:16px;
+  margin:20px auto;
 }
-
 .code{
-    font-size:3rem;
-    font-weight:bold;
-    margin-top:10px;
+  font-size:3.2rem;
+  font-weight:bold;
 }
-
-.hex{
-    opacity:0.8;
-    margin-top:10px;
-    font-size:1.1rem;
-}
-
-.small{
-    opacity:0.6;
-    font-size:0.9rem;
-    margin-top:5px;
-}
+.hex{opacity:.8}
+.counter{opacity:.55;margin-top:18px}
 </style>
 </head>
-
 <body>
-
 <div class="container">
-
-<h1>🎨 Hues & Cues Chaos</h1>
-
-<div class="prompt" id="prompt">
-Press Generate Prompt
+  <h1>🎨 Hues & Cues Chaos</h1>
+  <div class="prompt" id="prompt">Press Generate</div>
+  <button onclick="generatePrompt()">Generate Prompt</button>
+  <button onclick="showAnswer()">Show Answer</button>
+  <div class="answerBox" id="answerBox">
+    <div class="colorPreview" id="colorPreview"></div>
+    <div class="code" id="boardCode"></div>
+    <div class="hex" id="hexCode"></div>
+  </div>
+  <div class="counter" id="counter"></div>
 </div>
-
-<button onclick="generatePrompt()">Generate Prompt</button>
-<button onclick="showAnswer()">Show Answer</button>
-
-<div class="answerBox" id="answerBox">
-
-<div class="colorPreview" id="colorPreview"></div>
-
-<div class="code" id="boardCode"></div>
-
-<div class="hex" id="hexCode"></div>
-
-<div class="small">
-Closest Hues & Cues board match
-</div>
-
-</div>
-
-</div>
-
 <script>
-
-const prompts = [
-
-{
-text:"old newspaper freshly cleaned",
-hue:45,
-sat:15,
-light:78
-},
-
-{
-text:"expired guacamole left in the sun",
-hue:85,
-sat:45,
-light:42
-},
-
-{
-text:"gas station hot dog at 2 AM",
-hue:28,
-sat:65,
-light:48
-},
-
-{
-text:"pool noodle after summer",
-hue:12,
-sat:85,
-light:60
-},
-
-{
-text:"hospital blanket under fluorescent lights",
-hue:195,
-sat:18,
-light:72
-},
-
-{
-text:"dirty snow cone",
-hue:315,
-sat:55,
-light:58
-},
-
-{
-text:"airport carpet from 2003",
-hue:240,
-sat:35,
-light:30
-},
-
-{
-text:"sun faded walmart sign",
-hue:210,
-sat:55,
-light:68
-},
-
-{
-text:"old tennis ball after rain",
-hue:72,
-sat:58,
-light:52
-},
-
-{
-text:"melted popsicle on concrete",
-hue:345,
-sat:82,
-light:61
-},
-
-{
-text:"cheap motel wall paint",
-hue:32,
-sat:22,
-light:70
-},
-
-{
-text:"wet cardboard in florida humidity",
-hue:30,
-sat:30,
-light:55
-},
-
-{
-text:"boat dock rope after a storm",
-hue:38,
-sat:35,
-light:40
-},
-
-{
-text:"microwave pizza from a gas station",
-hue:18,
-sat:78,
-light:48
-},
-
-{
-text:"foggy windshield at sunrise",
-hue:205,
-sat:28,
-light:82
-},
-
-{
-text:"old bandaid in a parking lot",
-hue:22,
-sat:35,
-light:64
-},
-
-{
-text:"warm sprite under LED lights",
-hue:60,
-sat:12,
-light:90
-},
-
-{
-text:"stale cheeto dust",
-hue:34,
-sat:90,
-light:56
-},
-
-{
-text:"garden hose water",
-hue:192,
-sat:40,
-light:70
-},
-
-{
-text:"rusty playground slide",
-hue:14,
-sat:65,
-light:44
-},
-
-{
-text:"burnt grilled cheese",
-hue:24,
-sat:55,
-light:25
-},
-
-{
-text:"old bruise after healing",
-hue:285,
-sat:35,
-light:48
-},
-
-{
-text:"sunburnt lawn chair",
-hue:8,
-sat:75,
-light:64
-},
-
-{
-text:"dusty chalk in a classroom",
-hue:50,
-sat:10,
-light:88
-},
-
-{
-text:"dirty aquarium rock",
-hue:175,
-sat:22,
-light:42
-}
-
+const baseObjects = [
+  {n:"old newspaper",c:"#d8d2c4",h:"C4"},
+  {n:"expired guacamole",c:"#6f7f39",h:"J8"},
+  {n:"gas station hotdog",c:"#b36a2e",h:"K20"},
+  {n:"pool noodle",c:"#ff6a4d",h:"F27"},
+  {n:"hospital blanket",c:"#b8c7d1",h:"C10"},
+  {n:"dirty snowcone",c:"#d76fa3",h:"G26"},
+  {n:"airport carpet",c:"#3c3f73",h:"N7"},
+  {n:"walmart sign",c:"#75a7d8",h:"E8"},
+  {n:"wet tennis ball",c:"#9db04a",h:"I13"},
+  {n:"melted popsicle",c:"#db4f68",h:"I27"},
+  {n:"motel wall",c:"#c9b49f",h:"D5"},
+  {n:"wet cardboard",c:"#8b6848",h:"L4"},
+  {n:"dock rope",c:"#7a6247",h:"M5"},
+  {n:"microwave pizza",c:"#c46d2c",h:"J21"},
+  {n:"foggy windshield",c:"#dbe7ee",h:"A9"},
+  {n:"old bandaid",c:"#b88f72",h:"G5"},
+  {n:"warm Sprite",c:"#f7f5c7",h:"A14"},
+  {n:"Cheeto dust",c:"#e58a22",h:"G21"},
+  {n:"hose water",c:"#83b7b5",h:"E11"},
+  {n:"rusty slide",c:"#964b36",h:"M24"},
+  {n:"burnt cheese",c:"#5a3923",h:"P20"},
+  {n:"old bruise",c:"#75608f",h:"K8"},
+  {n:"sunburnt chair",c:"#e07a62",h:"F24"},
+  {n:"dusty chalk",c:"#ece7dc",h:"A3"},
+  {n:"aquarium rock",c:"#4d6c68",h:"N11"},
+  {n:"ketchup packet",c:"#9f2f2f",h:"N27"},
+  {n:"bathroom tile",c:"#d7d3c8",h:"B2"},
+  {n:"beach toy",c:"#ff8f6b",h:"E25"},
+  {n:"cheap sunscreen",c:"#f1e0ae",h:"B16"},
+  {n:"moldy bread",c:"#67704c",h:"L12"},
+  {n:"broken flipflop",c:"#5563a5",h:"K6"},
+  {n:"garage puddle",c:"#545454",h:"P1"},
+  {n:"cough syrup",c:"#8b4fd9",h:"J7"},
+  {n:"banana peel",c:"#d9c647",h:"F16"},
+  {n:"traffic cone",c:"#f26b21",h:"F23"},
+  {n:"blue slushie",c:"#2aa7df",h:"H9"},
+  {n:"pickle slice",c:"#8fa13b",h:"I14"},
+  {n:"rubber duck",c:"#f5d544",h:"D17"},
+  {n:"pool water",c:"#5fc7d8",h:"D11"},
+  {n:"pink eraser",c:"#e8a0ae",h:"D26"},
+  {n:"dirty penny",c:"#9a5b36",h:"L22"},
+  {n:"avocado pit",c:"#5a3d27",h:"P19"},
+  {n:"lemon wedge",c:"#f4e667",h:"B15"},
+  {n:"lime peel",c:"#72aa3d",h:"H14"},
+  {n:"blue tarp",c:"#276bb0",h:"J8"},
+  {n:"red solo cup",c:"#c9272d",h:"K28"},
+  {n:"orange peel",c:"#ef8d23",h:"F21"},
+  {n:"grape soda",c:"#6d3f91",h:"K7"},
+  {n:"coffee stain",c:"#8a5a32",h:"L20"},
+  {n:"toothpaste",c:"#8ed8d4",h:"B11"},
+  {n:"mustard packet",c:"#d8a629",h:"G18"},
+  {n:"salmon filet",c:"#e57965",h:"F25"},
+  {n:"concrete floor",c:"#9b9b92",h:"H2"},
+  {n:"carrot stick",c:"#df7431",h:"G22"},
+  {n:"egg yolk",c:"#f2b735",h:"E18"},
+  {n:"green grape",c:"#b7c96a",h:"E14"},
+  {n:"dusty lavender",c:"#9b8ab2",h:"F7"},
+  {n:"navy hoodie",c:"#26334f",h:"O7"},
+  {n:"black olive",c:"#2f3124",h:"P13"},
+  {n:"white rice",c:"#f1eee2",h:"A2"},
+  {n:"brown banana",c:"#70502b",h:"N19"},
+  {n:"watermelon slice",c:"#e84e5f",h:"H27"},
+  {n:"mint gum",c:"#a5dac0",h:"B12"},
+  {n:"peach yogurt",c:"#f0b18f",h:"C24"},
+  {n:"gray hoodie",c:"#777b80",h:"K1"},
+  {n:"purple marker",c:"#6f45b3",h:"J6"},
+  {n:"yellow highlighter",c:"#e8ef4a",h:"B15"},
+  {n:"red brick",c:"#9b3f32",h:"M25"},
+  {n:"green soap",c:"#69b58b",h:"F12"},
+  {n:"blue jeans",c:"#456f9e",h:"J8"},
+  {n:"tan carpet",c:"#b99e7d",h:"F4"},
+  {n:"olive jacket",c:"#5f6739",h:"M13"},
+  {n:"cherry coughdrop",c:"#b8203c",h:"L27"},
+  {n:"vanilla pudding",c:"#eadca8",h:"B17"},
+  {n:"dirty mirror",c:"#b7bab4",h:"D1"},
+  {n:"wet asphalt",c:"#3e4242",h:"P1"},
+  {n:"sand castle",c:"#c9b080",h:"D5"},
+  {n:"seafoam cup",c:"#9bd3c5",h:"C12"},
+  {n:"pumpkin guts",c:"#cf7c2c",h:"H21"},
+  {n:"cranberry juice",c:"#8f1838",h:"N27"},
+  {n:"pistachio shell",c:"#c1b889",h:"D14"},
+  {n:"old penny",c:"#a2643e",h:"L22"},
+  {n:"baby blanket",c:"#c8ddea",h:"B9"},
+  {n:"rose soap",c:"#df9cad",h:"D26"},
+  {n:"school bus",c:"#e2a92f",h:"F18"},
+  {n:"mud puddle",c:"#6b543c",h:"N4"},
+  {n:"mango smoothie",c:"#eda341",h:"E20"},
+  {n:"seaweed snack",c:"#344832",h:"O13"},
+  {n:"chocolate milk",c:"#7b4f3f",h:"M21"},
+  {n:"blueberry stain",c:"#3f477f",h:"M7"},
+  {n:"corn chip",c:"#d79f34",h:"G18"},
+  {n:"old receipt",c:"#eee7d5",h:"A3"},
+  {n:"foam cooler",c:"#e9f0ee",h:"A1"},
+  {n:"hot sauce",c:"#c93f27",h:"J24"},
+  {n:"shower curtain",c:"#d7e2dc",h:"B11"},
+  {n:"cactus skin",c:"#6e8b55",h:"J13"},
+  {n:"grill ash",c:"#55514d",h:"P2"},
+  {n:"rubber tire",c:"#252525",h:"P1"},
+  {n:"flamingo float",c:"#f37c9c",h:"E26"},
+  {n:"green onion",c:"#4d9b53",h:"J13"},
+  {n:"straw wrapper",c:"#d6d6d0",h:"B1"},
+  {n:"blue gatorade",c:"#2e95d3",h:"H9"}
 ];
-
-let currentColor = "";
-let currentCode = "";
-
+const modifiers = [
+  "", "old", "wet", "dusty", "faded", "cheap", "warm", "cold", "dirty", "moldy",
+  "broken", "sunburnt", "expired", "foggy", "stale", "cracked", "sticky", "greasy",
+  "washed", "soggy", "crispy", "frozen", "salty", "glossy", "smoky", "dented",
+  "crusty", "oily", "musty", "dry", "bleached", "muddy", "vintage", "rotting"
+];
+let prompts = [];
+baseObjects.forEach(obj=>{
+  modifiers.forEach(mod=>{
+    let words = obj.n.split(" ");
+    let text = mod ? mod + " " + obj.n : obj.n;
+    if(text.split(" ").length <= 3){
+      prompts.push({text:text, color:obj.c, code:obj.h});
+    }
+  });
+});
+prompts = prompts.slice(0,1000);
+let used = [];
+let current = prompts[0];
 function generatePrompt(){
-
-    const selected =
-        prompts[Math.floor(Math.random() * prompts.length)];
-
-    document.getElementById("prompt").innerText =
-        selected.text;
-
-    document.getElementById("answerBox").style.display =
-        "none";
-
-    const snapped = snapToBoard(
-        selected.hue,
-        selected.sat,
-        selected.light
-    );
-
-    currentColor = snapped.color;
-    currentCode = snapped.code;
+  if(used.length >= prompts.length) used = [];
+  let pick;
+  do{
+    pick = Math.floor(Math.random() * prompts.length);
+  }while(used.includes(pick));
+  used.push(pick);
+  current = prompts[pick];
+  document.getElementById("prompt").innerText = current.text;
+  document.getElementById("answerBox").style.display = "none";
+  document.getElementById("counter").innerText =
+    used.length + " / " + prompts.length + " used";
 }
-
-function snapToBoard(h, s, l){
-
-    const cols = 30;   // numbers 1-30
-    const rows = 16;   // letters A-P
-
-    const rowLetters = "ABCDEFGHIJKLMNOP";
-
-    // Hues go left-to-right across columns
-    const col = Math.round((h / 360) * (cols - 1));
-
-    // Lightness maps top-to-bottom.
-    // Lighter colors near A, darker/saturated lower toward P.
-    const row = Math.round(((100 - l) / 100) * (rows - 1));
-
-    const safeCol = Math.max(0, Math.min(cols - 1, col));
-    const safeRow = Math.max(0, Math.min(rows - 1, row));
-
-    const snappedHue = (safeCol / (cols - 1)) * 360;
-    const snappedLight = 100 - ((safeRow / (rows - 1)) * 100);
-
-    const color = `hsl(${snappedHue}, ${s}%, ${snappedLight}%)`;
-
-    const code = `${rowLetters[safeRow]}${safeCol + 1}`;
-
-    return {
-        color,
-        code
-    };
-}
-
 function showAnswer(){
-
-    document.getElementById("answerBox").style.display =
-        "block";
-
-    document.getElementById("colorPreview").style.background =
-        currentColor;
-
-    document.getElementById("boardCode").innerText =
-        currentCode;
-
-    document.getElementById("hexCode").innerText =
-        currentColor;
+  document.getElementById("answerBox").style.display = "block";
+  document.getElementById("colorPreview").style.background = current.color;
+  document.getElementById("boardCode").innerText = current.code;
+  document.getElementById("hexCode").innerText = current.color;
 }
-
 generatePrompt();
-
 </script>
-
 </body>
 </html>
