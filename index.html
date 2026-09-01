@@ -19,9 +19,9 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link href="lib/font-awesome/css/font-awesome.min.css" rel="stylesheet">
-
-  <!-- Plotly for live telemetry charts -->
-  <script src="https://cdn.plot.ly/plotly-2.32.0.min.js" charset="utf-8"></script>
+  <!-- Plotly (~3.5MB) is loaded lazily by js/portfolio.js only when the Data
+       section is near the viewport, so it never blocks initial load. -->
+  <link rel="preconnect" href="https://cdn.plot.ly" crossorigin>
 
   <style>
   /* ============================ THEME TOKENS ============================ */
@@ -389,7 +389,7 @@
       </div>
       <div class="about-grid">
         <div class="card reveal">
-          <img class="avatar" src="img/me.jpg" alt="Nitish Chennoju">
+          <img class="avatar" src="img/me.jpg" alt="Nitish Chennoju" loading="lazy" decoding="async" width="280" height="280">
           <div class="socials">
             <a href="https://www.linkedin.com/in/nitish-chennoju" target="_blank" rel="noopener" aria-label="LinkedIn"><i class="fa fa-linkedin"></i></a>
             <a href="https://github.com/nchennoju" target="_blank" rel="noopener" aria-label="GitHub"><i class="fa fa-github"></i></a>
@@ -570,6 +570,6 @@
 
   <button class="back-top" id="backTop" aria-label="Back to top"><i class="fa fa-chevron-up"></i></button>
 
-  <script src="js/portfolio.js"></script>
+  <script src="js/portfolio.js" defer></script>
 </body>
 </html>

@@ -539,12 +539,34 @@
     if (PLOT.skills) drawSkills();
   }
 
-  // lazy-init plots when the Data section scrolls in
+  // Lazy-load the Plotly library (~3.5MB) only when the Data section is near.
+  // This keeps it entirely off the critical path for initial page load.
+  var plotlyState = 0; // 0=not loaded, 1=loading, 2=ready
+  var plotlyQueue = [];
+  function withPlotly(fn) {
+    if (plotlyState === 2) { fn(); return; }
+    plotlyQueue.push(fn);
+    if (plotlyState === 1) return;
+    plotlyState = 1;
+    var s = document.createElement("script");
+    s.src = "https://cdn.plot.ly/plotly-2.32.0.min.js";
+    s.charset = "utf-8";
+    s.onload = function () { plotlyState = 2; plotlyQueue.forEach(function (f) { f(); }); plotlyQueue = []; };
+    s.onerror = function () {
+      plotlyState = 0;
+      var el = document.getElementById("plot-alt");
+      if (el) el.innerHTML = '<p style="color:var(--text-dim);text-align:center;padding:2rem">' +
+        'Charts couldn\'t load — view the full telemetry via the links below.</p>';
+    };
+    document.head.appendChild(s);
+  }
+
+  // kick off the Plotly fetch a bit before the section is visible, then draw
   var dataObs = new IntersectionObserver(function (entries) {
     entries.forEach(function (en) {
-      if (en.isIntersecting) { drawAlt(); dataObs.disconnect(); }
+      if (en.isIntersecting) { withPlotly(drawAlt); dataObs.disconnect(); }
     });
-  }, { threshold: 0.15 });
+  }, { rootMargin: "300px 0px", threshold: 0 });
   dataObs.observe(document.getElementById("data"));
 
   // plot tab switching
@@ -555,12 +577,13 @@
       btn.classList.add("active");
       var key = btn.getAttribute("data-plot");
       document.getElementById("panel-" + key).classList.add("active");
-      if (key === "alt" && !PLOT.alt) drawAlt();
-      if (key === "thrust" && !PLOT.thrust) drawThrust();
-      if (key === "skills" && !PLOT.skills) drawSkills();
-      // Plotly needs a resize nudge when its container was display:none
-      var id = "plot-" + key;
-      setTimeout(function () { if (window.Plotly) Plotly.Plots.resize(id); }, 60);
+      withPlotly(function () {
+        if (key === "alt" && !PLOT.alt) drawAlt();
+        if (key === "thrust" && !PLOT.thrust) drawThrust();
+        if (key === "skills" && !PLOT.skills) drawSkills();
+        // Plotly needs a resize nudge when its container was display:none
+        setTimeout(function () { if (window.Plotly) Plotly.Plots.resize("plot-" + key); }, 60);
+      });
     });
   });
 
@@ -588,19 +611,12 @@
     }
     rk.addEventListener("animationend", function () { rk.classList.remove("fly"); });
 
-    function schedule() {
-      var wait = 14000 + Math.random() * 16000;   // every ~14–30s
-      setTimeout(function () {
-        if (!document.hidden) launch();
-        schedule();
-      }, wait);
-    }
-    setTimeout(launch, 2600);   // first flyby shortly after load
-    schedule();
+    // Fly exactly once, shortly after load.
+    setTimeout(launch, 2600);
 
-    // fun: click the brand dot to launch on demand
-    var dot = document.querySelector(".brand .dot");
-    if (dot) { dot.style.cursor = "pointer"; dot.parentElement.addEventListener("dblclick", launch); }
+    // Easter egg: double-click the brand to send it across again on demand.
+    var brand = document.querySelector(".brand");
+    if (brand) brand.addEventListener("dblclick", launch);
   })();
 
   /* ---------- MISC ---------- */
