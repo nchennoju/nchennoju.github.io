@@ -303,21 +303,24 @@
   #flying-rocket{
     position:fixed;top:0;left:0;z-index:1500;pointer-events:none;
     font-size:2rem;line-height:1;will-change:transform;opacity:0;
-    display:flex;align-items:center;gap:.35rem;filter:drop-shadow(0 4px 14px var(--accent-glow));
+    display:flex;align-items:center;gap:.15rem;filter:drop-shadow(0 4px 14px var(--accent-glow));
   }
   #flying-rocket.fly{animation:rocketFly var(--rk-dur,6s) linear forwards}
-  #flying-rocket .rk-body{display:inline-block;transform:rotate(45deg)}      /* 🚀 points up-right by default */
+  /* the 🚀 glyph already points up-and-to-the-right, so we leave it un-rotated
+     and send it flying in that same direction (lower-left → upper-right). */
+  #flying-rocket .rk-body{display:inline-block}
   #flying-rocket .rk-trail{
-    width:70px;height:5px;border-radius:5px;order:-1;
+    width:64px;height:5px;border-radius:5px;order:-1;
+    transform-origin:right center;transform:rotate(-45deg); /* exhaust trails down-left, behind travel */
     background:linear-gradient(90deg,transparent,var(--accent),#fff);
     box-shadow:0 0 12px var(--accent);opacity:.85;
   }
-  /* travels left→right across the viewport with a gentle vertical drift */
+  /* travels along the direction the rocket faces: from lower-left up to upper-right */
   @keyframes rocketFly{
-    0%{opacity:0;transform:translate(-14vw,var(--rk-y0,20vh)) rotate(var(--rk-rot,-4deg))}
+    0%{opacity:0;transform:translate(var(--rk-x0,-14vw),var(--rk-y0,92vh)) rotate(var(--rk-rot,0deg))}
     8%{opacity:1}
     92%{opacity:1}
-    100%{opacity:0;transform:translate(114vw,var(--rk-y1,-10vh)) rotate(var(--rk-rot,-4deg))}
+    100%{opacity:0;transform:translate(var(--rk-x1,114vw),var(--rk-y1,-14vh)) rotate(var(--rk-rot,0deg))}
   }
   @media (prefers-reduced-motion: reduce){ #flying-rocket{display:none} }
 

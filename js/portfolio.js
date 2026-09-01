@@ -570,14 +570,17 @@
     if (!rk || reduceMotion) return;
 
     function launch() {
-      // randomize each pass: vertical band, drift, tilt, duration
-      var y0 = (10 + Math.random() * 65).toFixed(0);          // start height (vh)
-      var y1 = (Math.max(2, y0 - (10 + Math.random() * 40))).toFixed(0); // climbs a bit
-      var rot = (-8 + Math.random() * 6).toFixed(1);          // slight tilt
+      // The 🚀 glyph points up-and-to-the-right, so fly it that way:
+      // enter from the lower-left, climb out through the upper-right.
+      var startY = (78 + Math.random() * 20).toFixed(0);      // 78–98vh (low)
+      var climb  = 78 + Math.random() * 34;                   // vertical rise (vh)
+      var endY   = (startY - climb).toFixed(0);               // ends high / above top
       var dur = (5.5 + Math.random() * 3).toFixed(1);         // 5.5–8.5s
-      rk.style.setProperty("--rk-y0", y0 + "vh");
-      rk.style.setProperty("--rk-y1", y1 + "vh");
-      rk.style.setProperty("--rk-rot", rot + "deg");
+      rk.style.setProperty("--rk-x0", "-14vw");
+      rk.style.setProperty("--rk-x1", "114vw");
+      rk.style.setProperty("--rk-y0", startY + "vh");
+      rk.style.setProperty("--rk-y1", endY + "vh");
+      rk.style.setProperty("--rk-rot", "0deg");               // glyph is already angled
       rk.style.setProperty("--rk-dur", dur + "s");
       rk.classList.remove("fly");
       void rk.offsetWidth;   // reflow so the animation can restart
