@@ -158,11 +158,12 @@
 
   /* ---------- TYPED HERO ---------- */
   var TAGLINES = [
-    "Blue Origin Avionics Launch Ops",
+    "Launch Engineer @ Stoke Space",
+    "Instrumentation & Controls — 2,000+ channels",
+    "Ex-Mach Industries Autonomous Systems Lead",
+    "Ex-Blue Origin Launch Avionics",
     "Ex-SpaceX Avionics Test Engineer",
     "Former UCI Rocket Project Chief Engineer",
-    "Undergraduate Researcher",
-    "Computer Science & Engineering Major",
     "Autonomous Vehicle Builder",
     "Aerospace Enthusiast & Maker",
     "Troop 390 Eagle Scout"
@@ -207,24 +208,37 @@
 
   /* ---------- EXPERIENCE TIMELINE DATA ---------- */
   var EXPERIENCE = [
-    { role: "Blue Origin — Avionics Operations Engineer", when: "Sep 2024 – Feb 2025",
-      body: "Hired at a busy time — days in, New Glenn was going through critical integration & testing pre-launch. I sat console as INCO (instrumentation & control), owning data acquisition, network, telemetry/radios, and sensors.",
-      pts: ["Flight-vehicle ops on console for integration + ILV hotfire + pre-launch (INCO trained)",
-            "Launch procedure automation & control-panel development using IGS", "HITL development / validation"] },
+    { role: "Stoke Space — Launch Engineer, Instrumentation & Controls", when: "Nov 2025 – Present",
+      body: "I own pad-wide DAQ and instrumentation, integrating 2,000+ channels across cryogenic, pneumatic, electrical, environmental, and facility systems.",
+      pts: ["Select & integrate UEI/Beckhoff DAQ, remote I/O, signal conditioning & sensors (sample rate, isolation, accuracy, redundancy, cost)",
+            "Develop & troubleshoot Modbus TCP/RTU — register maps, scaling, bit extraction, endianness, polling, timeouts, command handling",
+            "Build SCADA alarms & validation logic for FCVs, solenoids, triplicate sensors, electrical limits, command/feedback mismatches & equipment health",
+            "Python tools for automated checkout, config backup/diff, network/NTP health, Modbus diagnostics & telemetry anomaly detection",
+            "Commission valves, VFDs, chillers, gas detectors, power supplies, DAQs, timing & launch-release hardware during integrated ops"] },
+    { role: "Mach Industries — Autonomous Systems Lead, Flight Test", when: "May 2025 – Nov 2025",
+      body: "Directed autonomous VTOL test campaigns and served as Test Director for five successful terminal-strike flight tests.",
+      pts: ["Built automated reporting & validation pipelines for ATP, QTP, and flight-test data",
+            "Unified telemetry ingestion, validation & post-processing",
+            "Troubleshot avionics, controls, communications & ground systems"] },
+    { role: "Blue Origin — Launch Engineer, Avionics", when: "Sep 2024 – Feb 2025",
+      body: "Console-certified Instrumentation & Controls engineer supporting New Glenn vehicle integration and launch operations.",
+      pts: ["Developed launch automation interfaces & performed hardware-in-the-loop testing of flight systems and ground control panels",
+            "Supported vehicle integration & launch operations on console",
+            "Validated flight-to-ground command, telemetry, timing & electrical interfaces; resolved system anomalies"] },
     { role: "SpaceX — Avionics Test Engineer", when: "Jul 2023 – Sep 2024",
-      body: "Hired right out of college. Designed test systems, improved accuracy of existing ones, supported boxes through qual & acceptance (QTP/ATP), and contributed to changes enabling Dragon for Polaris Dawn (1st SpaceX spacewalk).",
-      pts: ["Qual & acceptance testing core avionics for Dragon and Falcon",
-            "Automated high-pressure gas systems, rate tables, TVAC chambers & test-system bring-up",
-            "Flight-hardware avionics experience", "Increased test-system accuracy 4× and cut build time 50%"] },
+      body: "Executed Falcon and Dragon avionics qualification and acceptance testing across functional and environmental regimes.",
+      pts: ["Developed Python automation for high-pressure gas, thermal-vacuum & rate-table testing",
+            "Led test-system & DAQ bring-up — improved accuracy 4× and cut setup time 50%",
+            "Integrated & troubleshot flight hardware, ECLSS avionics, test racks, harnessing, instrumentation & control interfaces"] },
     { role: "UCI Rocket Project — Chief Engineer", when: "Jun 2022 – Jun 2023",
       body: "Led the team through countless hours to UC Irvine's first methalox rocket launch. Full deep-dive in the UCI Rocket section above.",
       pts: ["Launched UCI's first bipropellant liquid rocket", "Vertical test firing of collegiate methalox engine (engine operator)",
             "Built avionics network comms system + control GUI", "Wrote procedures for cold-flow, static fire & launch"] },
     { role: "Relativity Space — DACS Intern", when: "Jun 2022 – Aug 2022",
-      body: "First professional experience in private space. Built avionics control boxes for Aeon 1 & R test stands; witnessed weekly Aeon 1 hot fires and a full Terran 1 mission cycle.",
-      pts: ["Designed data acquisition & control systems on Beckhoff hardware",
-            "Built a schlieren imaging system for gas-leak & flame detection (CV)",
-            "Automation scripts for data management / video processing", "Solar construction time-lapse camera"] },
+      body: "First professional experience in private space. Witnessed weekly Aeon 1 hot fires and a full Terran 1 mission cycle.",
+      pts: ["Designed test-stand DAQ & controls using Beckhoff PLC/EtherCAT hardware; selected sensors, I/O & comms interfaces",
+            "Developed automated gas-leak/flame detection and test-data/video-processing pipelines",
+            "Built a solar construction time-lapse camera"] },
     { role: "UCI Rocket Project — Avionics Engineer", when: "Jun 2021 – Jun 2022",
       body: "Joined to enhance the avionics system while learning enough propulsion to bridge avionics and the rest of the project.",
       pts: ["RS485-based communication system", "Retrofitted the original NI DACS to work with the rocket",
@@ -549,6 +563,42 @@
       setTimeout(function () { if (window.Plotly) Plotly.Plots.resize(id); }, 60);
     });
   });
+
+  /* ---------- FLYING ROCKET ---------- */
+  (function flyingRocket() {
+    var rk = document.getElementById("flying-rocket");
+    if (!rk || reduceMotion) return;
+
+    function launch() {
+      // randomize each pass: vertical band, drift, tilt, duration
+      var y0 = (10 + Math.random() * 65).toFixed(0);          // start height (vh)
+      var y1 = (Math.max(2, y0 - (10 + Math.random() * 40))).toFixed(0); // climbs a bit
+      var rot = (-8 + Math.random() * 6).toFixed(1);          // slight tilt
+      var dur = (5.5 + Math.random() * 3).toFixed(1);         // 5.5–8.5s
+      rk.style.setProperty("--rk-y0", y0 + "vh");
+      rk.style.setProperty("--rk-y1", y1 + "vh");
+      rk.style.setProperty("--rk-rot", rot + "deg");
+      rk.style.setProperty("--rk-dur", dur + "s");
+      rk.classList.remove("fly");
+      void rk.offsetWidth;   // reflow so the animation can restart
+      rk.classList.add("fly");
+    }
+    rk.addEventListener("animationend", function () { rk.classList.remove("fly"); });
+
+    function schedule() {
+      var wait = 14000 + Math.random() * 16000;   // every ~14–30s
+      setTimeout(function () {
+        if (!document.hidden) launch();
+        schedule();
+      }, wait);
+    }
+    setTimeout(launch, 2600);   // first flyby shortly after load
+    schedule();
+
+    // fun: click the brand dot to launch on demand
+    var dot = document.querySelector(".brand .dot");
+    if (dot) { dot.style.cursor = "pointer"; dot.parentElement.addEventListener("dblclick", launch); }
+  })();
 
   /* ---------- MISC ---------- */
   document.getElementById("year").textContent = new Date().getFullYear();

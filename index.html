@@ -235,6 +235,9 @@
   .logo-row a{flex:0 0 auto;width:120px;height:70px;border-radius:12px;overflow:hidden;border:1px solid var(--border);background:var(--surface);filter:grayscale(.4);opacity:.85;transition:transform .3s,filter .3s,opacity .3s}
   .logo-row a:hover{transform:translateY(-5px);filter:grayscale(0);opacity:1}
   .logo-row img{width:100%;height:100%;object-fit:cover}
+  .logo-row a.txt{display:grid;place-items:center;text-align:center;padding:.4rem;filter:none;opacity:1;background:var(--surface-2)}
+  .logo-row a.txt b{font-family:'Space Grotesk';font-size:.92rem;color:var(--text);line-height:1.15}
+  .logo-row a.txt span{display:block;font-size:.62rem;color:var(--text-faint);letter-spacing:.06em;text-transform:uppercase;margin-top:2px}
 
   /* ============================ PARALLAX BANNER ============================ */
   .parallax{position:relative;min-height:60vh;display:grid;place-items:center;overflow:hidden;text-align:center}
@@ -296,6 +299,28 @@
   .back-top.show{opacity:1;pointer-events:auto}
   .back-top:hover{transform:translateY(-4px)}
 
+  /* ============================ FLYING ROCKET ============================ */
+  #flying-rocket{
+    position:fixed;top:0;left:0;z-index:1500;pointer-events:none;
+    font-size:2rem;line-height:1;will-change:transform;opacity:0;
+    display:flex;align-items:center;gap:.35rem;filter:drop-shadow(0 4px 14px var(--accent-glow));
+  }
+  #flying-rocket.fly{animation:rocketFly var(--rk-dur,6s) linear forwards}
+  #flying-rocket .rk-body{display:inline-block;transform:rotate(45deg)}      /* 🚀 points up-right by default */
+  #flying-rocket .rk-trail{
+    width:70px;height:5px;border-radius:5px;order:-1;
+    background:linear-gradient(90deg,transparent,var(--accent),#fff);
+    box-shadow:0 0 12px var(--accent);opacity:.85;
+  }
+  /* travels left→right across the viewport with a gentle vertical drift */
+  @keyframes rocketFly{
+    0%{opacity:0;transform:translate(-14vw,var(--rk-y0,20vh)) rotate(var(--rk-rot,-4deg))}
+    8%{opacity:1}
+    92%{opacity:1}
+    100%{opacity:0;transform:translate(114vw,var(--rk-y1,-10vh)) rotate(var(--rk-rot,-4deg))}
+  }
+  @media (prefers-reduced-motion: reduce){ #flying-rocket{display:none} }
+
   /* ============================ REVEAL ANIMATIONS ============================ */
   .reveal{opacity:0;transform:translateY(38px);transition:opacity .8s cubic-bezier(.2,.8,.2,1),transform .8s cubic-bezier(.2,.8,.2,1)}
   .reveal.in{opacity:1;transform:none}
@@ -312,6 +337,9 @@
 
 <body id="top">
   <div id="preloader"><div class="loader-ring"></div></div>
+
+  <!-- flying rocket easter-egg -->
+  <div id="flying-rocket" aria-hidden="true"><span class="rk-trail"></span><span class="rk-body">🚀</span></div>
 
   <!-- ============ NAV ============ -->
   <nav id="nav">
@@ -337,7 +365,7 @@
   <header class="hero" id="home">
     <div class="hero-bg" data-parallax="0.3"></div>
     <div class="hero-content">
-      <span class="eyebrow"><span class="live"></span>Open for work</span>
+      <span class="eyebrow"><span class="live"></span>Launch Engineer @ Stoke Space</span>
       <h1>I am <span class="grad">Nitish Chennoju</span></h1>
       <div class="typed-wrap"><span id="typed"></span><span class="typed-cursor">|</span></div>
       <div class="hero-cta">
@@ -372,7 +400,7 @@
         </div>
         <div class="reveal d1">
           <p class="about-lead">
-            I'm a passionate engineer pursuing a career at the junction of <strong>Aerospace, Electrical, and Computer Science</strong>, with a degree in Computer Science &amp; Engineering from UC Irvine. I have experience designing, testing, and operating avionics systems in launch vehicles for companies such as <strong>SpaceX</strong>, <strong>Relativity</strong>, and <strong>Blue Origin</strong>.
+            I'm a passionate engineer working at the junction of <strong>Aerospace, Electrical, and Computer Science</strong>, with a degree in Computer Science &amp; Engineering from UC Irvine. I've designed, tested, and operated avionics, DAQ, and instrumentation systems for launch vehicles and autonomous aircraft at <strong>Stoke Space</strong>, <strong>Mach Industries</strong>, <strong>Blue Origin</strong>, <strong>SpaceX</strong>, and <strong>Relativity Space</strong>.
             <br><br>
             I'm always building <a href="#projects">personal projects</a>, completed <a href="https://furi.engineering.asu.edu/participant/chennoju-nitish/" target="_blank" rel="noopener">electric-aircraft research</a> with the Fulton Undergraduate Research Initiative at Arizona State, <a href="https://opennetworking.org/interns/nitish-chennoju/" target="_blank" rel="noopener">interned</a> at the Open Networking Foundation and Relativity Space, and was Chief Engineer of the <a href="#rocket">UCI Rocket Project</a>.
             <br><br>
@@ -393,7 +421,7 @@
       <div class="stats">
         <div class="stat reveal"><div class="num" data-count="30">0</div><div class="lbl">Projects Completed</div></div>
         <div class="stat reveal d1"><div class="num" data-count="9">0</div><div class="lbl">Clubs &amp; Teams</div></div>
-        <div class="stat reveal d2"><div class="num" data-count="3" data-suffix="+">0</div><div class="lbl">Space Companies</div></div>
+        <div class="stat reveal d2"><div class="num" data-count="5">0</div><div class="lbl">Aerospace Companies</div></div>
         <div class="stat reveal d3"><div class="num" data-count="9300" data-suffix="'">0</div><div class="lbl">Rocket Apogee</div></div>
       </div>
     </div>
@@ -408,6 +436,8 @@
         <div class="line"></div>
       </div>
       <div class="logo-row reveal">
+        <a class="txt" href="https://www.stokespace.com/" target="_blank" rel="noopener"><span></span><b>Stoke&nbsp;Space</b><span>Launch Eng.</span></a>
+        <a class="txt" href="https://www.machindustries.com/" target="_blank" rel="noopener"><span></span><b>Mach&nbsp;Industries</b><span>Flight Test</span></a>
         <a href="https://www.blueorigin.com/" target="_blank" rel="noopener"><img src="img/employment/blue.jpg" alt="Blue Origin"></a>
         <a href="https://www.spacex.com/" target="_blank" rel="noopener"><img src="img/employment/spx.jpg" alt="SpaceX"></a>
         <a href="https://www.relativityspace.com/" target="_blank" rel="noopener"><img src="img/employment/relativity.jpg" alt="Relativity Space"></a>
@@ -516,7 +546,7 @@
         <span class="kicker">Say hello</span>
         <h2>Get In Touch</h2>
         <div class="line"></div>
-        <p>I'm currently open for work. Whether it's avionics, test engineering, or something ambitious — let's talk.</p>
+        <p>Whether it's avionics, DAQ &amp; instrumentation, test engineering, or something ambitious — I'd love to talk.</p>
       </div>
       <a class="btn btn-primary" href="mailto:nchennoju@gmail.com"><i class="fa fa-envelope"></i> nchennoju@gmail.com</a>
       <div class="socials" style="justify-content:center;margin-top:2rem">
