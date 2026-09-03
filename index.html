@@ -1,696 +1,542 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="dark">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content= "width=device-width, user-scalable=no">
-  <title>Nitish Chennoju</title>
-  <meta name=”description” content="Nitish Chennoju is a 4th year at UC Irvine pursuing a career in the junction of Aerospace, Electrical, and Computer Science. He strives to learn about new technologies and apply his unique skillset in engineering. He has completed several projects and participated in undergraduate research to optimize propulsion setups.">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Nitish Chennoju — Avionics &amp; Aerospace Engineer</title>
+  <meta name="description" content="Nitish Chennoju — avionics, aerospace &amp; software engineer. Launch operations at Blue Origin, ex-SpaceX, former UCI Rocket Project Chief Engineer. Designing, testing &amp; operating avionics for launch vehicles.">
+  <meta name="author" content="Nitish Chennoju">
+  <meta name="keywords" content="Nitish Chennoju, avionics, aerospace, SpaceX, Blue Origin, UCI Rocket Project, engineer, portfolio">
 
-  <meta content="" name="keywords">
-  <meta content="" name="description">
+  <!-- Open Graph -->
+  <meta property="og:title" content="Nitish Chennoju — Avionics &amp; Aerospace Engineer">
+  <meta property="og:description" content="Launch avionics, rocketry, and autonomous systems. Explore my work.">
+  <meta property="og:type" content="website">
+  <meta property="og:image" content="img/me.jpg">
 
-  <!-- Favicons -->
   <link href="img/favicon.png" rel="icon">
-
-  <!-- Bootstrap CSS File -->
-  <link href="lib/bootstrap/css/bootstrap.min.css" rel="stylesheet">
-
-  <!-- Libraries CSS Files -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link href="lib/font-awesome/css/font-awesome.min.css" rel="stylesheet">
-  <link href="lib/animate/animate.min.css" rel="stylesheet">
-  <link href="lib/ionicons/css/ionicons.min.css" rel="stylesheet">
-  <link href="lib/owlcarousel/assets/owl.carousel.min.css" rel="stylesheet">
-  <link href="lib/lightbox/css/lightbox.min.css" rel="stylesheet">
 
-  <!-- Main Stylesheet File -->
-  <link href="css/style-sky-blue.css" rel="stylesheet">
+  <!-- Plotly for live telemetry charts -->
+  <script src="https://cdn.plot.ly/plotly-2.32.0.min.js" charset="utf-8"></script>
 
-  <!-- =======================================================
-    Theme Name: DevFolio
-    Theme URL: https://bootstrapmade.com/devfolio-bootstrap-portfolio-html-template/
-    Author: BootstrapMade.com
-    License: https://bootstrapmade.com/license/
-  ======================================================= -->
+  <style>
+  /* ============================ THEME TOKENS ============================ */
+  :root{
+    --bg:            #0b0e14;
+    --bg-2:          #11151f;
+    --surface:       #161b28;
+    --surface-2:     #1d2434;
+    --border:        rgba(255,255,255,.09);
+    --text:          #e8ecf4;
+    --text-dim:      #9aa6bd;
+    --text-faint:    #6b7488;
+    --accent:        #47abec;
+    --accent-2:      #7c5cff;
+    --accent-glow:   rgba(71,171,236,.35);
+    --shadow:        0 18px 50px rgba(0,0,0,.45);
+    --nav-bg:        rgba(11,14,20,.72);
+    --overlay:       rgba(8,10,16,.62);
+    --plot-paper:    rgba(0,0,0,0);
+    --plot-grid:     rgba(255,255,255,.08);
+    color-scheme: dark;
+  }
+  [data-theme="light"]{
+    --bg:            #f4f6fb;
+    --bg-2:          #eaeef7;
+    --surface:       #ffffff;
+    --surface-2:     #f0f3fa;
+    --border:        rgba(10,20,40,.10);
+    --text:          #10151f;
+    --text-dim:      #47536b;
+    --text-faint:    #7b869c;
+    --accent:        #1f7fd0;
+    --accent-2:      #6039ff;
+    --accent-glow:   rgba(31,127,208,.25);
+    --shadow:        0 18px 45px rgba(30,50,90,.15);
+    --nav-bg:        rgba(255,255,255,.78);
+    --overlay:       rgba(255,255,255,.45);
+    --plot-paper:    rgba(0,0,0,0);
+    --plot-grid:     rgba(10,20,40,.10);
+    color-scheme: light;
+  }
 
-  <style type="text/css">
-  	.links img{
-  		padding: 2%;
-  		border-radius: 30%;
-  	}
+  *{margin:0;padding:0;box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  @media (prefers-reduced-motion: reduce){
+    html{scroll-behavior:auto}
+    *{animation-duration:.001ms !important;transition-duration:.001ms !important}
+  }
+  body{
+    font-family:'Inter',system-ui,sans-serif;
+    background:var(--bg);
+    color:var(--text);
+    line-height:1.65;
+    overflow-x:hidden;
+    transition:background .5s ease,color .5s ease;
+    -webkit-font-smoothing:antialiased;
+  }
+  h1,h2,h3,h4,.brand{font-family:'Space Grotesk',sans-serif;font-weight:700;letter-spacing:-.02em;line-height:1.1}
+  a{color:var(--accent);text-decoration:none;transition:color .2s}
+  a:hover{color:var(--accent-2)}
+  section{position:relative}
+  .container{width:min(1160px,92vw);margin:0 auto}
+  .accent{color:var(--accent)}
 
-  	.about-img img{
-  		border-radius: 7%;
-  	}
+  /* ============================ NAV ============================ */
+  nav{
+    position:fixed;top:0;left:0;right:0;z-index:1000;
+    background:transparent;
+    transition:background .4s ease,box-shadow .4s ease,padding .3s ease,backdrop-filter .4s;
+    padding:18px 0;
+  }
+  nav.scrolled{
+    background:var(--nav-bg);
+    backdrop-filter:saturate(160%) blur(14px);
+    -webkit-backdrop-filter:saturate(160%) blur(14px);
+    box-shadow:0 6px 24px rgba(0,0,0,.18);
+    padding:11px 0;
+    border-bottom:1px solid var(--border);
+  }
+  .nav-inner{display:flex;align-items:center;justify-content:space-between}
+  .brand{font-size:1.5rem;color:var(--text);display:flex;align-items:center;gap:.5rem}
+  .brand .dot{width:11px;height:11px;border-radius:50%;background:var(--accent);box-shadow:0 0 14px var(--accent-glow);animation:pulse 2.4s infinite}
+  @keyframes pulse{0%,100%{transform:scale(1);opacity:1}50%{transform:scale(1.35);opacity:.6}}
+  .nav-links{display:flex;align-items:center;gap:.35rem;list-style:none}
+  .nav-links a{
+    color:var(--text-dim);font-weight:500;font-size:.94rem;padding:.5rem .85rem;border-radius:9px;
+    position:relative;transition:color .2s,background .2s;
+  }
+  .nav-links a:hover,.nav-links a.active{color:var(--text);background:var(--surface)}
+  .nav-links a.active::after{
+    content:"";position:absolute;left:15%;right:15%;bottom:2px;height:2px;border-radius:2px;
+    background:linear-gradient(90deg,var(--accent),var(--accent-2));
+  }
+  .theme-toggle{
+    background:var(--surface);border:1px solid var(--border);color:var(--text);
+    width:42px;height:42px;border-radius:11px;cursor:pointer;font-size:1.05rem;
+    display:grid;place-items:center;transition:transform .3s,background .3s,border-color .3s;
+  }
+  .theme-toggle:hover{transform:rotate(15deg) scale(1.06);border-color:var(--accent)}
+  .nav-tools{display:flex;align-items:center;gap:.7rem}
+  .burger{display:none;background:none;border:0;color:var(--text);font-size:1.5rem;cursor:pointer;width:42px;height:42px}
 
-  	.nextbutton:hover{
-  		background-color: #4CAF50;
-  	}
+  @media(max-width:860px){
+    .nav-links{
+      position:fixed;inset:0 0 0 auto;width:min(78vw,320px);flex-direction:column;justify-content:center;
+      gap:1rem;background:var(--bg-2);padding:2rem;transform:translateX(100%);transition:transform .38s cubic-bezier(.7,0,.2,1);
+      box-shadow:var(--shadow);align-items:flex-start;
+    }
+    .nav-links.open{transform:translateX(0)}
+    .nav-links a{font-size:1.15rem;width:100%}
+    .burger{display:grid;place-items:center}
+  }
+
+  /* ============================ HERO ============================ */
+  .hero{
+    min-height:100svh;display:grid;place-items:center;text-align:center;position:relative;overflow:hidden;
+    padding:6rem 0 4rem;
+  }
+  .hero-bg{
+    position:absolute;inset:-10% 0;z-index:0;
+    background:url('css/rp_launch_hf.gif') center/cover no-repeat;
+    will-change:transform;filter:saturate(1.05);
+  }
+  .hero-bg::after{content:"";position:absolute;inset:0;background:
+    linear-gradient(180deg,var(--overlay),var(--bg) 96%),radial-gradient(circle at 50% 30%,transparent,var(--bg) 78%)}
+  @media(max-width:640px){.hero-bg{background-image:url('css/rp_launch_hf_phone.gif')}}
+  .hero-content{position:relative;z-index:2;width:min(900px,92vw)}
+  .eyebrow{
+    display:inline-flex;align-items:center;gap:.5rem;font-size:.82rem;font-weight:600;letter-spacing:.14em;
+    text-transform:uppercase;color:var(--accent);background:var(--surface);border:1px solid var(--border);
+    padding:.45rem 1rem;border-radius:100px;margin-bottom:1.6rem;backdrop-filter:blur(6px);
+  }
+  .eyebrow .live{width:8px;height:8px;border-radius:50%;background:#39d98a;box-shadow:0 0 10px #39d98a;animation:pulse 1.8s infinite}
+  .hero h1{font-size:clamp(2.6rem,8vw,5.4rem);margin-bottom:1rem;text-shadow:0 4px 40px rgba(0,0,0,.5)}
+  .hero h1 .grad{background:linear-gradient(120deg,var(--accent),var(--accent-2));-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+  .typed-wrap{font-family:'Space Grotesk';font-size:clamp(1.05rem,3.4vw,1.6rem);color:var(--text);min-height:2em;margin-bottom:1.8rem;font-weight:500}
+  .typed-cursor{color:var(--accent);animation:blink 1s steps(1) infinite}
+  @keyframes blink{50%{opacity:0}}
+  .hero-cta{display:flex;gap:1rem;justify-content:center;flex-wrap:wrap;margin-top:.5rem}
+  .btn{
+    display:inline-flex;align-items:center;gap:.55rem;font-weight:600;font-size:.98rem;
+    padding:.85rem 1.7rem;border-radius:12px;cursor:pointer;border:1px solid transparent;transition:transform .25s,box-shadow .25s,background .25s;
+  }
+  .btn-primary{background:linear-gradient(120deg,var(--accent),var(--accent-2));color:#fff;box-shadow:0 10px 30px var(--accent-glow)}
+  .btn-primary:hover{transform:translateY(-3px);box-shadow:0 16px 40px var(--accent-glow);color:#fff}
+  .btn-ghost{background:var(--surface);border-color:var(--border);color:var(--text)}
+  .btn-ghost:hover{transform:translateY(-3px);border-color:var(--accent);color:var(--text)}
+  .scroll-ind{position:absolute;bottom:26px;left:50%;transform:translateX(-50%);z-index:2;color:var(--text-dim);font-size:1.4rem;animation:bob 2s infinite}
+  @keyframes bob{0%,100%{transform:translate(-50%,0)}50%{transform:translate(-50%,10px)}}
+
+  /* ============================ SECTION SHELL ============================ */
+  .section-pad{padding:6rem 0}
+  .section-head{text-align:center;margin-bottom:3.2rem}
+  .section-head .kicker{color:var(--accent);font-weight:600;letter-spacing:.14em;text-transform:uppercase;font-size:.82rem}
+  .section-head h2{font-size:clamp(2rem,5vw,3rem);margin:.6rem 0 .8rem}
+  .section-head .line{width:74px;height:4px;border-radius:4px;margin:0 auto;background:linear-gradient(90deg,var(--accent),var(--accent-2))}
+  .section-head p{color:var(--text-dim);max-width:620px;margin:1rem auto 0}
+
+  /* ============================ ABOUT ============================ */
+  .about-grid{display:grid;grid-template-columns:.9fr 1.3fr;gap:2.5rem;align-items:start}
+  @media(max-width:860px){.about-grid{grid-template-columns:1fr}}
+  .card{background:var(--surface);border:1px solid var(--border);border-radius:20px;padding:2rem;box-shadow:var(--shadow)}
+  .avatar{width:100%;max-width:280px;aspect-ratio:1;object-fit:cover;border-radius:20px;margin:0 auto 1.4rem;display:block;border:1px solid var(--border)}
+  .socials{display:flex;flex-wrap:wrap;gap:.6rem;justify-content:center;margin-bottom:1.5rem}
+  .socials a{width:46px;height:46px;border-radius:12px;background:var(--surface-2);display:grid;place-items:center;font-size:1.2rem;color:var(--text-dim);border:1px solid var(--border);transition:transform .25s,color .25s,border-color .25s}
+  .socials a:hover{transform:translateY(-4px);color:var(--accent);border-color:var(--accent)}
+  .skill{margin-bottom:1rem}
+  .skill-top{display:flex;justify-content:space-between;font-size:.9rem;font-weight:500;margin-bottom:.35rem}
+  .skill-top span:last-child{color:var(--accent)}
+  .bar{height:8px;border-radius:8px;background:var(--surface-2);overflow:hidden}
+  .bar > i{display:block;height:100%;width:0;border-radius:8px;background:linear-gradient(90deg,var(--accent),var(--accent-2));transition:width 1.3s cubic-bezier(.2,.8,.2,1)}
+  .about-lead{font-size:1.06rem;color:var(--text-dim)}
+  .about-lead strong,.about-lead a{color:var(--text)}
+  .about-lead a{border-bottom:1px solid var(--accent);transition:color .2s}
+  .about-lead a:hover{color:var(--accent)}
+  .badge-row{display:flex;flex-wrap:wrap;gap:.55rem;margin-top:1.4rem}
+  .badge{font-size:.82rem;font-weight:500;color:var(--text-dim);background:var(--surface-2);border:1px solid var(--border);padding:.4rem .9rem;border-radius:100px}
+
+  /* ============================ STATS ============================ */
+  .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:1.2rem;margin-top:3rem}
+  @media(max-width:720px){.stats{grid-template-columns:repeat(2,1fr)}}
+  .stat{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:1.6rem 1rem;text-align:center}
+  .stat .num{font-family:'Space Grotesk';font-size:clamp(1.9rem,5vw,2.7rem);font-weight:700;background:linear-gradient(120deg,var(--accent),var(--accent-2));-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+  .stat .lbl{color:var(--text-dim);font-size:.85rem;margin-top:.3rem}
+
+  /* ============================ EXPERIENCE TIMELINE ============================ */
+  .timeline{position:relative;max-width:920px;margin:0 auto;padding-left:0}
+  .timeline::before{content:"";position:absolute;left:50%;top:0;bottom:0;width:2px;background:linear-gradient(var(--accent),var(--accent-2));transform:translateX(-50%)}
+  .tl-item{position:relative;width:50%;padding:0 2.6rem 2.6rem;box-sizing:border-box}
+  .tl-item:nth-child(odd){left:0;text-align:right}
+  .tl-item:nth-child(even){left:50%;text-align:left}
+  .tl-item::after{content:"";position:absolute;top:6px;width:16px;height:16px;border-radius:50%;background:var(--bg);border:3px solid var(--accent);box-shadow:0 0 0 4px var(--bg-2)}
+  .tl-item:nth-child(odd)::after{right:-8px}
+  .tl-item:nth-child(even)::after{left:-8px}
+  .tl-card{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:1.4rem 1.5rem;box-shadow:var(--shadow);transition:transform .3s,border-color .3s}
+  .tl-card:hover{transform:translateY(-4px);border-color:var(--accent)}
+  .tl-card h3{font-size:1.12rem;color:var(--accent)}
+  .tl-card .when{font-size:.82rem;color:var(--text-faint);margin:.25rem 0 .7rem;font-weight:500}
+  .tl-card p{font-size:.93rem;color:var(--text-dim);margin-bottom:.7rem}
+  .tl-card ul{list-style:none;font-size:.9rem;color:var(--text-dim)}
+  .tl-card li{position:relative;padding-left:1.1rem;margin-bottom:.35rem}
+  .tl-card li::before{content:"▹";position:absolute;left:0;color:var(--accent)}
+  .tl-item:nth-child(odd) .tl-card ul{text-align:left}
+  @media(max-width:760px){
+    .timeline::before{left:9px}
+    .tl-item,.tl-item:nth-child(odd),.tl-item:nth-child(even){width:100%;left:0;text-align:left;padding:0 0 2.2rem 2.4rem}
+    .tl-item::after,.tl-item:nth-child(odd)::after,.tl-item:nth-child(even)::after{left:1px;right:auto}
+    .tl-item:nth-child(odd) .tl-card ul{text-align:left}
+  }
+  .logo-row{display:flex;flex-wrap:wrap;gap:1rem;justify-content:center;margin-bottom:3rem}
+  .logo-row a{flex:0 0 auto;width:120px;height:70px;border-radius:12px;overflow:hidden;border:1px solid var(--border);background:var(--surface);filter:grayscale(.4);opacity:.85;transition:transform .3s,filter .3s,opacity .3s}
+  .logo-row a:hover{transform:translateY(-5px);filter:grayscale(0);opacity:1}
+  .logo-row img{width:100%;height:100%;object-fit:cover}
+
+  /* ============================ PARALLAX BANNER ============================ */
+  .parallax{position:relative;min-height:60vh;display:grid;place-items:center;overflow:hidden;text-align:center}
+  .parallax .p-bg{position:absolute;inset:-15% 0;z-index:0;background-size:cover;background-position:center;will-change:transform}
+  .parallax .p-bg::after{content:"";position:absolute;inset:0;background:var(--overlay)}
+  .parallax .p-content{position:relative;z-index:2;width:min(760px,90vw);padding:3rem 0}
+  .parallax blockquote{font-family:'Space Grotesk';font-size:clamp(1.3rem,4vw,2.1rem);font-weight:600;color:#fff;text-shadow:0 3px 30px rgba(0,0,0,.6)}
+  .parallax cite{display:block;margin-top:1rem;color:#cfd8ea;font-style:normal;font-size:1rem}
+
+  /* ============================ PROJECTS ============================ */
+  .filters{display:flex;flex-wrap:wrap;gap:.55rem;justify-content:center;margin-bottom:2.4rem}
+  .filters button{
+    background:var(--surface);border:1px solid var(--border);color:var(--text-dim);font-weight:500;font-size:.88rem;
+    padding:.5rem 1.1rem;border-radius:100px;cursor:pointer;transition:all .25s;font-family:inherit;
+  }
+  .filters button:hover{color:var(--text);border-color:var(--accent)}
+  .filters button.active{background:linear-gradient(120deg,var(--accent),var(--accent-2));color:#fff;border-color:transparent}
+  .proj-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:1.5rem}
+  .proj{
+    background:var(--surface);border:1px solid var(--border);border-radius:18px;overflow:hidden;
+    display:flex;flex-direction:column;transition:transform .35s cubic-bezier(.2,.8,.2,1),box-shadow .35s,border-color .35s;
+  }
+  .proj:hover{transform:translateY(-8px);box-shadow:var(--shadow);border-color:var(--accent)}
+  .proj-img{aspect-ratio:16/10;overflow:hidden;position:relative;background:var(--surface-2)}
+  .proj-img img{width:100%;height:100%;object-fit:cover;transition:transform .6s}
+  .proj:hover .proj-img img{transform:scale(1.08)}
+  .proj-cat{position:absolute;top:.75rem;left:.75rem;font-size:.72rem;font-weight:600;text-transform:uppercase;letter-spacing:.05em;background:var(--nav-bg);backdrop-filter:blur(8px);color:var(--accent);padding:.3rem .7rem;border-radius:100px;border:1px solid var(--border)}
+  .proj-body{padding:1.25rem 1.35rem 1.5rem;flex:1;display:flex;flex-direction:column}
+  .proj-body h3{font-size:1.12rem;margin-bottom:.5rem}
+  .proj-body .date{font-size:.78rem;color:var(--text-faint);margin-bottom:.6rem;font-weight:500}
+  .proj-body p{font-size:.9rem;color:var(--text-dim);flex:1}
+  .proj-links{display:flex;gap:1rem;margin-top:1rem;font-size:.85rem;font-weight:600}
+  .proj-links a{display:inline-flex;align-items:center;gap:.35rem}
+  .load-more-wrap{text-align:center;margin-top:2.5rem}
+
+  /* ============================ PLOTS ============================ */
+  .plot-tabs{display:flex;flex-wrap:wrap;gap:.5rem;justify-content:center;margin-bottom:1.6rem}
+  .plot-tabs button{background:var(--surface);border:1px solid var(--border);color:var(--text-dim);font-family:inherit;font-weight:500;font-size:.9rem;padding:.55rem 1.2rem;border-radius:10px;cursor:pointer;transition:all .25s}
+  .plot-tabs button.active{background:var(--accent);color:#fff;border-color:transparent}
+  .plot-card{background:var(--surface);border:1px solid var(--border);border-radius:18px;padding:1.4rem;box-shadow:var(--shadow)}
+  .plot-panel{display:none}
+  .plot-panel.active{display:block;animation:fadeUp .5s ease}
+  .plot-box{width:100%;height:440px}
+  @media(max-width:640px){.plot-box{height:340px}}
+  .plot-note{color:var(--text-dim);font-size:.9rem;margin-top:1rem;text-align:center}
+
+  /* ============================ CONTACT / FOOTER ============================ */
+  .contact{text-align:center}
+  .contact .btn{margin-top:.4rem}
+  footer{border-top:1px solid var(--border);padding:2.4rem 0;text-align:center;color:var(--text-faint);font-size:.88rem}
+  footer .socials{margin-bottom:1.2rem}
+  footer a.old{color:var(--text-dim)}
+
+  .back-top{
+    position:fixed;bottom:24px;right:24px;z-index:900;width:48px;height:48px;border-radius:14px;border:1px solid var(--border);
+    background:var(--accent);color:#fff;display:grid;place-items:center;font-size:1.15rem;cursor:pointer;opacity:0;pointer-events:none;
+    transition:opacity .3s,transform .3s;box-shadow:0 8px 24px var(--accent-glow);
+  }
+  .back-top.show{opacity:1;pointer-events:auto}
+  .back-top:hover{transform:translateY(-4px)}
+
+  /* ============================ REVEAL ANIMATIONS ============================ */
+  .reveal{opacity:0;transform:translateY(38px);transition:opacity .8s cubic-bezier(.2,.8,.2,1),transform .8s cubic-bezier(.2,.8,.2,1)}
+  .reveal.in{opacity:1;transform:none}
+  .reveal.d1{transition-delay:.08s}.reveal.d2{transition-delay:.16s}.reveal.d3{transition-delay:.24s}.reveal.d4{transition-delay:.32s}
+  @keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:none}}
+
+  /* preloader */
+  #preloader{position:fixed;inset:0;background:var(--bg);z-index:2000;display:grid;place-items:center;transition:opacity .6s}
+  #preloader.done{opacity:0;pointer-events:none}
+  .loader-ring{width:52px;height:52px;border:4px solid var(--surface-2);border-top-color:var(--accent);border-radius:50%;animation:spin 1s linear infinite}
+  @keyframes spin{to{transform:rotate(360deg)}}
   </style>
 </head>
 
-<body id="page-top">
+<body id="top">
+  <div id="preloader"><div class="loader-ring"></div></div>
 
-  <!--/ Nav Star /-->
-  <nav class="navbar navbar-b navbar-trans navbar-expand-md fixed-top" id="mainNav">
-    <div class="container">
-      <a class="navbar-brand js-scroll" href="#page-top">NC</a>
-      <button class="navbar-toggler collapsed" type="button" data-toggle="collapse" data-target="#navbarDefault"
-        aria-controls="navbarDefault" aria-expanded="false" aria-label="Toggle navigation">
-        <span></span>
-        <span></span>
-        <span></span>
-      </button>
-      <div class="navbar-collapse collapse justify-content-end" id="navbarDefault">
-        <ul class="navbar-nav">
-          <li class="nav-item">
-            <a class="nav-link js-scroll active" href="#home">Home</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link js-scroll" href="#about">About</a>
-          </li>
-          <a class="nav-link js-scroll">|</a>
-          <li class="nav-item">
-            <a class="nav-link js-scroll" href="ucirocketproject.html">UCI Rocket Project</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link js-scroll" href="projects.html">Projects</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link js-scroll" href="projects.html#blog">Blog</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link js-scroll" href="mailto:nchennoju@gmail.com">Contact</a>
-          </li>
+  <!-- ============ NAV ============ -->
+  <nav id="nav">
+    <div class="container nav-inner">
+      <a href="#top" class="brand"><span class="dot"></span>Nitish&nbsp;Chennoju</a>
+      <div class="nav-tools">
+        <ul class="nav-links" id="navLinks">
+          <li><a href="#top" class="active">Home</a></li>
+          <li><a href="#about">About</a></li>
+          <li><a href="#experience">Experience</a></li>
+          <li><a href="#rocket">UCI Rocket</a></li>
+          <li><a href="#data">Data</a></li>
+          <li><a href="#projects">Projects</a></li>
+          <li><a href="#contact">Contact</a></li>
         </ul>
+        <button class="theme-toggle" id="themeToggle" aria-label="Toggle light/dark theme"><i class="fa fa-moon-o"></i></button>
+        <button class="burger" id="burger" aria-label="Menu"><i class="fa fa-bars"></i></button>
       </div>
     </div>
   </nav>
-  <!--/ Nav End /-->
 
-  <!--/ Intro Skew Star /-->
-  <div id="home" class="intro route bg-image intro-bg">
-    <div class="overlay-itro"></div>
-    <div class="intro-content display-table">
-      <div class="table-cell">
-        <div class="container">
-          <!--<p class="display-6 color-d">Hello, world!</p>-->
-          <h1 class="intro-title mb-4">I am Nitish Chennoju</h1>
-          <p class="intro-subtitle"><span class="text-slider-items">Blue Origin Avionics Launch Ops,Ex-SpaceX,Former UCI Rocket Project Chief Engineer,Undergrad Researcher,Computer Science and Engineering Major,Former UCI UAV Forge Navigation Lead,Former ASU Rocketry Outreach Coordinator,Former ASU Rocketry Avionics Lead,Software Developer,Aerospace Enthusiast,Maker,Former High School Rocketry Club President,Troop 390 Eagle Scout</span><strong class="text-slider"></strong></p>
-          <p class="pt-3"><a class="btn btn-primary btn js-scroll px-4 button" href="downloads/resume.pdf" download="Nitish_Resume" target="_blank" role="button">Resume</a></p>
-          <p class="intro-subtitle">Here's my resume if you're in a rush, otherwise, enjoy!</p>
-        </div>
+  <!-- ============ HERO ============ -->
+  <header class="hero" id="home">
+    <div class="hero-bg" data-parallax="0.3"></div>
+    <div class="hero-content">
+      <span class="eyebrow"><span class="live"></span>Open for work</span>
+      <h1>I am <span class="grad">Nitish Chennoju</span></h1>
+      <div class="typed-wrap"><span id="typed"></span><span class="typed-cursor">|</span></div>
+      <div class="hero-cta">
+        <a class="btn btn-primary" href="downloads/resume.pdf" download="Nitish_Resume" target="_blank"><i class="fa fa-download"></i> Résumé</a>
+        <a class="btn btn-ghost" href="#projects"><i class="fa fa-rocket"></i> See my work</a>
       </div>
     </div>
-  </div>
-  <!--/ Intro Skew End /-->
+    <a href="#about" class="scroll-ind" aria-label="Scroll down"><i class="fa fa-angle-down"></i></a>
+  </header>
 
-  <section id="about" class="about-mf sect-pt4 route">
+  <!-- ============ ABOUT ============ -->
+  <section class="section-pad" id="about">
     <div class="container">
-      <div class="row">
-        <div class="col-sm-12">
-          <div class="box-shadow-full">
-            <div class="row">
-              <div class="col-md-5">
-                
-                <div class="skill-mf">
-                  <!--<p class="title-s">Skills</p>-->
-                  <div class="links">
-                    <a href="https://www.linkedin.com/in/nitish-chennoju" target="_blank"><img src="img/linkedinIcon.png" height="50px"></a>
-                    <a href="https://github.com/nchennoju" target="_blank"><img src="img/githubIcon.png" height="50px"></a>
-                    <a href="https://www.youtube.com/@nitishchennoju5427" target="_blank"><img src="img/youtubeIcon.png" height="50px"></a>
-                    <a href="https://engineering.uci.edu/news/2023/6/uci-students-launch-cutting-edge-methalox-rocket" target="_blank"><img src="img/uciIcon.png" height="50px"></a>
-                    <a href="https://grabcad.com/nitish.chennoju-1" target="_blank"><img src="img/grabcadIcon.png" height="50px"></a>
-                    <a href="downloads/resume.pdf" download="Nitish_Resume" target="_blank"><img src="img/resumeIcon.png" height="50px"></a>
-                    <!--<a href="mailto:nchennoju@gmail.com"><img src="img/gmailIcon.png" height="50px"></a>-->
-                  </div>
-                  <span>Python</span> <span class="pull-right">85%</span>
-                  <div class="progress">
-                    <div class="progress-bar" role="progressbar" style="width: 85%;" aria-valuenow="85" aria-valuemin="0"
-                      aria-valuemax="100"></div>
-                  </div>
-                  <span>Java</span> <span class="pull-right">75%</span>
-                  <div class="progress">
-                    <div class="progress-bar" role="progressbar" style="width: 75%" aria-valuenow="75" aria-valuemin="0"
-                      aria-valuemax="100"></div>
-                  </div>
-                  <span>SolidWorks</span> <span class="pull-right">50%</span>
-                  <div class="progress">
-                    <div class="progress-bar" role="progressbar" style="width: 50%" aria-valuenow="50" aria-valuemin="0"
-                      aria-valuemax="100"></div>
-                  </div>
-                  <span>C++</span> <span class="pull-right">60%</span>
-                  <div class="progress">
-                    <div class="progress-bar" role="progressbar" style="width: 60%" aria-valuenow="60" aria-valuemin="0"
-                      aria-valuemax="100"></div>
-                  </div>
-                  <span>Arduino</span> <span class="pull-right">90%</span>
-                  <div class="progress">
-                    <div class="progress-bar" role="progressbar" style="width: 90%" aria-valuenow="90" aria-valuemin="0"
-                      aria-valuemax="100"></div>
-                  </div>
-                  <span>QML</span> <span class="pull-right">60%</span>
-                  <div class="progress">
-                    <div class="progress-bar" role="progressbar" style="width: 90%" aria-valuenow="90" aria-valuemin="0"
-                      aria-valuemax="100"></div>
-                  </div>
-                  <span>Nerd</span> <span class="pull-right">0x64%</span>
-                  <div class="progress">
-                    <div class="progress-bar" role="progressbar" style="width: 100%" aria-valuenow="100" aria-valuemin="0"
-                      aria-valuemax="100"></div>
-                  </div>
-                </div>
-              </div>
-              <div class="col-md-7">
-                <div class="about-me pt-4 pt-md-0">
-                  <!--<div class="title-box-2">
-                    <h5 class="title-left">
-                      About me
-                    </h5>
-                  </div>-->
-                  <p class="lead"  style="color: #aaa;">I'm a passionate engineer pursuing a career in the junction of Aerospace, Electrical, and Computer Science who's majored in Computer Science and Engineering at UC Irvine. I have experience designing, testing, and operating avionics systems in launch vehicles for companies such as SpaceX, Relativity, and Blue Origin. I am always working on several <u><a href="projects.html" target="_blank">personal projects⮐</u></a>  , completed <u><a href="https://furi.engineering.asu.edu/participant/chennoju-nitish/" target="_blank">electric aircraft research⮐</a></u>  with the Fulton Research Initiative (at Arizona State Univ), <u><a href="https://opennetworking.org/interns/nitish-chennoju/" target="_blank">interned⮐</a></u>  at the Open Network foundation and Relativity Space, and was the chief engineer of <u><a href="https://engineering.uci.edu/news/2023/6/uci-students-launch-cutting-edge-methalox-rocket" target="_blank">UCI Rocket Project⮐</a></u>.<br><br>I'm a <u><a href="https://youtu.be/-FHz-jZqo3k" target="_blank">quadcopter⮐</a></u>  / fixed wing pilot, a rocket enthusiast (hoping to get a level 1 certification soon), and someone who enjoys working on / developing <u><a href="https://youtu.be/W_EcyfvVpvw" target="_blank">custom autonomous vehicles⮐</a></u>. I'm a proud Eagle Scout who's built several <u><a href="https://littlefreelibrary.org/starting-a-little-free-library-boy-scout-success-stories/" target="_blank">book sharing boxes⮐ </a></u> around my neighborhood and have recently picked up the hobby of scifi reading. My favorite book at the moment is the Martian by Andy Weir.<br><br>At the moment, I am currently open for work.</p>
-                </div>
+      <div class="section-head reveal">
+        <span class="kicker">Who I am</span>
+        <h2>About Me</h2>
+        <div class="line"></div>
+      </div>
+      <div class="about-grid">
+        <div class="card reveal">
+          <img class="avatar" src="img/me.jpg" alt="Nitish Chennoju">
+          <div class="socials">
+            <a href="https://www.linkedin.com/in/nitish-chennoju" target="_blank" rel="noopener" aria-label="LinkedIn"><i class="fa fa-linkedin"></i></a>
+            <a href="https://github.com/nchennoju" target="_blank" rel="noopener" aria-label="GitHub"><i class="fa fa-github"></i></a>
+            <a href="https://www.youtube.com/@nitishchennoju5427" target="_blank" rel="noopener" aria-label="YouTube"><i class="fa fa-youtube-play"></i></a>
+            <a href="https://grabcad.com/nitish.chennoju-1" target="_blank" rel="noopener" aria-label="GrabCAD"><i class="fa fa-cube"></i></a>
+            <a href="mailto:nchennoju@gmail.com" aria-label="Email"><i class="fa fa-envelope"></i></a>
+          </div>
+          <div id="skills">
+            <!-- skill bars injected -->
+          </div>
+        </div>
+        <div class="reveal d1">
+          <p class="about-lead">
+            I'm a passionate engineer pursuing a career at the junction of <strong>Aerospace, Electrical, and Computer Science</strong>, with a degree in Computer Science &amp; Engineering from UC Irvine. I have experience designing, testing, and operating avionics systems in launch vehicles for companies such as <strong>SpaceX</strong>, <strong>Relativity</strong>, and <strong>Blue Origin</strong>.
+            <br><br>
+            I'm always building <a href="#projects">personal projects</a>, completed <a href="https://furi.engineering.asu.edu/participant/chennoju-nitish/" target="_blank" rel="noopener">electric-aircraft research</a> with the Fulton Undergraduate Research Initiative at Arizona State, <a href="https://opennetworking.org/interns/nitish-chennoju/" target="_blank" rel="noopener">interned</a> at the Open Networking Foundation and Relativity Space, and was Chief Engineer of the <a href="#rocket">UCI Rocket Project</a>.
+            <br><br>
+            I'm a <a href="https://youtu.be/-FHz-jZqo3k" target="_blank" rel="noopener">quadcopter</a> / fixed-wing pilot, a rocket enthusiast, and someone who enjoys developing <a href="https://youtu.be/W_EcyfvVpvw" target="_blank" rel="noopener">custom autonomous vehicles</a>. I'm a proud Eagle Scout who's built several <a href="https://littlefreelibrary.org/starting-a-little-free-library-boy-scout-success-stories/" target="_blank" rel="noopener">book-sharing boxes</a> around my neighborhood, and I've recently picked up sci-fi reading — my favorite at the moment is <em>The Martian</em> by Andy Weir.
+          </p>
+          <div class="badge-row">
+            <span class="badge">Avionics</span>
+            <span class="badge">Launch Operations</span>
+            <span class="badge">Test Engineering</span>
+            <span class="badge">DAQ &amp; Controls</span>
+            <span class="badge">Embedded Systems</span>
+            <span class="badge">Autonomous Vehicles</span>
+            <span class="badge">Eagle Scout</span>
+          </div>
+        </div>
+      </div>
 
-              </div>
+      <div class="stats">
+        <div class="stat reveal"><div class="num" data-count="30">0</div><div class="lbl">Projects Completed</div></div>
+        <div class="stat reveal d1"><div class="num" data-count="9">0</div><div class="lbl">Clubs &amp; Teams</div></div>
+        <div class="stat reveal d2"><div class="num" data-count="3" data-suffix="+">0</div><div class="lbl">Space Companies</div></div>
+        <div class="stat reveal d3"><div class="num" data-count="9300" data-suffix="'">0</div><div class="lbl">Rocket Apogee</div></div>
+      </div>
+    </div>
+  </section>
 
+  <!-- ============ EXPERIENCE ============ -->
+  <section class="section-pad" id="experience" style="background:var(--bg-2)">
+    <div class="container">
+      <div class="section-head reveal">
+        <span class="kicker">Where I've worked</span>
+        <h2>Experience</h2>
+        <div class="line"></div>
+      </div>
+      <div class="logo-row reveal">
+        <a href="https://www.blueorigin.com/" target="_blank" rel="noopener"><img src="img/employment/blue.jpg" alt="Blue Origin"></a>
+        <a href="https://www.spacex.com/" target="_blank" rel="noopener"><img src="img/employment/spx.jpg" alt="SpaceX"></a>
+        <a href="https://www.relativityspace.com/" target="_blank" rel="noopener"><img src="img/employment/relativity.jpg" alt="Relativity Space"></a>
+        <a href="https://engineering.uci.edu/news/2023/6/uci-students-launch-cutting-edge-methalox-rocket" target="_blank" rel="noopener"><img src="img/employment/ucirp.jpg" alt="UCI Rocket Project"></a>
+        <a href="https://opennetworking.org/interns/nitish-chennoju/" target="_blank" rel="noopener"><img src="img/employment/onf.jpg" alt="Open Networking Foundation"></a>
+        <a href="https://forge.engineering.asu.edu/furiproject/propulsion-data-acquisition/" target="_blank" rel="noopener"><img src="img/employment/asu.jpg" alt="ASU FURI"></a>
+      </div>
+      <div class="timeline" id="timeline"><!-- injected --></div>
+    </div>
+  </section>
 
+  <!-- ============ PARALLAX QUOTE ============ -->
+  <section class="parallax">
+    <div class="p-bg" data-parallax="0.25" style="background-image:url('img/index-bg.jpg')"></div>
+    <div class="p-content">
+      <blockquote id="quote">"I could either watch it happen or be a part of it."</blockquote>
+      <cite id="quote-author">— Elon Musk</cite>
+    </div>
+  </section>
 
-              
-
-
-
+  <!-- ============ UCI ROCKET ============ -->
+  <section class="section-pad" id="rocket">
+    <div class="container">
+      <div class="section-head reveal">
+        <span class="kicker">Chief Engineer, 2022–2023</span>
+        <h2>UCI Rocket Project</h2>
+        <div class="line"></div>
+        <p>I led UC Irvine's team through several cold flows, our longest-burn static fire, and the launch of UCI's first bipropellant liquid (methalox) rocket.</p>
+      </div>
+      <div class="about-grid" style="grid-template-columns:1.1fr .9fr">
+        <div class="reveal">
+          <div class="card">
+            <p class="about-lead" style="font-size:1rem">
+              I started at UCI Rocket Project as an <strong>avionics engineer</strong> after transferring from Arizona State, retrofitting the avionics to work with the developing engine and building GUIs to track engine state. Early noise issues with cheap RS485 chips caused random solenoid switching; combined with fluids issues (main valves freezing, chill problems), our first vertical static-fire attempt (VTF #1) was scrubbed.
+              <br><br>
+              I was then promoted to <strong>Chief Engineer</strong> and made myself a promise to see the project through to launch. I rebuilt the comms system on <strong>Ethernet</strong> — far more noise-resilient, and it let anyone on the launch network view engine status from any device. I set ambitious deadlines across subteams, got deeply involved in every subsystem, and became the prime contact for reviewing test data — cutting procedure run-time from a full day to 3–4 hours.
+              <br><br>
+              That paid off at <strong>VTF #2</strong>, the longest burn of the engine. We then packaged everything into a launch vehicle and launched UCI's first liquid rocket — a record <strong>13.5-second burn</strong> to an apogee of <strong>~9,300 ft</strong>. Unfortunately the struts snapped on parachute deployment, so recovery was only partial.
+            </p>
+          </div>
+          <div class="stats" style="grid-template-columns:repeat(3,1fr);margin-top:1.5rem">
+            <div class="stat reveal"><div class="num" data-count="9300" data-suffix="'">0</div><div class="lbl">Apogee (Launch)</div></div>
+            <div class="stat reveal d1"><div class="num" data-count="13" data-suffix=".5s">0</div><div class="lbl">Burn Time</div></div>
+            <div class="stat reveal d2"><div class="num" data-count="900" data-suffix="+ lbf">0</div><div class="lbl">Thrust (VTF)</div></div>
+          </div>
+        </div>
+        <div class="reveal d1">
+          <div class="card" style="padding:1rem">
+            <div style="position:relative;padding-bottom:56%;border-radius:12px;overflow:hidden">
+              <iframe style="position:absolute;inset:0;width:100%;height:100%;border:0" src="https://www.youtube.com/embed/EetdMjNPqK8" title="UCI Rocket Project launch" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
             </div>
+            <p style="text-align:center;color:var(--text-dim);font-size:.86rem;margin-top:.8rem">UCI's first methalox rocket launch</p>
+            <a class="btn btn-ghost" style="width:100%;justify-content:center;margin-top:.4rem" href="ucirocketproject.html"><i class="fa fa-external-link"></i> Full project deep-dive</a>
           </div>
         </div>
       </div>
     </div>
   </section>
 
-
-
-  <!--/ Section RESEARCH /-->
-  <br><br>
-  <section id="experience" class="services-mf route" style="">
+  <!-- ============ DATA / PLOTS ============ -->
+  <section class="section-pad" id="data" style="background:var(--bg-2)">
     <div class="container">
-      <div class="row">
-        <div class="col-sm-12">
-          <div class="title-box text-center">
-            <h3 class="title-a">
-              Experience
-            </h3>
-            <div class="line-mf"></div>
-          </div>
-        </div>
+      <div class="section-head reveal">
+        <span class="kicker">Telemetry &amp; analysis</span>
+        <h2>Flight Data</h2>
+        <div class="line"></div>
+        <p>I love turning raw sensor streams into insight. Below are interactive plots — pan, zoom, and hover. Full-resolution launch &amp; test-fire telemetry is linked at the bottom.</p>
       </div>
-
-      <!--timeline-->
-      <style  type="text/css">
-        :root {
-          --primary-color: #111;
-          --background-color: #111;
-          --font: sans-serif;
-        }
-
-        * {
-          margin: 0;
-          padding: 0;
-        }
-
-        body {
-          background: var(--background-color);
-          /*font-family: var(--font);
-          //display: flex;
-          //justify-content: center;*/
-        }
-
-        /* Timeline Container */
-        .timeline {
-          background: var(--primary-color);
-          margin: 20px auto;
-          padding: 20px;
-        }
-
-        /* Card container */
-        .card_timeline {
-          position: relative;
-          max-width: 1000px;
-        }
-
-        /* setting padding based on even or odd */
-        .card_timeline:nth-child(odd) {
-          padding: 30px 0 30px 30px;
-        }
-        .card_timeline:nth-child(even) {
-          padding: 30px 30px 30px 0;
-        }
-        /* Global ::before */
-        .card_timeline::before {
-          content: "";
-          position: absolute;
-          width: 50%;
-          border: solid #47ABEC;
-        }
-
-        /* Setting the border of top, bottom, left */
-        .card_timeline:nth-child(odd)::before {
-          left: 0px;
-          top: -4.5px;
-          bottom: -4.5px;
-          border-width: 5px 0 5px 5px;
-          border-radius: 50px 0 0 50px;
-        }
-
-        /* Setting the top and bottom to "-5px" because earlier it was out of a pixel in mobile devices */
-        @media only screen and (max-width: 400px) {
-          .card_timeline:nth-child(odd)::before {
-            top: -5px;
-            bottom: -5px;
-          }
-        }
-
-        /* Setting the border of top, bottom, right */
-        .card_timeline:nth-child(even)::before {
-          right: 0;
-          top: 0;
-          bottom: 0;
-          border-width: 5px 5px 5px 0;
-          border-radius: 0 50px 50px 0;
-        }
-
-        /* Removing the border if it is the first card */
-        .card_timeline:first-child::before {
-          border-top: 0;
-          border-top-left-radius: 0;
-        }
-
-        /* Removing the border if it is the last card  and it's odd */
-        .card_timeline:last-child:nth-child(odd)::before {
-          border-bottom: 0;
-          border-bottom-left-radius: 0;
-        }
-
-        /* Removing the border if it is the last card  and it's even */
-        .card_timeline:last-child:nth-child(even)::before {
-          border-bottom: 0;
-          border-bottom-right-radius: 0;
-        }
-
-        /* Information about the timeline */
-        .info {
-          display: flex;
-          flex-direction: column;
-          background: #333;
-          color: gray;
-          border-radius: 10px;
-          padding: 10px;
-        }
-
-        /* Title of the card */
-        .title {
-          color: #5394DA;
-          position: relative;
-        }
-
-        /* Timeline dot  */
-        .title::before {
-          content: "";
-          position: absolute;
-          width: 15px;
-          height: 15px;
-          background: white;
-          border-radius: 999px;
-          border: 3px solid #2d67ed;
-        }
-
-        /* text right if the card is even  */
-        .card_timeline:nth-child(even) > .info > .title {
-          text-align: right;
-        }
-
-        /* setting dot to the left if the card is odd */
-        .card_timeline:nth-child(odd) > .info > .title::before {
-          left: -45px;
-        }
-
-        /* setting dot to the right if the card is odd */
-        .card_timeline:nth-child(even) > .info > .title::before {
-          right: -45px;
-        }
-
-        .column_img {
-          float: left;
-          width: 16.667%;
-          padding: 30px;
-        }
-
-        .column_img img:hover {
-          opacity: 0.6;
-          transition: opacity 1s;
-        }
-
-        /* Clear floats after image containers */
-        .row_img::after {
-          content: "";
-          clear: both;
-          display: table;
-        }
-
-        @media screen and (max-width: 500px) {
-          .column_img {
-            width: 100%;
-          }
-        }
-      </style>
-
-
-      <div class="row_img">
-
-        <div class="column_img">
-          <a href="https://forge.engineering.asu.edu/furiproject/propulsion-data-acquisition/" target="_blank"><img src="img/employment/asu.jpg" alt="ASU" style="width:100%"></a>
-        </div>
-        <div class="column_img">
-          <a href="https://opennetworking.org/interns/nitish-chennoju/" target="_blank"><img src="img/employment/onf.jpg" alt="ONF" style="width:100%"></a>
-        </div>
-        <div class="column_img">
-          <a href="https://engineering.uci.edu/news/2023/6/uci-students-launch-cutting-edge-methalox-rocket" target="_blank"><img src="img/employment/ucirp.jpg" alt="UCI Rocket Project" style="width:100%"></a>
-        </div>
-        <div class="column_img">
-          <a href="https://www.relativityspace.com/" target="_blank"><img src="img/employment/relativity.jpg" alt="Relativity Space" style="width:100%"></a>
-        </div>
-        <div class="column_img">
-          <a href="https://www.spacex.com/" target="_blank"><img src="img/employment/spx.jpg" alt="SpaceX" style="width:100%"></a>
-        </div>
-        <div class="column_img">
-          <a href="https://www.blueorigin.com/" target="_blank"><img src="img/employment/blue.jpg" alt="Blue Origin" style="width:100%"></a>
-        </div>
+      <div class="plot-tabs reveal">
+        <button class="active" data-plot="alt">Launch Trajectory</button>
+        <button data-plot="thrust">VTF Thrust &amp; Chamber P</button>
+        <button data-plot="skills">Skill Radar</button>
       </div>
-
-
-
-
-      <div class="timeline" style="">
-        <div class="outer">
-
-          <div class="card_timeline">
-            <div class="info">
-              <h3 class="title">Blue Origin: Avionics Operations Engineer</h3>
-              <p>September 2024 - February 2025</p>
-              <p>I was hired at a busy time for Blue. A couple days into my hiring, Glenn Stage 2 (GS2) was attempting to be hot fired. I was fortunate to see New Glenn go through the its critical integration and testing pre-launch. I contributed to console panel & procedure development / automation while being on console for integration (checkouts and stage mate) and sat console as an INCO (instrumentation and control), in charge of all the data aquisition, network, telemetry/radios, and sensors. Here are my achievements shortened...</p>
-              <ul style="list-style-position: inside;">
-                 <li>Flight vehicle operations on console for integration + ILV hotfire + pre-launch (console trained for INCO position)</li>
-                 <li>Launch procedure automation and control panel development using IGS</li>
-                 <li>HITL development / validation</li>
-              </ul>
-            </div>
-          </div>
-
-
-          <div class="card_timeline">
-            <div class="info">
-              <h3 class="title">SpaceX: Avionics Test Engineer</h3>
-              <p style="text-align: right;">July 2023 - September 2024</p>
-              <p style="text-align: right;">I was hired at SpaceX right out of college and had a chance to witness the huge differences between collegiate rocketry and the leader of the private industry. As a test engineer, I designed test systems, increased accuracy of existing test systems, supported boxes through qual and acceptance testing (QTP/ATP), and contributed to the many changes required for Dragon to be capable of the mission criteria of Polaris Dawn (1st SpaceX spacewalk). Here are all my achievements shortened...</p>
-              <ul style="text-align: right; list-style-position: inside;">
-                 <li>Qualification and acceptance testing core avionics for Dragon and Falcon vehicles</li>
-                 <li> Automation of high pressure gas systems, rate tables, TVAC chambers, … & Test system bring-up</li>
-                 <li>Flight hardware avionics experience</li>
-                 <li> Increased test system accuracy by 4 x and decreased production time of tests systems by 50%</li>
-              </ul>
-            </div>
-          </div>
-
-          <div class="card_timeline">
-            <div class="info">
-              <h3 class="title">UCI Rocket Project: Chief Engineer</h3>
-              <p>June 2022 - June 2023</p>
-              <p>I'm incredibly proud of the team I was chief engineer to. The result of countless hours and sleepless nights resulted in UC Irvine's first methalox rocket launch. More details in UCI Rocket Project tab. Below are my accomplishments:</p>
-              <ul style="list-style-position: inside;">
-                 <li>Successful launch of UCI’s first bipropellant liquid rocket</li>
-                 <li>Successful vertical test firing of collegiate methalox engine (engine operator)</li>
-                 <li>Developed avionics network based communication system + Control GUI</li>
-                 <li>Wrote testing procedures for cold flow system verification + static fire + launch</li>
-              </ul>
-            </div>
-          </div>
-
-          <div class="card_timeline">
-            <div class="info">
-              <h3 class="title">Relativity Space: DACS Intern</h3>
-              <p style="text-align: right;">June 2022 - August 2022</p>
-              <p style="text-align: right;">Relativity space was my first professional experience in the private space industry. I helped develop avionics control boxes for test stands for Aeon 1 & R testing and had the chance to witness weekly hot fires of Aeon 1 + full duration mission cycle of Terran 1. Below are my accomplishments summarized...</p>
-              <ul style="text-align: right; list-style-position: inside;">
-                 <li>Designed data acquisitions and control systems (DACS) for component test stand using Beckhoff hardware</li>
-                 <li>Developed schlieren imaging system to detect gas leaks (and other CV scripts for flame detection, …)</li>
-                 <li>Wrote automation scripts for data management / video processing</li>
-                 <li>Developed solar construction time-lapse camera</li>
-              </ul>
-            </div>
-          </div>
-
-          <div class="card_timeline">
-            <div class="info">
-              <h3 class="title">UCI Rocket Project: Avionics Engineer</h3>
-              <p>June 2021 - June 2022</p>
-              <p>I joined the UCI rocket project to enhance their Avionics system while also learning enough about propulsion to serve as the bridge between our team and the rest of the project. As part of this role I developed...</p>
-              <ul style="list-style-position: inside;">
-                 <li>RJ485 based communication system</li>
-                 <li>Retrofitted original avioncis NI DACS system to function with the rocket</li>
-                 <li>Developed a teensyduino based engine control unit (ECU) + associated software</li>
-                 <li>Developed flight GUI for avionics flight intrumentation</li>
-                 <li>Developed engine GUI for engine operations (chill, fill, and fire)</li>
-              </ul>
-              <p><u><a href="https://drive.google.com/drive/folders/1udT4Hps2KXf1YbIb_Jzo_Spc2akwWJG8?usp=sharing" target="_blank">Click here for my journal⮐</a></u></p>
-            </div>
-          </div>
-
-          <div class="card_timeline">
-            <div class="info">
-              <h3 class="title">Open Networking Foundation: IoT 5G Intern</h3>
-              <p style="text-align: right;">August 2020 - March 2021</p>
-              <p style="text-align: right;">Developed an IoT project to demonstrate the power of Aether's 5G edge compute. The project was a fun modification on a developmental iRobot which was meant to showcase increased traffic through the newly developed Aether 5G network. Below are my accomplishments summarized...</p>
-              <ul style="text-align: right; list-style-position: inside;">
-                 <li>Evaluated IoT frameworks / communication platforms</li>
-                 <li>Interfaced with 5G modem to develop mobile IoT robot application</li>
-              </ul>
-            </div>
-          </div>
-
-          <div class="card_timeline">
-            <div class="info">
-              <h3 class="title">ASU: Fulton Undergraduate Research Initiative</h3>
-              <p>October 2019 - December 2020</p>
-              <p>This project is prompted by the lack of knowledge on fixed wing electric aircraft performance. Research is conducted via the development of instruments onboard a miniature electric aircraft platform. Instruments equipped measure thrust, angle of attack, orientation, altitude, airspeed, battery current/voltage, motor RPM/torque, and internal temperature. The functional suite of sensors onboard the aircraft logs performance characteristics onto a custom flight controller for post-flight analysis. As a result, electric aircrafts can be effectively tuned in throttling power which could be used to maximize an aircraft’s range or other aircraft performance features. <u><a href="https://forge.engineering.asu.edu/furiproject/propulsion-data-acquisition/" target="_blank">More info here⮐</a></u> </p>
-            </div>
-          </div>
-          
-        </div>
+      <div class="plot-card reveal d1">
+        <div class="plot-panel active" id="panel-alt"><div class="plot-box" id="plot-alt"></div></div>
+        <div class="plot-panel" id="panel-thrust"><div class="plot-box" id="plot-thrust"></div></div>
+        <div class="plot-panel" id="panel-skills"><div class="plot-box" id="plot-skills"></div></div>
+        <p class="plot-note">
+          Full interactive telemetry:
+          <a href="launch_plot.html" target="_blank" rel="noopener">Launch flight data ↗</a> &nbsp;·&nbsp;
+          <a href="vtf_plot.html" target="_blank" rel="noopener">Vertical Test Fire data ↗</a>
+        </p>
       </div>
-
-
     </div>
-
-
   </section>
 
-
-
-
-
-  <!--<iframe src="downloads/NitishChennoju_Resume.pdf" width="90%" height="700px" style="margin-left: 5%;">
-  </iframe>-->
-
-    <!--/ Section Testimonials Star /-->
-  <div class="testimonials paralax-mf bg-image" style="background-image: url(img/index-bg.jpg)">
-    <div class="overlay-mf"></div>
+  <!-- ============ PROJECTS ============ -->
+  <section class="section-pad" id="projects">
     <div class="container">
-      <div class="row">
-        <div class="col-md-12">
-          <div id="testimonial-mf" class="owl-carousel owl-theme">
-            <div class="testimonial-box">
-              <div class="author-test">
-                <img src="img/elon.png" alt="" class="rounded-circle b-shadow-a">
-                <span class="author">Elon Musk</span>
-              </div>
-              <div class="content-test">
-                <p class="description lead">
-                  I could either watch it happen or be a part of it.
-                </p>
-                <span class="comit"><i class="fa fa-quote-right"></i></span>
-              </div>
-            </div>
-            <div class="testimonial-box">
-              <div class="author-test">
-                <img src="img/einstein.jpg" alt="" class="rounded-circle b-shadow-a">
-                <span class="author">Albert Einstein</span>
-              </div>
-              <div class="content-test">
-                <p class="description lead">
-                  Once you stop learning, you start dying.
-                </p>
-                <span class="comit"><i class="fa fa-quote-right"></i></span>
-              </div>
-            </div>
-            <div class="testimonial-box">
-              <div class="author-test">
-                <img src="img/tesla.jpg" alt="" class="rounded-circle b-shadow-a">
-                <span class="author">Nikola Tesla</span>
-              </div>
-              <div class="content-test">
-                <p class="description lead">
-                  I have not failed. I've just found 10,000 was that won't work.
-                </p>
-                <span class="comit"><i class="fa fa-quote-right"></i></span>
-              </div>
-            </div>
-            <div class="testimonial-box">
-              <div class="author-test">
-                <img src="img/frizzle.png" alt="" class="rounded-circle b-shadow-a">
-                <span class="author">Ms. Frizzle</span>
-              </div>
-              <div class="content-test">
-                <p class="description lead">
-                  Take chances, make mistakes, get messy!
-                </p>
-                <span class="comit"><i class="fa fa-quote-right"></i></span>
-              </div>
-            </div>
-          </div>
-        </div>
+      <div class="section-head reveal">
+        <span class="kicker">Things I've built</span>
+        <h2>Projects</h2>
+        <div class="line"></div>
+        <p>30+ projects spanning rocketry, avionics, autonomous vehicles, embedded systems, web apps, and a few fun ones. Filter below.</p>
       </div>
+      <div class="filters reveal" id="filters"></div>
+      <div class="proj-grid" id="projGrid"></div>
+      <div class="load-more-wrap"><button class="btn btn-ghost" id="loadMore">Load more projects</button></div>
     </div>
-  </div>
-
-  
-
-
-  <!--/ Section RESEARCH /-->
-  <!--<br><br>
-  <section id="research" class="services-mf route" style="">
-    <div class="container">
-      <div class="row">
-        <div class="col-sm-12">
-          <div class="title-box text-center">
-            <h3 class="title-a">
-              Research
-            </h3>
-            <div class="line-mf"></div>
-          </div>
-        </div>
-      </div>
-      
-          <div class="container">
-            <div class="row">
-              <div class="col-sm-12">
-                <div class="box-shadow-full">
-                  <div class="row">
-                    <div class="col-md-6">
-                      <div class="row">
-                        <div class="about-img">
-                          <a href="downloads/furiPoster.jpg" data-lightbox="gallery-mf">
-                            <div class="work-img">
-                              <img src="downloads/furiPoster.jpg" class="img-fluid" alt="">
-                            </div>
-                          </a>
-                          <p style="text-align: center;">Figure 1: FURI Poster<br></p>
-                          <a href="img/Projects/pcb.jpg" data-lightbox="gallery-mf">
-                            <div class="work-img">
-                              <img src="img/Projects/pcb.jpg" class="img-fluid" alt="">
-                            </div>
-                          </a>
-                          <p style="text-align: center;">Figure 2: Flight Data Logger</p>
-                          <a href="img/Projects/code.png" data-lightbox="gallery-mf">
-                            <div class="work-img">
-                              <img src="img/Projects/code.png" class="img-fluid" alt="">
-                            </div>
-                          </a>
-                          <p style="text-align: center;">Figure 3: Arduino Code<br></p>
-                          <a href="img/Projects/code2.png" data-lightbox="gallery-mf">
-                            <div class="work-img">
-                              <img src="img/Projects/code2.png" class="img-fluid" alt="">
-                            </div>
-                          </a>
-                          <p style="text-align: center;">Figure 4: Java Filtration Program</p>
-                        </div>
-                      </div>
-                      
-
-                    </div>
-                    <div class="col-md-6">
-                      <div class="about-me pt-4 pt-md-0">
-                        <div class="title-box-2">
-                          <h5 class="title-left">
-                            Project Summary
-                          </h5>
-                        </div>
-                        <p class="lead">With the help of Professor Timothy Takahashi, I've been able to establish a research project with Arizona State's Fulton Undergraduate Research Initiative (FURI). As part of FURI, I have developed a flight controller and associated software capable of logging data regarding the flight of an aircraft. Using a combination of in-flight filtration and post-flight analysis, the objective of this project is to determine and optimize certain Aerodynamic features, mainly regarding the Thrust lapse of the aircraft.<br><br>The flight controller (fig 2) used to collect and log sensor data consists of the following sensors:<br></p>
-                        <ol class="lead">
-                          <li>IMU - 6 axis</li>
-                          <li>Barometer</li>
-                          <li>Pitot Tube</li>
-                          <li>Thrust Sensor (Load Cell)</li>
-                        </ol>
-                        <p class="lead"><br>The current setup collects data at a sampling rate of 100Hz (every 10ms) which gives users plenty of data to work with. All data collected is also logged onto a micro sd card which is analyzed post-flight.<br><br>Figures 3 and 4 are snippets of the two layers of code running. Figure 3 runs on the arduino to collect and log sensor data to the sd card. Figure 4 runs post flight on the SD card and simulates a digital and analog filter. This enables noisy analog data collected to be usable.<br><br>Although my research period with FURI is complete, I plan to continue enhancing this project to eventually include a virtual reconstruction of the aircraft's flight for further analysis considering thrust lapse data can be skewed by undersired aircraft manuvers.</p>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-
-    </div>
-  </section>-->
-  <!--/ Section Services End /-->
-
-	<a style="margin-left: 25%; margin-right: auto;" href="projects.html">
-		<button class="button" style="width: 50%; height: 70px; color: #fff; background-color: #2498e0;  margin-bottom: 1%;  margin-top: 5%">TO PROJECTS...</button>
-    <br>
-	</a>
-
-  <div style="margin-left: 45%; width: 10%; margin-right: auto; margin-top: 5%"><a href="https://www.freecounterstat.com" title="web counter"><img src="https://counter6.stat.ovh/private/freecounterstat.php?c=8nnn6p8n4un85m5k1nhreqg42mh3ru5t" border="0" title="web counter" alt="web counter"></a></div>
-
-  <!--/ Section Contact-Footer Star /-->
-  <section class="paralax-mf footer-paralax bg-image sect-mt4 route" style="background-image: url(img/overlay-bg.jpg); display: none">
-    
-    <footer>
-      <div class="container">
-        <div class="row">
-          <div class="col-sm-12">
-            <div class="copyright-box">
-              <p class="copyright"><br>&copy; Copyright <strong>DevFolio</strong>. All Rights Reserved</p>
-              <div class="credits">
-                <!--
-                All the links in the footer should remain intact.
-                You can delete the links only if you purchased the pro version.
-                Licensing information: https://bootstrapmade.com/license/
-                Purchase the pro version with working PHP/AJAX contact form: https://bootstrapmade.com/buy/?theme=DevFolio
-              -->
-                Designed by <a href="https://bootstrapmade.com/">BootstrapMade</a>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </footer>
   </section>
-  <!--/ Section Contact-footer End /-->
 
-  <a href="#" class="back-to-top"><i class="fa fa-chevron-up"></i></a>
-  <div id="preloader"></div>
+  <!-- ============ CONTACT ============ -->
+  <section class="section-pad contact" id="contact">
+    <div class="container reveal">
+      <div class="section-head">
+        <span class="kicker">Say hello</span>
+        <h2>Get In Touch</h2>
+        <div class="line"></div>
+        <p>I'm currently open for work. Whether it's avionics, test engineering, or something ambitious — let's talk.</p>
+      </div>
+      <a class="btn btn-primary" href="mailto:nchennoju@gmail.com"><i class="fa fa-envelope"></i> nchennoju@gmail.com</a>
+      <div class="socials" style="justify-content:center;margin-top:2rem">
+        <a href="https://www.linkedin.com/in/nitish-chennoju" target="_blank" rel="noopener" aria-label="LinkedIn"><i class="fa fa-linkedin"></i></a>
+        <a href="https://github.com/nchennoju" target="_blank" rel="noopener" aria-label="GitHub"><i class="fa fa-github"></i></a>
+        <a href="https://www.youtube.com/@nitishchennoju5427" target="_blank" rel="noopener" aria-label="YouTube"><i class="fa fa-youtube-play"></i></a>
+        <a href="https://grabcad.com/nitish.chennoju-1" target="_blank" rel="noopener" aria-label="GrabCAD"><i class="fa fa-cube"></i></a>
+      </div>
+    </div>
+  </section>
 
-  <!-- JavaScript Libraries -->
-  <script src="lib/jquery/jquery.min.js"></script>
-  <script src="lib/jquery/jquery-migrate.min.js"></script>
-  <script src="lib/popper/popper.min.js"></script>
-  <script src="lib/bootstrap/js/bootstrap.min.js"></script>
-  <script src="lib/easing/easing.min.js"></script>
-  <script src="lib/counterup/jquery.waypoints.min.js"></script>
-  <script src="lib/counterup/jquery.counterup.js"></script>
-  <script src="lib/owlcarousel/owl.carousel.min.js"></script>
-  <script src="lib/lightbox/js/lightbox.min.js"></script>
-  <script src="lib/typed/typed.min.js"></script>
+  <footer>
+    <div class="container">
+      <p>© <span id="year"></span> Nitish Chennoju · Built from scratch, launched on GitHub Pages.</p>
+      <p style="margin-top:.5rem"><a class="old" href="MyWebsite2/index.html">View my original (legacy) site ↗</a></p>
+    </div>
+  </footer>
 
-  <!-- Template Main Javascript File -->
-  <script src="js/main.js"></script>
+  <button class="back-top" id="backTop" aria-label="Back to top"><i class="fa fa-chevron-up"></i></button>
 
+  <script src="js/portfolio.js"></script>
 </body>
 </html>
