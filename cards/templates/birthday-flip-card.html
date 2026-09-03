@@ -1,0 +1,499 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!--
+  TEMPLATE: Flip birthday card.
+  A 3D flip card: the FRONT shows a hero image + greeting, the BACK flips to reveal
+  a scrollable message with two photos, and confetti bursts when it opens.
+
+  WHERE TO CUSTOMIZE:
+    - Replace [NAME] and the sample greeting/message/sign-off text (search for "[NAME]").
+    - Replace the placeholder images: swap the SVG data-URI in the CSS rules
+      .front, .back, .mustang, and .f150 with your own image URLs (e.g. url("photo.jpg")).
+    - Update the <title>.
+    - Do NOT change values marked "DO NOT CHANGE" (e.g. flame/confetti coordinates).
+-->
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"/>
+<title>Birthday Card Template</title>
+
+<style>
+  :root{
+    --cream: #f6f1e6;
+    --ink: #111;
+    --radius: 22px;
+    --shadow: 0 28px 70px rgba(0,0,0,.60);
+
+    --safe-top: env(safe-area-inset-top);
+    --safe-right: env(safe-area-inset-right);
+    --safe-bottom: env(safe-area-inset-bottom);
+    --safe-left: env(safe-area-inset-left);
+  }
+
+  *{ box-sizing:border-box; margin:0; padding:0; }
+  html, body { height:100%; }
+
+  body{
+    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro Display",
+                 system-ui, Segoe UI, Roboto, Helvetica, Arial;
+    background:
+      radial-gradient(1200px 700px at 20% 20%, rgba(255,255,255,.07), transparent 55%),
+      radial-gradient(900px 600px at 80% 70%, rgba(255,255,255,.05), transparent 60%),
+      linear-gradient(180deg, #07080a 0%, #10141a 55%, #0b0f14 100%);
+    color: #fff;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:
+      calc(14px + var(--safe-top))
+      calc(14px + var(--safe-right))
+      calc(14px + var(--safe-bottom))
+      calc(14px + var(--safe-left));
+  }
+
+  .stage{
+    width: min(980px, 100%);
+    perspective: 1400px;
+    position: relative;
+  }
+
+  .card{
+    width: 100%;
+    height: min(95vh, 820px);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    transform-style: preserve-3d;
+    transition: transform 850ms cubic-bezier(.2,.8,.2,1);
+    position: relative;
+    outline: none;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .card.flip{ transform: rotateY(180deg); }
+
+  .face{
+    position:absolute;
+    inset:0;
+    border-radius: var(--radius);
+    overflow:hidden;
+    backface-visibility:hidden;
+    background: #11151b;
+  }
+  .back{ transform: rotateY(180deg); }
+
+  /* Confetti above everything */
+  #confettiCanvas{
+    position:absolute;
+    inset:0;
+    pointer-events:none;
+    border-radius: var(--radius);
+    z-index: 50;
+  }
+
+  /* ---------- FRONT ---------- */
+  /* Replace the placeholder data-URI below with your own hero image, e.g. url("hero.jpg") */
+  .front{
+    background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='600' height='600'%3E%3Crect width='100%25' height='100%25' fill='%23dfe3ea'/%3E%3Ctext x='50%25' y='50%25' font-family='sans-serif' font-size='34' fill='%238a93a3' text-anchor='middle' dominant-baseline='middle'%3EYour Image Here%3C/text%3E%3C/svg%3E") center/cover no-repeat;
+    filter: contrast(1.05) brightness(.95) saturate(.85);
+  }
+  .front::after{
+    content:"";
+    position:absolute;
+    inset:0;
+    background:
+      linear-gradient(180deg, rgba(0,0,0,.10) 0%, rgba(0,0,0,.86) 78%),
+      linear-gradient(90deg, rgba(0,0,0,.60) 0%, rgba(0,0,0,.12) 60%, rgba(0,0,0,.55) 100%);
+  }
+
+  .frontContent{
+    position:absolute;
+    left: 18px; right: 18px; bottom: 18px;
+    z-index: 2;
+    max-width: 52rem;
+    display:grid;
+    gap: 12px;
+  }
+
+  .frontContent h1{
+    font-weight: 950;
+    line-height: 1.02;
+    letter-spacing: .2px;
+    font-size: clamp(2.2rem, 6.8vw, 3.4rem);
+    text-shadow: 0 10px 34px rgba(0,0,0,.55);
+  }
+
+  .frontContent p{
+    opacity: .95;
+    line-height: 1.45;
+    font-size: clamp(1.2rem, 4.1vw, 1.45rem);
+    max-width: 60ch;
+  }
+
+  /* Big buttons (tap targets) */
+  .btnRow{
+    display:flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin-top: 6px;
+  }
+  .bigBtn{
+    appearance:none;
+    border: none;
+    border-radius: 16px;
+    padding: 14px 16px;
+    font-weight: 950;
+    letter-spacing: .3px;
+    font-size: clamp(1.05rem, 3.6vw, 1.2rem);
+    cursor:pointer;
+    user-select:none;
+  }
+
+  .bigBtn.primary{
+    background: rgba(255,255,255,.18);
+    color: #fff;
+    border: 2px solid rgba(255,255,255,.25);
+    backdrop-filter: blur(10px);
+  }
+  .bigBtn.primary:active{ transform: scale(.99); }
+
+  .helper{
+    display:flex;
+    align-items:center;
+    gap: 10px;
+    opacity: .97;
+    font-weight: 900;
+    font-size: clamp(1.05rem, 3.6vw, 1.15rem);
+  }
+  .helper .pill{
+    background: rgba(255,255,255,.18);
+    border: 1px solid rgba(255,255,255,.22);
+    padding: 8px 10px;
+    border-radius: 999px;
+  }
+
+  /* ---------- BACK ---------- */
+  /* Replace the placeholder data-URI below with your own background image */
+  .back{
+    background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='600' height='600'%3E%3Crect width='100%25' height='100%25' fill='%23dfe3ea'/%3E%3Ctext x='50%25' y='50%25' font-family='sans-serif' font-size='34' fill='%238a93a3' text-anchor='middle' dominant-baseline='middle'%3EYour Image Here%3C/text%3E%3C/svg%3E") center/cover no-repeat;
+    filter: contrast(1.03) brightness(.92) saturate(.75);
+  }
+  .back::after{
+    content:"";
+    position:absolute;
+    inset:0;
+    background:
+      linear-gradient(180deg, rgba(0,0,0,.20) 0%, rgba(0,0,0,.72) 100%),
+      radial-gradient(800px 500px at 70% 20%, rgba(255,255,255,.09), transparent 60%);
+  }
+
+  /* Scrollable paper (so photos always reachable) */
+  .paper{
+    position:absolute;
+    inset: 14px;
+    border-radius: calc(var(--radius) - 8px);
+    background: linear-gradient(180deg, rgba(246,241,230,.99), rgba(246,241,230,.94));
+    color: var(--ink);
+    box-shadow: inset 0 1px 0 rgba(255,255,255,.60), 0 18px 60px rgba(0,0,0,.35);
+    z-index: 2;
+
+    padding:
+      calc(18px + var(--safe-top))
+      calc(18px + var(--safe-right))
+      calc(18px + var(--safe-bottom))
+      calc(18px + var(--safe-left));
+
+    overflow: auto;
+    -webkit-overflow-scrolling: touch;
+    touch-action: pan-y; /* important for iPhone scrolling */
+  }
+
+  .paper::before{
+    content:"";
+    position:absolute;
+    inset:-60px;
+    background:
+      radial-gradient(270px 230px at 10% 20%, rgba(0,0,0,.12), transparent 60%),
+      radial-gradient(340px 280px at 85% 80%, rgba(0,0,0,.10), transparent 65%),
+      radial-gradient(240px 240px at 80% 25%, rgba(0,0,0,.07), transparent 60%);
+    mix-blend-mode: multiply;
+    opacity:.38;
+    pointer-events:none;
+  }
+
+  .inner{
+    position: relative;
+    min-height: 100%;
+    display:flex;
+    flex-direction:column;
+    gap: 16px;
+  }
+
+  .title{
+    font-weight: 950;
+    line-height: 1.05;
+    font-size: clamp(1.8rem, 5.8vw, 2.5rem);
+  }
+
+  .message{
+    font-size: clamp(1.25rem, 4.4vw, 1.55rem);
+    line-height: 1.65;
+    color: rgba(11,13,16,.92);
+    white-space: pre-line;
+  }
+
+  .signature{
+    font-weight: 950;
+    font-size: clamp(1.1rem, 3.8vw, 1.25rem);
+    margin-top: 2px;
+  }
+
+  .scrollHint{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    gap: 10px;
+    font-weight: 950;
+    font-size: clamp(1.0rem, 3.4vw, 1.1rem);
+    color: rgba(11,13,16,.70);
+    margin-top: 6px;
+    flex: 0 0 auto;
+  }
+  .scrollHint .arrow{ font-size: 1.25em; }
+
+  .photos{
+    display:flex;
+    gap: 14px;
+    margin-top: 10px;
+    flex: 0 0 auto;
+  }
+  .photo{
+    flex:1;
+    height: 190px;
+    border-radius: 16px;
+    background: #111 center/cover no-repeat;
+    box-shadow: 0 14px 28px rgba(0,0,0,.18);
+    border: 1px solid rgba(0,0,0,.10);
+  }
+  /* Replace the placeholder data-URIs below with your own photos */
+  .mustang{ background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='600' height='600'%3E%3Crect width='100%25' height='100%25' fill='%23dfe3ea'/%3E%3Ctext x='50%25' y='50%25' font-family='sans-serif' font-size='34' fill='%238a93a3' text-anchor='middle' dominant-baseline='middle'%3EYour Image Here%3C/text%3E%3C/svg%3E"); }
+  .f150{ background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='600' height='600'%3E%3Crect width='100%25' height='100%25' fill='%23dfe3ea'/%3E%3Ctext x='50%25' y='50%25' font-family='sans-serif' font-size='34' fill='%238a93a3' text-anchor='middle' dominant-baseline='middle'%3EYour Image Here%3C/text%3E%3C/svg%3E"); }
+
+  .bigBtn.cream{
+    background: #111;
+    color: var(--cream);
+    border: 2px solid rgba(0,0,0,.20);
+  }
+  .bigBtn.cream:active{ transform: scale(.99); }
+
+  @media (max-width: 700px){
+    .card{ height: 95vh; }
+    .paper{ inset: 12px; }
+    .photos{ flex-direction:column; }
+    .photo{ height: 210px; }
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    .card{ transition: none; }
+  }
+</style>
+</head>
+
+<body>
+  <div class="stage">
+    <canvas id="confettiCanvas"></canvas>
+
+    <div class="card" id="card" role="group" aria-label="Birthday card">
+      <!-- FRONT -->
+      <div class="face front" aria-label="Front of card">
+        <div class="frontContent">
+          <h1>Happy Birthday, [NAME]</h1>
+          <p>A little birthday card — made with love.</p>
+
+          <div class="btnRow">
+            <button class="bigBtn primary" id="flipOpenBtn" type="button">FLIP CARD</button>
+          </div>
+
+          <div class="helper">
+            <span class="pill">Tip:</span>
+            <span>Tap the <b>FLIP CARD</b> button to read the message.</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- BACK -->
+      <div class="face back" aria-label="Back of card">
+        <div class="paper" id="paper">
+          <div class="inner">
+            <div class="title">To someone special</div>
+
+            <div class="message" id="message">
+Happy Birthday, [NAME]!
+
+We're so grateful for you.
+Thank you for the stories and the laughs.
+
+Wishing you a wonderful year ahead —
+filled with joy, laughter, and everything you love.
+
+We love you so much.
+            </div>
+
+            <div class="signature">— [Your Name]</div>
+
+
+            <div class="photos" aria-hidden="true">
+              <div class="photo mustang" title="Photo 1"></div>
+              <div class="photo f150" title="Photo 2"></div>
+            </div>
+
+            <div class="btnRow" style="margin-top:12px;">
+              <button class="bigBtn cream" id="flipBackBtn" type="button">FLIP BACK</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+<script>
+  const card = document.getElementById('card');
+  const paper = document.getElementById('paper');
+  const openBtn = document.getElementById('flipOpenBtn');
+  const backBtn = document.getElementById('flipBackBtn');
+
+  // Confetti
+  const canvas = document.getElementById('confettiCanvas');
+  const ctx = canvas.getContext('2d');
+  let confetti = [];
+  let animId = null;
+
+  const reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  function resizeCanvas(){
+    const stage = document.querySelector('.stage');
+    const rect = stage.getBoundingClientRect();
+    const dpr = Math.max(1, window.devicePixelRatio || 1);
+    canvas.width = Math.floor(rect.width * dpr);
+    canvas.height = Math.floor(rect.height * dpr);
+    canvas.style.width = rect.width + "px";
+    canvas.style.height = rect.height + "px";
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  }
+  window.addEventListener('resize', resizeCanvas);
+  resizeCanvas();
+
+  function rand(min, max){ return Math.random() * (max - min) + min; }
+
+  const palette = [
+    "rgba(246,241,230,.95)",
+    "rgba(220,220,220,.95)",
+    "rgba(180,180,180,.95)",
+    "rgba(120,120,120,.95)"
+  ];
+
+  function launchConfetti(){
+    if (reduceMotion) return;
+
+    confetti = [];
+    if (animId) cancelAnimationFrame(animId);
+
+    const w = canvas.clientWidth;
+    const h = canvas.clientHeight;
+    const originX = w * 0.5;       /* DO NOT CHANGE */
+    const originY = h * 0.18;      /* DO NOT CHANGE */
+
+    const count = Math.round(Math.min(140, Math.max(90, w * 0.18)));
+
+    for (let i=0; i<count; i++){
+      const size = rand(6, 11);
+      const angle = rand(-Math.PI, 0);
+      const speed = rand(3.8, 8.2);
+
+      confetti.push({
+        x: originX + rand(-18, 18),
+        y: originY + rand(-10, 10),
+        vx: Math.cos(angle) * speed + rand(-1.0, 1.0),
+        vy: Math.sin(angle) * speed - rand(1.8, 4.0),
+        g: rand(0.10, 0.14),
+        size,
+        rot: rand(0, Math.PI*2),
+        vr: rand(-0.18, 0.18),
+        life: rand(70, 110),
+        color: palette[Math.floor(rand(0, palette.length))]
+      });
+    }
+
+    const start = performance.now();
+    function tick(now){
+      const dt = Math.min(2, (now - start) / 16.67);
+      ctx.clearRect(0,0,canvas.clientWidth, canvas.clientHeight);
+
+      confetti.forEach(p => {
+        p.vy += p.g * dt;
+        p.x += p.vx * dt;
+        p.y += p.vy * dt;
+        p.rot += p.vr * dt;
+        p.life -= 1 * dt;
+
+        p.vx *= (0.996 ** dt);
+        p.vy *= (0.996 ** dt);
+
+        ctx.save();
+        ctx.translate(p.x, p.y);
+        ctx.rotate(p.rot);
+        ctx.fillStyle = p.color;
+        ctx.fillRect(-p.size/2, -p.size/2, p.size, p.size * 0.65);
+        ctx.restore();
+      });
+
+      confetti = confetti.filter(p => p.life > 0 && p.y < canvas.clientHeight + 30);
+
+      if (confetti.length > 0 && (now - start) < 1900){
+        animId = requestAnimationFrame(tick);
+      } else {
+        ctx.clearRect(0,0,canvas.clientWidth, canvas.clientHeight);
+        animId = null;
+      }
+    }
+    animId = requestAnimationFrame(tick);
+  }
+
+  function openCard(){
+    card.classList.add('flip');
+    paper.scrollTop = 0; // show message first
+    launchConfetti();
+  }
+
+  function closeCard(){
+    card.classList.remove('flip');
+  }
+
+  // Buttons are the primary (accessible) interaction
+  openBtn.addEventListener('click', (e) => { e.stopPropagation(); openCard(); });
+  backBtn.addEventListener('click', (e) => { e.stopPropagation(); closeCard(); });
+
+  // Pointer events: reliable on iPhone + desktop
+  // Only flip when tapping the card background (not when scrolling inside the paper).
+  card.addEventListener('pointerup', (e) => {
+    if (paper.contains(e.target)) return; // don't flip while scrolling/reading
+    const isOpen = card.classList.contains('flip');
+    if (!isOpen) openCard();
+    else closeCard();
+  });
+
+  // Graceful fallbacks if images missing
+  function bgFallback(selector, fallback){
+    const el = document.querySelector(selector);
+    const img = new Image();
+    const url = getComputedStyle(el).backgroundImage;
+    const match = url && url.match(/url\(["']?(.*?)["']?\)/);
+    const src = match && match[1] ? match[1] : null;
+    if (!src) return;
+    img.src = src;
+    img.onerror = () => { el.style.background = fallback; };
+  }
+  bgFallback('.front', 'linear-gradient(120deg, #1a2029, #0f141b)');
+  bgFallback('.back', 'linear-gradient(120deg, #151a21, #0b0f14)');
+</script>
+</body>
+</html>

@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Candle Flip Birthday Card Template</title>
+
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      padding: 12px;
+      background: radial-gradient(circle at top, #ffe8a3 0%, #ffd67f 40%, #f8b66d 90%);
+      font-family: "Comic Neue", "Inter", system-ui, sans-serif;
+      color: #fff;
+      overflow-x: hidden;
+    }
+
+    /* Wrapper that lets us scale for small screens without touching flame coords */
+    .card-scale {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+      max-width: 100%;
+    }
+
+    .birthdayCard {
+      position: relative;
+      width: 340px;
+      height: 480px;
+      transform-style: preserve-3d;
+      perspective: 1800px;
+      transition: transform 0.9s cubic-bezier(0.22, 0.61, 0.36, 1),
+                  box-shadow 0.9s ease;
+      cursor: pointer;
+    }
+
+    .birthdayCard.hover {
+      transform: rotateY(180deg);
+      box-shadow: 0 22px 70px rgba(0, 0, 0, 0.45);
+    }
+
+    .cardFace {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      backface-visibility: hidden;
+      border-radius: 18px;
+      overflow: hidden;
+      border: 1px solid rgba(0, 0, 0, 0.08);
+    }
+
+    .cardFront {
+      transform: rotateY(0deg);
+      background: #00b7c6;
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.35);
+    }
+
+    .birthdayCard.hover .cardFront {
+      transform: rotateY(-180deg);
+    }
+
+    .front-img {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      z-index: 1;
+    }
+
+    .flame {
+      position: absolute;
+      width: 14px;
+      height: 18px;
+      border-radius: 50%;
+      background: radial-gradient(circle at 40% 0%, #ffffff 0%, #ffd54d 40%, #ff8000 100%);
+      box-shadow: 0 0 12px 4px rgba(255, 180, 0, 0.9);
+      transform: translateX(-50%);
+      animation: flicker 0.16s infinite alternate;
+      transition: opacity 0.45s ease, transform 0.45s ease, box-shadow 0.45s ease;
+      z-index: 3;
+    }
+
+    /* Flame positions: DO NOT CHANGE */
+    .flame.c1 { top: 115px; left: 65px; }
+    .flame.c2 { top: 121px; left: 97px; }
+    .flame.c3 { top: 120px; left: 127px; }
+
+    @keyframes flicker {
+      0%   { transform: translateX(-50%) translateY(0) scale(1.0); opacity: 1; }
+      50%  { transform: translateX(-50%) translateY(-2px) scale(1.08); opacity: 0.85; }
+      100% { transform: translateX(-50%) translateY(-1px) scale(0.96); opacity: 1; }
+    }
+
+    .flame.extinguish {
+      opacity: 0;
+      transform: translateX(-50%) translateY(-6px) scale(0.3);
+      box-shadow: 0 0 0 rgba(0,0,0,0);
+      animation: none;
+    }
+
+    .button-bar {
+      position: absolute;
+      bottom: 14px;
+      left: 0;
+      right: 0;
+      display: flex;
+      justify-content: center;
+      z-index: 4;
+    }
+
+    .card-btn {
+      padding: 6px 14px;
+      font-size: 10px;
+      border-radius: 999px;
+      border: 1px solid rgba(0, 0, 0, 0.35);
+      background: rgba(255, 255, 255, 0.9);
+      color: #222;
+      cursor: pointer;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      transition: all 0.25s ease;
+    }
+
+    .card-btn:hover {
+      background: #ffe36f;
+      box-shadow: 0 3px 8px rgba(0, 0, 0, 0.35);
+    }
+
+    /* Confetti */
+    .confetti-piece {
+      position: fixed;
+      width: 6px;
+      height: 10px;
+      background: #ff6bb5;
+      opacity: 0.9;
+      border-radius: 1px;
+      pointer-events: none;
+      z-index: 999;
+      animation: confetti-fall 1.2s linear forwards;
+    }
+
+    .confetti-piece:nth-child(3n)   { background: #ffd447; }
+    .confetti-piece:nth-child(3n+1) { background: #4de1ff; }
+    .confetti-piece:nth-child(4n)   { background: #9b5de5; }
+
+    @keyframes confetti-fall {
+      0%   { transform: translate3d(0, -20px, 0) rotateZ(0deg); }
+      100% { transform: translate3d(0, 140vh, 0) rotateZ(360deg); opacity: 0; }
+    }
+
+    /* Inside / back face */
+    .cardInside {
+      transform: rotateY(180deg);
+      background: repeating-linear-gradient(
+        45deg,
+        #fff6d9,
+        #fff6d9 20px,
+        #ffe4b3 20px,
+        #ffe4b3 40px
+      );
+      color: #1b1307;
+      padding: 16px 14px 10px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.45);
+    }
+
+    .inside-title {
+      text-align: center;
+      font-size: 18px;
+      font-weight: 900;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: #ff8a00;
+      text-shadow: 1px 1px 2px #fff;
+    }
+
+    .inside-sub {
+      text-align: center;
+      font-size: 10px;
+      color: #744b00;
+      font-weight: 600;
+    }
+
+    .inside-img {
+      width: 70%;
+      max-height: 150px;
+      object-fit: contain;
+      align-self: center;
+      margin-top: 10px;
+      border-radius: 8px;
+      border: 2px solid #ff8a00;
+      box-shadow: 0 3px 10px rgba(0, 0, 0, 0.35);
+    }
+
+    .wishes {
+      background: #fffdfa;
+      color: #3a2a00;
+      border: 2px solid #ffd36b;
+      border-radius: 10px;
+      padding: 12px;
+      font-family: "Comic Neue", "Georgia", serif;
+      font-size: 13px;
+      line-height: 1.45;
+      box-shadow: inset 0 0 8px rgba(255, 210, 90, 0.4);
+      margin-top: 8px;
+      max-height: 200px;
+      overflow-y: auto;
+    }
+
+    .wishes::-webkit-scrollbar { width: 4px; }
+    .wishes::-webkit-scrollbar-thumb {
+      background: #ff8a00;
+      border-radius: 999px;
+    }
+
+    .name {
+      text-align: right;
+      font-weight: 600;
+      margin-top: 6px;
+      color: #cc5e00;
+    }
+
+    .inside-extra {
+      font-size: 9px;
+      color: #744b00;
+      text-align: center;
+      margin-top: 6px;
+    }
+
+    .inside-button-bar {
+      display: flex;
+      justify-content: center;
+      margin-top: 8px;
+    }
+
+    .card-btn.subtle {
+      font-size: 8px;
+      padding: 4px 11px;
+      background: rgba(255,255,255,0.9);
+      color: #5b2b8a;
+    }
+
+    /* ---------- Mobile Scaling ---------- */
+
+    @media (max-width: 420px) {
+      .card-scale {
+        transform: scale(0.9);
+        transform-origin: center center;
+      }
+    }
+
+    @media (max-width: 360px) {
+      .card-scale {
+        transform: scale(0.82);
+      }
+    }
+
+    @media (max-width: 320px) {
+      .card-scale {
+        transform: scale(0.75);
+      }
+    }
+  </style>
+</head>
+<body>
+  <!--
+    ============================================================================
+    CANDLE FLIP BIRTHDAY CARD TEMPLATE
+    ============================================================================
+    A 3D flip birthday card with animated candle flames, confetti, and
+    microphone "blow out the candles" detection.
+
+    HOW IT WORKS:
+      - Click the card / "Open Card" button (or physically BLOW into your mic)
+        to extinguish the candles, flip the card open, and launch confetti.
+      - "Reset / Relight Candles" flips it back and re-lights the flames.
+      - NOTE: The blow-to-extinguish feature asks for MICROPHONE PERMISSION.
+        The card works fine (via click) even if permission is denied.
+
+    HOW TO CUSTOMIZE (search for the [NAME] / [Your Name] placeholders below):
+      1. Front image .......... swap the .front-img <img src="..."> (placeholder SVG)
+      2. Inside title ......... "Happy Birthday, [NAME]!"
+      3. Inside subtitle ...... the .inside-sub line
+      4. Inside image ......... swap the .inside-img <img src="..."> (placeholder SVG)
+      5. Well-wishes text ..... the paragraphs inside .wishes
+      6. Sign-off ............. the .name line ("Love, [Your Name]")
+      7. Page <title> ......... in the <head>
+      Flame positions are marked "DO NOT CHANGE" in the CSS — leave them alone.
+    ============================================================================
+  -->
+  <div class="card-scale">
+    <div id="birthdayCard" class="birthdayCard">
+      <div class="cardFace cardFront">
+        <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='600' height='600'%3E%3Crect width='100%25' height='100%25' fill='%23dfe3ea'/%3E%3Ctext x='50%25' y='50%25' font-family='sans-serif' font-size='34' fill='%238a93a3' text-anchor='middle' dominant-baseline='middle'%3EYour Image Here%3C/text%3E%3C/svg%3E" class="front-img" alt="Birthday Card Front">
+        <div class="flame c1"></div>
+        <div class="flame c2"></div>
+        <div class="flame c3"></div>
+        <div class="button-bar">
+          <button id="flipButton" class="card-btn">Open Card</button>
+        </div>
+      </div>
+
+      <div class="cardFace cardInside">
+        <div class="inside-title">Happy Birthday, [NAME]!</div>
+        <div class="inside-sub">Wishing you a day as wonderful as you are.</div>
+        <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='600' height='600'%3E%3Crect width='100%25' height='100%25' fill='%23dfe3ea'/%3E%3Ctext x='50%25' y='50%25' font-family='sans-serif' font-size='34' fill='%238a93a3' text-anchor='middle' dominant-baseline='middle'%3EYour Image Here%3C/text%3E%3C/svg%3E" alt="Birthday Card Inside" class="inside-img">
+        <div class="wishes">
+          <p>Hey [NAME] —</p>
+          <p>Happy Birthday! I hope your day is filled with all your favorite things and the people who make you smile.</p>
+          <p>Wishing you a wonderful year ahead — filled with joy, laughter, and everything you love.</p>
+          <p>Here's to celebrating you today and always. You deserve the very best!</p>
+          <p class="name">Love,<br>[Your Name]</p>
+        </div>
+        <div class="inside-button-bar">
+          <button id="resetButton" class="card-btn subtle">Reset / Relight Candles</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const card = document.getElementById("birthdayCard");
+    const flipButton = document.getElementById("flipButton");
+    const resetButton = document.getElementById("resetButton");
+    const flames = document.querySelectorAll(".flame");
+    let confettiTriggered = false;
+
+    function openCardWithExtinguish() {
+      if (card.classList.contains("hover")) return;
+      flames.forEach(f => f.classList.add("extinguish"));
+      setTimeout(() => {
+        if (!card.classList.contains("hover")) {
+          card.classList.add("hover");
+          if (!confettiTriggered) {
+            confettiTriggered = true;
+            launchConfetti();
+          }
+        }
+      }, 700);
+    }
+
+    function resetCard() {
+      card.classList.remove("hover");
+      flames.forEach(f => f.classList.remove("extinguish"));
+    }
+
+    function launchConfetti() {
+      const count = 80;
+      for (let i = 0; i < count; i++) {
+        const conf = document.createElement("div");
+        conf.className = "confetti-piece";
+        conf.style.left = Math.random() * 100 + "vw";
+        conf.style.animationDelay = (Math.random() * 0.3) + "s";
+        document.body.appendChild(conf);
+        conf.addEventListener("animationend", () => conf.remove());
+      }
+    }
+
+    card.addEventListener("click", e => {
+      if (e.target.classList.contains("card-btn")) return;
+      if (!card.classList.contains("hover")) openCardWithExtinguish();
+    });
+
+    flipButton.addEventListener("click", e => {
+      e.stopPropagation();
+      openCardWithExtinguish();
+    });
+
+    resetButton.addEventListener("click", e => {
+      e.stopPropagation();
+      resetCard();
+    });
+
+    // Mic blow detection
+    (function () {
+      if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) return;
+      let prev = 0;
+      navigator.mediaDevices.getUserMedia({ audio: true }).then(stream => {
+        const ctx = new (window.AudioContext || window.webkitAudioContext)();
+        const analyser = ctx.createAnalyser();
+        const mic = ctx.createMediaStreamSource(stream);
+        const proc = ctx.createScriptProcessor(2048, 1, 1);
+        analyser.smoothingTimeConstant = 0.8;
+        analyser.fftSize = 1024;
+        mic.connect(analyser);
+        analyser.connect(proc);
+        proc.connect(ctx.destination);
+        proc.onaudioprocess = () => {
+          const data = new Uint8Array(analyser.frequencyBinCount);
+          analyser.getByteFrequencyData(data);
+          const avg = data.reduce((a,b)=>a+b,0)/data.length;
+          if (avg - prev > 50) openCardWithExtinguish();
+          prev = avg;
+        };
+      }).catch(()=>{});
+    })();
+  </script>
+</body>
+</html>
