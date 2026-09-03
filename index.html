@@ -15,9 +15,12 @@
   <meta property="og:image" content="img/me.jpg">
 
   <link href="img/favicon.png" rel="icon">
+  <!-- Preload the hero poster (the LCP element) at the right size per device -->
+  <link rel="preload" as="image" href="media/hero-poster.jpg" media="(min-width:641px)" fetchpriority="high">
+  <link rel="preload" as="image" href="media/hero-phone-poster.jpg" media="(max-width:640px)" fetchpriority="high">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link href="lib/font-awesome/css/font-awesome.min.css" rel="stylesheet">
   <!-- Plotly (~3.5MB) is loaded lazily by js/portfolio.js only when the Data
        section is near the viewport, so it never blocks initial load. -->
@@ -65,7 +68,7 @@
   }
 
   *{margin:0;padding:0;box-sizing:border-box}
-  html{scroll-behavior:smooth}
+  html{scroll-behavior:smooth;-webkit-text-size-adjust:100%;text-size-adjust:100%}
   @media (prefers-reduced-motion: reduce){
     html{scroll-behavior:auto}
     *{animation-duration:.001ms !important;transition-duration:.001ms !important}
@@ -83,7 +86,8 @@
   a{color:var(--accent);text-decoration:none;transition:color .2s}
   a:hover{color:var(--accent-2)}
   section{position:relative}
-  .container{width:min(1160px,92vw);margin:0 auto}
+  .container{width:min(1160px,92vw);margin:0 auto;
+    padding-left:env(safe-area-inset-left);padding-right:env(safe-area-inset-right)}
   .accent{color:var(--accent)}
 
   /* ============================ NAV ============================ */
@@ -121,8 +125,41 @@
     display:grid;place-items:center;transition:transform .3s,background .3s,border-color .3s;
   }
   .theme-toggle:hover{transform:rotate(15deg) scale(1.06);border-color:var(--accent)}
+  .egg-btn{color:var(--accent)}
+  .egg-btn:hover{transform:translateY(-2px) scale(1.06)}
+  .egg-btn.open{background:var(--accent);color:#fff;border-color:transparent}
   .nav-tools{display:flex;align-items:center;gap:.7rem}
   .burger{display:none;background:none;border:0;color:var(--text);font-size:1.5rem;cursor:pointer;width:42px;height:42px}
+
+  /* ---- easter-egg cheatsheet popover ---- */
+  #egg-sheet{
+    position:absolute;top:calc(100% + 8px);right:max(4vw,16px);z-index:1200;
+    width:min(340px,92vw);background:var(--surface);border:1px solid var(--border);
+    border-radius:16px;box-shadow:var(--shadow);padding:1rem 1.1rem;
+    transform-origin:top right;
+    /* never taller than the viewport below the nav (short / landscape phones) */
+    max-height:calc(100svh - 90px);overflow-y:auto;-webkit-overflow-scrolling:touch;
+  }
+  #egg-sheet[hidden]{display:none}
+  #egg-sheet.in{animation:eggPop .28s cubic-bezier(.2,.9,.3,1.1)}
+  @keyframes eggPop{from{opacity:0;transform:scale(.92) translateY(-6px)}to{opacity:1;transform:none}}
+  #egg-sheet .es-head{display:flex;align-items:center;gap:.5rem;font-family:'Space Grotesk',sans-serif;
+    font-weight:700;font-size:1rem;color:var(--text);margin-bottom:.7rem}
+  #egg-sheet .es-head i{color:var(--accent)}
+  #egg-sheet .es-hint{margin-left:auto;font-family:'Inter',sans-serif;font-weight:500;font-size:.66rem;
+    letter-spacing:.14em;text-transform:uppercase;color:var(--accent);
+    background:var(--surface-2);border:1px solid var(--border);padding:.2rem .55rem;border-radius:100px}
+  #egg-sheet .es-list{list-style:none;display:flex;flex-direction:column;gap:.6rem}
+  #egg-sheet .es-list li{display:flex;flex-wrap:wrap;align-items:baseline;gap:.4rem;
+    font-size:.84rem;color:var(--text-dim);line-height:1.35;
+    padding-bottom:.55rem;border-bottom:1px solid var(--border)}
+  #egg-sheet .es-list li:last-child{border-bottom:0;padding-bottom:0}
+  #egg-sheet .es-do{color:var(--text);font-weight:500}
+  #egg-sheet .es-do b{color:var(--accent)}
+  #egg-sheet .es-fx{color:var(--text-faint);flex-basis:100%;font-size:.8rem}
+  #egg-sheet kbd{font-family:ui-monospace,'Space Grotesk',monospace;font-size:.74rem;
+    background:var(--surface-2);border:1px solid var(--border);border-bottom-width:2px;
+    border-radius:6px;padding:.08rem .4rem;color:var(--text);white-space:nowrap}
 
   @media(max-width:860px){
     .nav-links{
@@ -140,14 +177,21 @@
     min-height:100svh;display:grid;place-items:center;text-align:center;position:relative;overflow:hidden;
     padding:6rem 0 4rem;
   }
+  /* short viewports (landscape phones): don't force a full-height hero */
+  @media (max-height:520px) and (orientation:landscape){
+    .hero{min-height:auto;padding:5.5rem 0 3rem}
+    .scroll-ind{display:none}
+  }
   .hero-bg{
     position:absolute;inset:-10% 0;z-index:0;
-    background:url('css/rp_launch_hf.gif') center/cover no-repeat;
     will-change:transform;filter:saturate(1.05);
+    /* poster shows instantly while the (tiny) video loads */
+    background:url('media/hero-poster.jpg') center/cover no-repeat;
   }
-  .hero-bg::after{content:"";position:absolute;inset:0;background:
+  .hero-bg video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+  @media(max-width:640px){ .hero-bg{background-image:url('media/hero-phone-poster.jpg')} }
+  .hero-bg::after{content:"";position:absolute;inset:0;z-index:1;background:
     linear-gradient(180deg,var(--overlay),var(--bg) 96%),radial-gradient(circle at 50% 30%,transparent,var(--bg) 78%)}
-  @media(max-width:640px){.hero-bg{background-image:url('css/rp_launch_hf_phone.gif')}}
   .hero-content{position:relative;z-index:2;width:min(900px,92vw)}
   .eyebrow{
     display:inline-flex;align-items:center;gap:.5rem;font-size:.82rem;font-weight:600;letter-spacing:.14em;
@@ -182,7 +226,8 @@
 
   /* ============================ ABOUT ============================ */
   .about-grid{display:grid;grid-template-columns:.9fr 1.3fr;gap:2.5rem;align-items:start}
-  @media(max-width:860px){.about-grid{grid-template-columns:1fr}}
+  .about-grid.rocket-grid{grid-template-columns:1.1fr .9fr}
+  @media(max-width:860px){.about-grid,.about-grid.rocket-grid{grid-template-columns:1fr}}
   .card{background:var(--surface);border:1px solid var(--border);border-radius:20px;padding:2rem;box-shadow:var(--shadow)}
   .avatar{width:100%;max-width:280px;aspect-ratio:1;object-fit:cover;border-radius:20px;margin:0 auto 1.4rem;display:block;border:1px solid var(--border)}
   .socials{display:flex;flex-wrap:wrap;gap:.6rem;justify-content:center;margin-bottom:1.5rem}
@@ -216,6 +261,17 @@
   .tl-item::after{content:"";position:absolute;top:6px;width:16px;height:16px;border-radius:50%;background:var(--bg);border:3px solid var(--accent);box-shadow:0 0 0 4px var(--bg-2)}
   .tl-item:nth-child(odd)::after{right:-8px}
   .tl-item:nth-child(even)::after{left:-8px}
+  /* draw-in: each card slides in from its own side of the rail; the dot pops last */
+  .tl-item.reveal{opacity:0;transition:opacity .7s cubic-bezier(.2,.8,.2,1),transform .7s cubic-bezier(.2,.8,.2,1)}
+  .tl-item:nth-child(odd).reveal{transform:translateX(38px)}
+  .tl-item:nth-child(even).reveal{transform:translateX(-38px)}
+  .tl-item.reveal.in{opacity:1;transform:none}
+  .tl-item::after{transform:scale(0);transition:transform .45s cubic-bezier(.34,1.56,.64,1) .25s}
+  .tl-item.in::after{transform:scale(1)}
+  @media(max-width:760px){
+    .tl-item:nth-child(odd).reveal,.tl-item:nth-child(even).reveal{transform:translateX(-26px)}
+    .tl-item.reveal.in{transform:none}
+  }
   .tl-card{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:1.4rem 1.5rem;box-shadow:var(--shadow);transition:transform .3s,border-color .3s}
   .tl-card:hover{transform:translateY(-4px);border-color:var(--accent)}
   .tl-card h3{font-size:1.12rem;color:var(--accent)}
@@ -248,6 +304,14 @@
   .parallax cite{display:block;margin-top:1rem;color:#cfd8ea;font-style:normal;font-size:1rem}
 
   /* ============================ PROJECTS ============================ */
+  #projects{position:relative;overflow:hidden}
+  .proj-bg{position:absolute;top:0;left:0;right:0;height:clamp(320px,42vh,520px);z-index:0;overflow:hidden;
+    -webkit-mask-image:linear-gradient(180deg,#000 55%,transparent);mask-image:linear-gradient(180deg,#000 55%,transparent)}
+  /* video is oversized top & bottom so the parallax translate reveals different
+     parts of the frame as you scroll instead of clipping to blank space */
+  .proj-bg video{position:absolute;inset:-20% 0;width:100%;height:140%;object-fit:cover;opacity:.5;filter:saturate(1.05);will-change:transform}
+  .proj-bg::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,var(--overlay),transparent 60%)}
+  #projects > .container{position:relative;z-index:1}
   .filters{display:flex;flex-wrap:wrap;gap:.55rem;justify-content:center;margin-bottom:2.4rem}
   .filters button{
     background:var(--surface);border:1px solid var(--border);color:var(--text-dim);font-weight:500;font-size:.88rem;
@@ -255,7 +319,7 @@
   }
   .filters button:hover{color:var(--text);border-color:var(--accent)}
   .filters button.active{background:linear-gradient(120deg,var(--accent),var(--accent-2));color:#fff;border-color:transparent}
-  .proj-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:1.5rem}
+  .proj-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(300px,100%),1fr));gap:1.5rem}
   .proj{
     background:var(--surface);border:1px solid var(--border);border-radius:18px;overflow:hidden;
     display:flex;flex-direction:column;transition:transform .35s cubic-bezier(.2,.8,.2,1),box-shadow .35s,border-color .35s;
@@ -264,6 +328,17 @@
   .proj-img{aspect-ratio:16/10;overflow:hidden;position:relative;background:var(--surface-2)}
   .proj-img img{width:100%;height:100%;object-fit:cover;transition:transform .6s}
   .proj:hover .proj-img img{transform:scale(1.08)}
+  /* blueprint scan on hover: a faint schematic grid + a scan-line sweep */
+  .proj-img::before{content:"";position:absolute;inset:0;z-index:2;pointer-events:none;opacity:0;
+    transition:opacity .35s;mix-blend-mode:screen;
+    background-image:linear-gradient(var(--accent-glow) 1px,transparent 1px),
+                     linear-gradient(90deg,var(--accent-glow) 1px,transparent 1px);
+    background-size:22px 22px}
+  .proj-img::after{content:"";position:absolute;left:0;right:0;height:34%;z-index:3;pointer-events:none;opacity:0;
+    background:linear-gradient(180deg,transparent,rgba(71,171,236,.35),transparent);top:-40%}
+  .proj:hover .proj-img::before{opacity:.5}
+  .proj:hover .proj-img::after{opacity:1;animation:scanSweep 1.5s linear infinite}
+  @keyframes scanSweep{0%{top:-40%}100%{top:110%}}
   .proj-cat{position:absolute;top:.75rem;left:.75rem;font-size:.72rem;font-weight:600;text-transform:uppercase;letter-spacing:.05em;background:var(--nav-bg);backdrop-filter:blur(8px);color:var(--accent);padding:.3rem .7rem;border-radius:100px;border:1px solid var(--border)}
   .proj-body{padding:1.25rem 1.35rem 1.5rem;flex:1;display:flex;flex-direction:column}
   .proj-body h3{font-size:1.12rem;margin-bottom:.5rem}
@@ -292,37 +367,173 @@
   footer a.old{color:var(--text-dim)}
 
   .back-top{
-    position:fixed;bottom:24px;right:24px;z-index:900;width:48px;height:48px;border-radius:14px;border:1px solid var(--border);
+    position:fixed;z-index:900;
+    bottom:calc(30px + env(safe-area-inset-bottom));
+    right:calc(20px + env(safe-area-inset-right));
+    width:48px;height:48px;border-radius:14px;border:1px solid var(--border);
     background:var(--accent);color:#fff;display:grid;place-items:center;font-size:1.15rem;cursor:pointer;opacity:0;pointer-events:none;
     transition:opacity .3s,transform .3s;box-shadow:0 8px 24px var(--accent-glow);
   }
   .back-top.show{opacity:1;pointer-events:auto}
   .back-top:hover{transform:translateY(-4px)}
 
-  /* ============================ FLYING ROCKET ============================ */
-  #flying-rocket{
-    position:fixed;top:0;left:0;z-index:1500;pointer-events:none;
-    font-size:2rem;line-height:1;will-change:transform;opacity:0;
-    display:flex;align-items:center;gap:.15rem;filter:drop-shadow(0 4px 14px var(--accent-glow));
+  /* ============================ TRAJECTORY LINE ============================ */
+  /* A thin flight-path arc that strokes itself in as you scroll, threading the page.
+     Fixed overlay above section backgrounds but below interactive content. */
+  #trajectory{position:fixed;inset:0;width:100vw;height:100svh;z-index:1;pointer-events:none;overflow:visible}
+  #trajectory path{fill:none;stroke:url(#trajGrad);stroke-width:2;stroke-linecap:round;
+    opacity:.32;filter:drop-shadow(0 0 6px var(--accent-glow))}
+  @media (prefers-reduced-motion: reduce){ #trajectory{display:none} }
+
+  /* ============================ SCRUB / TOAST / SATELLITE (easter eggs) ============================ */
+  body.scrubbed{animation:scrubShake .4s ease 3}
+  @keyframes scrubShake{0%,100%{transform:translate(0,0)}25%{transform:translate(-4px,0)}75%{transform:translate(4px,0)}}
+  #scrub-flash{position:fixed;inset:0;z-index:2200;display:none;place-items:center;text-align:center;
+    background:repeating-linear-gradient(45deg,rgba(200,30,30,.28),rgba(200,30,30,.28) 26px,rgba(150,10,10,.34) 26px,rgba(150,10,10,.34) 52px);
+    backdrop-filter:blur(2px);-webkit-backdrop-filter:blur(2px)}
+  #scrub-flash.show{display:grid;animation:cdFade .2s ease}
+  #scrub-flash .sf-inner{color:#fff;font-family:'Space Grotesk',sans-serif}
+  #scrub-flash .sf-title{font-size:clamp(1.8rem,7vw,3.4rem);font-weight:700;letter-spacing:.04em;text-shadow:0 4px 30px rgba(0,0,0,.6)}
+  #scrub-flash .sf-sub{margin-top:.8rem;font-size:1rem;letter-spacing:.4em;text-transform:uppercase;color:#ffd0d0;animation:blink 1s steps(1) infinite}
+  /* generic toast used by Martian / struts eggs */
+  #egg-toast{position:fixed;left:50%;bottom:84px;transform:translateX(-50%) translateY(20px);
+    z-index:2000;max-width:min(560px,90vw);pointer-events:none;opacity:0;
+    background:var(--nav-bg);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
+    border:1px solid var(--border);border-radius:14px;padding:.85rem 1.2rem;box-shadow:var(--shadow);
+    color:var(--text);font-size:.95rem;text-align:center;transition:opacity .4s,transform .4s}
+  #egg-toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+  #egg-toast .et-mono{font-family:'Space Grotesk',sans-serif;color:var(--accent);font-weight:600}
+  /* idle satellite drifting across the top */
+  #satellite{position:fixed;top:14vh;left:-60px;z-index:1200;font-size:1.6rem;pointer-events:none;opacity:0;
+    filter:drop-shadow(0 3px 10px rgba(0,0,0,.4))}
+  #satellite.go{animation:satDrift 14s linear forwards}
+  @keyframes satDrift{
+    0%{opacity:0;transform:translateX(0) rotate(0)}
+    8%{opacity:.9}92%{opacity:.9}
+    100%{opacity:0;transform:translateX(calc(100vw + 120px)) rotate(50deg)}
   }
-  #flying-rocket.fly{animation:rocketFly var(--rk-dur,6s) linear forwards}
-  /* the 🚀 glyph already points up-and-to-the-right, so we leave it un-rotated
-     and send it flying in that same direction (lower-left → upper-right). */
-  #flying-rocket .rk-body{display:inline-block}
-  #flying-rocket .rk-trail{
-    width:64px;height:5px;border-radius:5px;order:-1;
-    transform-origin:right center;transform:rotate(-45deg); /* exhaust trails down-left, behind travel */
-    background:linear-gradient(90deg,transparent,var(--accent),#fff);
-    box-shadow:0 0 12px var(--accent);opacity:.85;
+  @media (prefers-reduced-motion: reduce){ #satellite{display:none} }
+
+  /* ============================ COUNTDOWN EASTER EGG ============================ */
+  /* Triple-click the brand (or type "liftoff") to run a T-10 launch sequence:
+     a full-screen countdown, then the rocket climbs across with exhaust + confetti. */
+  #countdown{
+    position:fixed;inset:0;z-index:2100;display:none;place-items:center;
+    background:radial-gradient(circle at 50% 55%,rgba(10,14,22,.86),rgba(6,8,13,.96));
+    backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);
   }
-  /* travels along the direction the rocket faces: from lower-left up to upper-right */
-  @keyframes rocketFly{
-    0%{opacity:0;transform:translate(var(--rk-x0,-14vw),var(--rk-y0,92vh)) rotate(var(--rk-rot,0deg))}
+  #countdown.show{display:grid;animation:cdFade .3s ease}
+  @keyframes cdFade{from{opacity:0}to{opacity:1}}
+  .cd-inner{text-align:center;color:#fff;width:min(560px,92vw)}
+  .cd-status{font-family:'Space Grotesk',sans-serif;font-size:.9rem;font-weight:600;letter-spacing:.32em;
+    text-transform:uppercase;color:var(--accent);margin-bottom:1.2rem;min-height:1.2em}
+  .cd-num{font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:clamp(5rem,26vw,13rem);line-height:1;
+    text-shadow:0 6px 60px var(--accent-glow);font-variant-numeric:tabular-nums}
+  .cd-num.tick{animation:cdTick .9s cubic-bezier(.2,.8,.2,1)}
+  @keyframes cdTick{0%{opacity:0;transform:scale(1.5)}25%{opacity:1;transform:scale(1)}100%{opacity:.85;transform:scale(1)}}
+  .cd-num.go{background:linear-gradient(120deg,var(--accent),var(--accent-2));-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;font-size:clamp(3rem,14vw,7rem)}
+  .cd-ring{width:min(300px,74vw);height:6px;border-radius:6px;background:rgba(255,255,255,.12);margin:1.8rem auto 0;overflow:hidden}
+  .cd-ring > i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--accent),var(--accent-2));transition:width 1s linear}
+  .cd-skip{margin-top:1.6rem;font-size:.78rem;color:var(--text-faint);letter-spacing:.08em}
+  /* screen shake at ignition */
+  @keyframes screenShake{
+    0%,100%{transform:translate(0,0)}
+    20%{transform:translate(-3px,2px)}40%{transform:translate(3px,-2px)}
+    60%{transform:translate(-2px,-3px)}80%{transform:translate(2px,3px)}
+  }
+  body.launching{animation:screenShake .5s ease 2}
+  /* confetti pieces spawned by the launch sequence */
+  .cd-confetti{position:fixed;top:-14px;width:9px;height:14px;z-index:2050;pointer-events:none;border-radius:1px;
+    animation:cdFall linear forwards}
+  @keyframes cdFall{to{transform:translateY(112vh) rotateZ(720deg);opacity:0}}
+  /* the launching rocket climb-out (distinct from the scroll rocket) */
+  #launch-rocket{
+    position:fixed;left:0;bottom:0;z-index:2060;font-size:3rem;line-height:1;pointer-events:none;
+    opacity:0;display:flex;align-items:center;gap:.1rem;filter:drop-shadow(0 6px 20px var(--accent-glow));
+  }
+  #launch-rocket .lr-trail{width:70px;height:6px;border-radius:6px;order:-1;transform-origin:right center;transform:rotate(-45deg);
+    background:linear-gradient(90deg,transparent,var(--accent),#fff);box-shadow:0 0 16px var(--accent)}
+  #launch-rocket.go{animation:rocketClimb 2.4s cubic-bezier(.4,0,.7,1) forwards}
+  @keyframes rocketClimb{
+    0%{opacity:0;transform:translate(6vw,10vh) rotate(0)}
     8%{opacity:1}
-    92%{opacity:1}
-    100%{opacity:0;transform:translate(var(--rk-x1,114vw),var(--rk-y1,-14vh)) rotate(var(--rk-rot,0deg))}
+    100%{opacity:0;transform:translate(88vw,-108vh) rotate(0)}
   }
+  @media (prefers-reduced-motion: reduce){
+    #countdown .cd-num.tick,#launch-rocket.go,body.launching{animation:none}
+  }
+
+  /* ============================ SCROLL ROCKET ============================ */
+  /* The 🚀 tracks scroll progress: pinned near the bottom, its horizontal
+     position = how far down the page you've scrolled (0% → left, 100% → right).
+     Position is driven from JS via the --rk-progress custom property. */
+  #flying-rocket{
+    position:fixed;bottom:calc(20px + env(safe-area-inset-bottom));left:0;z-index:1500;
+    font-size:2rem;line-height:1;will-change:transform;cursor:pointer;pointer-events:auto;
+    filter:drop-shadow(0 4px 14px var(--accent-glow));
+    /* travel from just off the left edge to just off the right edge,
+       clamped inside the horizontal safe-area on notched phones */
+    transform:translateX(calc(-10px + var(--rk-progress,0) *
+      (100vw - 2.2rem - env(safe-area-inset-left) - env(safe-area-inset-right))));
+  }
+  #flying-rocket .rk-glyph{display:inline-block;transition:transform .2s}
+  #flying-rocket:hover .rk-glyph{transform:scale(1.15)}
+  /* click-to-boost: quick barrel roll + pop before it re-docks (JS drives the launch across) */
+  #flying-rocket.boost .rk-glyph{animation:rkBarrel .7s ease-in-out}
+  @keyframes rkBarrel{0%{transform:scale(1)}40%{transform:scale(1.3) rotate(200deg)}100%{transform:scale(1) rotate(360deg)}}
+  /* exhaust puff emitted at stage events and on boost */
+  .rk-puff{position:fixed;z-index:1489;pointer-events:none;width:12px;height:12px;border-radius:50%;
+    background:radial-gradient(circle,rgba(255,255,255,.9),var(--accent) 50%,transparent 72%);
+    opacity:.9;animation:rkPuff .9s ease-out forwards}
+  @keyframes rkPuff{0%{transform:scale(.5)}100%{transform:scale(3) translateY(6px);opacity:0}}
+  /* chip flash when a stage event fires */
+  #launch-hud.flash{animation:hudFlash .7s ease}
+  @keyframes hudFlash{0%,100%{box-shadow:0 6px 20px rgba(0,0,0,.25)}
+    35%{box-shadow:0 0 0 3px var(--accent-glow),0 6px 24px var(--accent-glow);border-color:var(--accent)}}
   @media (prefers-reduced-motion: reduce){ #flying-rocket{display:none} }
+
+  /* ============================ LAUNCH TELEMETRY (scroll HUD) ============================ */
+  /* A SpaceX-style T+ timeline tied to scroll: a trajectory bar along the very
+     bottom with a tick per flight event, and a telemetry chip showing the live
+     T+ clock and the most recent event. The 🚀 rides the bar. */
+  #launch-track{
+    position:fixed;left:0;right:0;bottom:calc(12px + env(safe-area-inset-bottom));height:2px;z-index:1490;pointer-events:none;
+    background:var(--border);
+  }
+  #launch-track > .fill{
+    position:absolute;left:0;top:0;bottom:0;width:calc(var(--rk-progress,0) * 100%);
+    background:linear-gradient(90deg,var(--accent),var(--accent-2));
+    box-shadow:0 0 10px var(--accent-glow);
+  }
+  #launch-track > .tick{
+    position:absolute;top:50%;width:7px;height:7px;border-radius:50%;
+    transform:translate(-50%,-50%);background:var(--bg-2);border:1.5px solid var(--text-faint);
+    transition:background .3s,border-color .3s,transform .3s;
+  }
+  #launch-track > .tick.passed{background:var(--accent);border-color:var(--accent);transform:translate(-50%,-50%) scale(1.15)}
+  #launch-hud{
+    position:fixed;z-index:1495;pointer-events:none;
+    left:calc(16px + env(safe-area-inset-left));
+    bottom:calc(24px + env(safe-area-inset-bottom));
+    display:flex;align-items:center;gap:.5rem;max-width:calc(100vw - 32px - env(safe-area-inset-left) - env(safe-area-inset-right));
+    font-family:'Space Grotesk',ui-monospace,monospace;font-size:.82rem;font-weight:600;
+    color:var(--text);background:var(--nav-bg);backdrop-filter:blur(10px);
+    -webkit-backdrop-filter:blur(10px);border:1px solid var(--border);border-radius:100px;
+    padding:.4rem .9rem;box-shadow:0 6px 20px rgba(0,0,0,.25);letter-spacing:.02em;
+    white-space:nowrap;
+  }
+  #launch-hud .lh-dot{flex:0 0 auto;width:8px;height:8px;border-radius:50%;background:#39d98a;box-shadow:0 0 8px #39d98a;animation:pulse 1.8s infinite}
+  #launch-hud .lh-clock{flex:0 0 auto;color:var(--accent);font-variant-numeric:tabular-nums}
+  #launch-hud .lh-sep{flex:0 0 auto;color:var(--text-faint)}
+  #launch-hud .lh-event{text-transform:uppercase;letter-spacing:.08em;overflow:hidden;text-overflow:ellipsis}
+  #launch-hud .lh-tele{flex:0 0 auto;color:var(--text-dim);font-variant-numeric:tabular-nums;font-size:.92em}
+  #launch-hud .lh-tele .lh-vel{color:var(--accent-2)}
+  /* telemetry readout is secondary — drop it before the event label on tight widths */
+  @media(max-width:700px){ #launch-hud .lh-tele,#launch-hud .lh-tele-sep{display:none} }
+  @media(max-width:520px){
+    #launch-hud{font-size:.72rem;left:calc(10px + env(safe-area-inset-left));padding:.35rem .7rem;gap:.4rem}
+  }
+  @media (prefers-reduced-motion: reduce){ #launch-track,#launch-hud{display:none} }
 
   /* ============================ REVEAL ANIMATIONS ============================ */
   .reveal{opacity:0;transform:translateY(38px);transition:opacity .8s cubic-bezier(.2,.8,.2,1),transform .8s cubic-bezier(.2,.8,.2,1)}
@@ -341,13 +552,58 @@
 <body id="top">
   <div id="preloader"><div class="loader-ring"></div></div>
 
-  <!-- flying rocket easter-egg -->
-  <div id="flying-rocket" aria-hidden="true"><span class="rk-trail"></span><span class="rk-body">🚀</span></div>
+  <!-- self-drawing flight-path arc spanning the full page (JS sets the path + scroll dash) -->
+  <svg id="trajectory" aria-hidden="true" preserveAspectRatio="none">
+    <defs>
+      <linearGradient id="trajGrad" x1="0" y1="0" x2="1" y2="1">
+        <stop offset="0%" stop-color="var(--accent)"/>
+        <stop offset="100%" stop-color="var(--accent-2)"/>
+      </linearGradient>
+    </defs>
+    <path d=""/>
+  </svg>
+
+  <!-- rocket that tracks scroll progress across the screen (click it for a boost) -->
+  <div id="flying-rocket" title="Give it a boost 🚀"><span class="rk-glyph">🚀</span></div>
+
+  <!-- SpaceX-style launch timeline tied to scroll progress -->
+  <div id="launch-track" aria-hidden="true"><div class="fill"></div></div>
+  <div id="launch-hud" aria-hidden="true">
+    <span class="lh-dot"></span>
+    <span class="lh-clock">T+00:00</span>
+    <span class="lh-sep">·</span>
+    <span class="lh-event">Liftoff</span>
+    <span class="lh-sep lh-tele-sep">·</span>
+    <span class="lh-tele"><span class="lh-alt">0&nbsp;km</span> <span class="lh-vel">0&nbsp;m/s</span></span>
+  </div>
+
+  <!-- launch-sequence easter egg: triple-click the brand, or type "liftoff" -->
+  <div id="countdown" aria-hidden="true">
+    <div class="cd-inner">
+      <div class="cd-status">Terminal Count</div>
+      <div class="cd-num">10</div>
+      <div class="cd-ring"><i></i></div>
+      <div class="cd-skip">tap anywhere or press ESC to abort</div>
+    </div>
+  </div>
+  <div id="launch-rocket" aria-hidden="true"><span class="lr-trail"></span><span>🚀</span></div>
+
+  <!-- Konami code (↑↑↓↓←→←→ B A) → launch scrub -->
+  <div id="scrub-flash" aria-hidden="true"><div class="sf-inner">
+    <div class="sf-title">LAUNCH SCRUBBED</div>
+    <div class="sf-sub">Hold · Hold · Hold</div>
+  </div></div>
+
+  <!-- generic toast for keyword / quote easter eggs -->
+  <div id="egg-toast" aria-hidden="true"></div>
+
+  <!-- idle-orbit satellite -->
+  <div id="satellite" aria-hidden="true">🛰️</div>
 
   <!-- ============ NAV ============ -->
   <nav id="nav">
     <div class="container nav-inner">
-      <a href="#top" class="brand"><span class="dot"></span>Nitish&nbsp;Chennoju</a>
+      <a href="#top" class="brand" title="Triple-click for launch 🚀"><span class="dot"></span>NC</a>
       <div class="nav-tools">
         <ul class="nav-links" id="navLinks">
           <li><a href="#top" class="active">Home</a></li>
@@ -358,15 +614,40 @@
           <li><a href="#projects">Projects</a></li>
           <li><a href="#contact">Contact</a></li>
         </ul>
+        <button class="theme-toggle egg-btn" id="eggToggle" aria-label="Easter eggs cheatsheet" aria-expanded="false" title="Secrets"><i class="fa fa-rocket"></i></button>
         <button class="theme-toggle" id="themeToggle" aria-label="Toggle light/dark theme"><i class="fa fa-moon-o"></i></button>
         <button class="burger" id="burger" aria-label="Menu"><i class="fa fa-bars"></i></button>
       </div>
+    </div>
+
+    <!-- easter-egg cheatsheet popover -->
+    <div id="egg-sheet" role="dialog" aria-label="Hidden features" hidden>
+      <div class="es-head"><i class="fa fa-rocket"></i> Hidden Features <span class="es-hint">try them</span></div>
+      <ul class="es-list">
+        <li><span class="es-do">Triple-click the <b>NC</b> logo</span><span class="es-key">or type <kbd>liftoff</kbd></span><span class="es-fx">→ full launch countdown</span></li>
+        <li><span class="es-do">Konami code</span><span class="es-key"><kbd>↑↑↓↓←→←→ B A</kbd></span><span class="es-fx">→ launch scrub</span></li>
+        <li><span class="es-do">Click the little <span aria-hidden="true">🚀</span> rocket</span><span class="es-fx">→ barrel-roll boost</span></li>
+        <li><span class="es-do">Type an event</span><span class="es-key"><kbd>apogee</kbd> <kbd>meco</kbd> <kbd>seco</kbd></span><span class="es-fx">→ jump to that stage</span></li>
+        <li><span class="es-do">Type</span><span class="es-key"><kbd>martian</kbd></span><span class="es-fx">→ a certain quote</span></li>
+        <li><span class="es-do">Type</span><span class="es-key"><kbd>struts</kbd></span><span class="es-fx">→ inside joke</span></li>
+        <li><span class="es-do">Leave the page idle</span><span class="es-fx">→ watch the skyline 🛰️</span></li>
+        <li><span class="es-do">Open the browser console</span><span class="es-fx">→ a note for you</span></li>
+      </ul>
     </div>
   </nav>
 
   <!-- ============ HERO ============ -->
   <header class="hero" id="home">
-    <div class="hero-bg" data-parallax="0.3"></div>
+    <div class="hero-bg" data-parallax="0.3">
+      <!-- phones get the lighter portrait-framed encode; sources are picked at
+           load time by the media attribute, so mobile never fetches the 1.3MB desktop clip -->
+      <video autoplay muted loop playsinline preload="auto" poster="media/hero-poster.jpg" aria-hidden="true">
+        <source src="media/hero-phone.webm" type="video/webm" media="(max-width:640px)">
+        <source src="media/hero-phone.mp4"  type="video/mp4"  media="(max-width:640px)">
+        <source src="media/hero.webm" type="video/webm">
+        <source src="media/hero.mp4" type="video/mp4">
+      </video>
+    </div>
     <div class="hero-content">
       <span class="eyebrow"><span class="live"></span>Launch Engineer @ Stoke Space</span>
       <h1>I am <span class="grad">Nitish Chennoju</span></h1>
@@ -470,7 +751,7 @@
         <div class="line"></div>
         <p>I led UC Irvine's team through several cold flows, our longest-burn static fire, and the launch of UCI's first bipropellant liquid (methalox) rocket.</p>
       </div>
-      <div class="about-grid" style="grid-template-columns:1.1fr .9fr">
+      <div class="about-grid rocket-grid">
         <div class="reveal">
           <div class="card">
             <p class="about-lead" style="font-size:1rem">
@@ -529,6 +810,12 @@
 
   <!-- ============ PROJECTS ============ -->
   <section class="section-pad" id="projects">
+    <div class="proj-bg" aria-hidden="true">
+      <video muted loop playsinline preload="none" poster="media/projects-poster.jpg" data-lazy-video data-parallax="0.18">
+        <source src="media/projects.mp4" type="video/mp4">
+        <source src="media/projects.webm" type="video/webm">
+      </video>
+    </div>
     <div class="container">
       <div class="section-head reveal">
         <span class="kicker">Things I've built</span>

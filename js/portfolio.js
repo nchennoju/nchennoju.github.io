@@ -115,12 +115,20 @@
     var suffix = el.getAttribute("data-suffix") || "";
     var dec = target % 1 !== 0 ? 1 : 0;
     if (reduceMotion) { el.textContent = target.toLocaleString() + suffix; return; }
-    var start = 0, dur = 1400, t0 = null;
+    var start = 0, dur = 1500, t0 = null;
+    // back-out easing: the value shoots slightly past the target then settles,
+    // like an analog needle finding its mark.
+    function easeOutBack(p) {
+      var c1 = 1.70158, c3 = c1 + 1;
+      return 1 + c3 * Math.pow(p - 1, 3) + c1 * Math.pow(p - 1, 2);
+    }
     function step(ts) {
       if (!t0) t0 = ts;
       var p = Math.min((ts - t0) / dur, 1);
-      var eased = 1 - Math.pow(1 - p, 3);
+      var eased = easeOutBack(p);
       var val = start + (target - start) * eased;
+      // clamp the visible overshoot so it never renders a nonsensical number
+      if (p >= 1) val = target;
       el.textContent = (dec ? val.toFixed(1) : Math.round(val)).toLocaleString() + suffix;
       if (p < 1) requestAnimationFrame(step);
     }
@@ -370,7 +378,27 @@
       links: [["Open", "test_report.html"]] },
     { t: "Interactive Greeting Cards", cat: "Fun", date: "2024–25", img: "img/project-bg.png",
       d: "A series of animated, interactive greeting-card microsites — a Ford's-Garage birthday card, a Porsche-themed card with audio, a Barbie card, and more.",
-      links: [["Ford's Garage", "cards/bdaycard.html"], ["Barbie Deluxe", "cards/gpt2.html"]] }
+      links: [["Ford's Garage", "cards/bdaycard.html"], ["Barbie Deluxe", "cards/gpt2.html"]] },
+
+    // free, reusable card templates — genericized versions of my cards for anyone to use
+    { t: "3D Flip Birthday Card — Template", cat: "Templates", date: "2025", img: "img/project-bg.png",
+      d: "Free, reusable template: a 3D flip birthday card with a hero cover, scrollable message, photos, and a confetti burst on open. Drop in your own text and images — everything is placeholder-ready and works with no external files.",
+      links: [["Open template", "cards/templates/birthday-flip-card.html"]] },
+    { t: "Candle Flip Card — Template", cat: "Templates", date: "2025", img: "img/project-bg.png",
+      d: "Free template: a flip card with animated candle flames you can blow out with your mic, plus confetti and a relight button. Swap in your own message and photos.",
+      links: [["Open template", "cards/templates/birthday-candle-flip-card.html"]] },
+    { t: "Blow-Out-The-Candles Card — Template", cat: "Templates", date: "2025", img: "img/project-bg.png",
+      d: "Free template: a minimal mic-driven birthday card — blow into the mic to snuff the candles and flip the card open. Requires microphone permission over http(s)/localhost.",
+      links: [["Open template", "cards/templates/birthday-mic-blowout.html"]] },
+    { t: "Barbie Birthday Card — Template", cat: "Templates", date: "2025", img: "img/project-bg.png",
+      d: "Free template: a playful 3D flip card with mic blow-out, celebration audio hooks, and confetti. Add your own name, message, and sounds.",
+      links: [["Open template", "cards/templates/birthday-barbie-card.html"]] },
+    { t: "Retro Car Birthday Card — Template", cat: "Templates", date: "2025", img: "img/project-bg.png",
+      d: "Free template: a retro/sage car-themed birthday card with mic blow-out candles, a 3D flip, and confetti. Optional engine-rev / sound hooks are wired but empty for you to fill.",
+      links: [["Open template", "cards/templates/birthday-retro-car-card.html"]] },
+    { t: "Anniversary Photo Card — Template", cat: "Templates", date: "2025", img: "img/project-bg.png",
+      d: "Free template: a paper-anniversary card with a photo cover, 3D flip, falling-petal confetti, and an auto-advancing 9-photo flip slideshow. Point the photo array at your own images.",
+      links: [["Open template", "cards/templates/anniversary-photo-slideshow.html"]] }
   ];
 
   var CATS = ["All"].concat(PROJECTS.map(function (p) { return p.cat; })
@@ -587,36 +615,505 @@
     });
   });
 
-  /* ---------- FLYING ROCKET ---------- */
-  (function flyingRocket() {
+  /* ---------- SCROLL ROCKET + LAUNCH TIMELINE ---------- */
+  // The 🚀 rides a trajectory bar across the bottom in proportion to scroll
+  // progress, while a SpaceX-style telemetry HUD ticks through flight events:
+  // each event fires as its section reaches the top of the viewport, and a fake
+  // T+ mission clock interpolates between the event times.
+  (function scrollRocket() {
     var rk = document.getElementById("flying-rocket");
+    var track = document.getElementById("launch-track");
+    var hud = document.getElementById("launch-hud");
     if (!rk || reduceMotion) return;
 
-    function launch() {
-      // The 🚀 glyph points up-and-to-the-right, so fly it that way:
-      // enter from the lower-left, climb out through the upper-right.
-      var startY = (78 + Math.random() * 20).toFixed(0);      // 78–98vh (low)
-      var climb  = 78 + Math.random() * 34;                   // vertical rise (vh)
-      var endY   = (startY - climb).toFixed(0);               // ends high / above top
-      var dur = (5.5 + Math.random() * 3).toFixed(1);         // 5.5–8.5s
-      rk.style.setProperty("--rk-x0", "-14vw");
-      rk.style.setProperty("--rk-x1", "114vw");
-      rk.style.setProperty("--rk-y0", startY + "vh");
-      rk.style.setProperty("--rk-y1", endY + "vh");
-      rk.style.setProperty("--rk-rot", "0deg");               // glyph is already angled
-      rk.style.setProperty("--rk-dur", dur + "s");
-      rk.classList.remove("fly");
-      void rk.offsetWidth;   // reflow so the animation can restart
-      rk.classList.add("fly");
+    var root = document.documentElement;
+
+    // Flight events pinned to sections, in order, with a plausible T+ time (sec).
+    // "at" is resolved to a scroll position on each layout pass.
+    var EVENTS = [
+      { id: "home",       label: "Liftoff",              t: 0 },
+      { id: "about",      label: "Max Q",                t: 72 },   // T+01:12
+      { id: "experience", label: "MECO",                 t: 156 },  // T+02:36
+      { id: "rocket",     label: "Stage Sep",            t: 162 },  // T+02:42
+      { id: "projects",   label: "Stage 2 Ignition",     t: 168 },  // T+02:48
+      { id: "contact",    label: "SECO / Payload Insertion", t: 522 } // T+08:42
+    ];
+
+    var clockEl = hud ? hud.querySelector(".lh-clock") : null;
+    var eventEl = hud ? hud.querySelector(".lh-event") : null;
+    var altEl   = hud ? hud.querySelector(".lh-alt") : null;
+    var velEl   = hud ? hud.querySelector(".lh-vel") : null;
+    var lastLabel = null, lastIdx = -1;
+
+    function fmt(sec) {
+      sec = Math.max(0, Math.round(sec));
+      var m = Math.floor(sec / 60), s = sec % 60;
+      return "T+" + (m < 10 ? "0" : "") + m + ":" + (s < 10 ? "0" : "") + s;
     }
-    rk.addEventListener("animationend", function () { rk.classList.remove("fly"); });
 
-    // Fly exactly once, shortly after load.
-    setTimeout(launch, 2600);
+    // emit a small exhaust puff just behind the scroll rocket's current position
+    function puff() {
+      var r = rk.getBoundingClientRect();
+      for (var i = 0; i < 4; i++) {
+        var p = document.createElement("div");
+        p.className = "rk-puff";
+        p.style.left = (r.left + r.width * 0.2 - 4 + (Math.random() * 10 - 5)) + "px";
+        p.style.top  = (r.top + r.height * 0.6 + (Math.random() * 8 - 4)) + "px";
+        p.style.animationDelay = (i * 0.05) + "s";
+        document.body.appendChild(p);
+        p.addEventListener("animationend", function () { this.remove(); });
+      }
+    }
+    function stageFX() {
+      if (hud) { hud.classList.remove("flash"); void hud.offsetWidth; hud.classList.add("flash"); }
+      puff();
+    }
+    // expose so the boost handler can reuse the puff
+    rk._puff = puff;
 
-    // Easter egg: double-click the brand to send it across again on demand.
+    // Resolve each event's scroll Y (top of its section) and lay out the ticks.
+    var scrollable = 1;
+    function measure() {
+      scrollable = Math.max(1, root.scrollHeight - window.innerHeight);
+      EVENTS.forEach(function (e) {
+        var el = document.getElementById(e.id);
+        e.y = el ? Math.min(el.offsetTop, scrollable) : 0;
+        e.p = e.y / scrollable;              // 0..1 position along the track
+      });
+      // last event sits at the very end of the page
+      EVENTS[EVENTS.length - 1].p = 1;
+      EVENTS[EVENTS.length - 1].y = scrollable;
+      if (track) layoutTicks();
+      buildPath();
+    }
+
+    function layoutTicks() {
+      // remove old ticks (keep the .fill), then add one per event
+      Array.prototype.slice.call(track.querySelectorAll(".tick")).forEach(function (t) { t.remove(); });
+      EVENTS.forEach(function (e) {
+        var tick = document.createElement("div");
+        tick.className = "tick";
+        tick.style.left = (e.p * 100).toFixed(2) + "%";
+        tick.title = e.label;
+        e.tick = tick;
+        track.appendChild(tick);
+      });
+    }
+
+    function update() {
+      var y = window.scrollY || root.scrollTop || 0;
+      var progress = y / scrollable;
+      if (progress < 0) progress = 0; else if (progress > 1) progress = 1;
+      root.style.setProperty("--rk-progress", progress.toFixed(4));
+
+      // find current event (last one whose position we've passed)
+      var idx = 0;
+      for (var i = 0; i < EVENTS.length; i++) {
+        if (progress + 1e-4 >= EVENTS[i].p) idx = i;
+      }
+      // interpolate the T+ clock between this event and the next
+      var cur = EVENTS[idx], nxt = EVENTS[idx + 1];
+      var tsec = cur.t;
+      if (nxt && nxt.p > cur.p) {
+        var frac = (progress - cur.p) / (nxt.p - cur.p);
+        if (frac < 0) frac = 0; else if (frac > 1) frac = 1;
+        tsec = cur.t + (nxt.t - cur.t) * frac;
+      }
+      if (clockEl) clockEl.textContent = fmt(tsec);
+      if (eventEl && cur.label !== lastLabel) { eventEl.textContent = cur.label; lastLabel = cur.label; }
+
+      // telemetry readout: fake altitude (km) & velocity (m/s) that climb with progress
+      if (altEl) altEl.innerHTML = Math.round(progress * 210) + " km";
+      if (velEl) velEl.innerHTML = (Math.round(progress * 7800 / 10) * 10).toLocaleString() + " m/s";
+
+      // fire stage FX (puff + chip flash) when we cross into a NEW event (mid-flight only)
+      if (idx !== lastIdx) {
+        if (lastIdx !== -1 && idx > lastIdx && idx > 0 && idx < EVENTS.length) stageFX();
+        lastIdx = idx;
+      }
+
+      // mark ticks passed
+      EVENTS.forEach(function (e) {
+        if (e.tick) e.tick.classList.toggle("passed", progress + 1e-4 >= e.p);
+      });
+
+      drawTrajectory(progress);
+    }
+
+    /* ---- self-drawing trajectory arc down the page ---- */
+    var svg = document.getElementById("trajectory");
+    var pathEl = svg ? svg.querySelector("path") : null;
+    var pathLen = 0;
+    // resolve theme colors into the gradient stops (SVG stops don't reliably
+    // read CSS custom properties), and refresh them when the theme changes
+    function paintGrad() {
+      if (!svg) return;
+      var cs = getComputedStyle(root);
+      var stops = svg.querySelectorAll("#trajGrad stop");
+      if (stops[0]) stops[0].setAttribute("stop-color", cs.getPropertyValue("--accent").trim() || "#47abec");
+      if (stops[1]) stops[1].setAttribute("stop-color", cs.getPropertyValue("--accent-2").trim() || "#7c5cff");
+    }
+    paintGrad();
+    if (toggle) toggle.addEventListener("click", function () { setTimeout(paintGrad, 50); });
+    var docH = 1;
+    function buildPath() {
+      if (!svg || !pathEl) return;
+      var w = window.innerWidth, h = root.scrollHeight;
+      docH = h;
+      // path is authored in full-document coordinates; the fixed SVG shows a
+      // viewport-sized slice of it (viewBox is scrolled in drawTrajectory).
+      svg.setAttribute("width", w); svg.setAttribute("height", window.innerHeight);
+      // gentle S-curve weaving between the sides as it descends the page
+      var d = "M " + (w * 0.12).toFixed(0) + " 0";
+      var steps = 8;
+      for (var i = 1; i <= steps; i++) {
+        var y = h * (i / steps);
+        var x = w * (0.5 + 0.36 * Math.sin(i * 1.15));
+        var cy = h * ((i - 0.5) / steps);
+        var cx = w * (0.5 + 0.5 * Math.sin((i - 0.6) * 1.15));
+        d += " Q " + cx.toFixed(0) + " " + cy.toFixed(0) + " " + x.toFixed(0) + " " + y.toFixed(0);
+      }
+      pathEl.setAttribute("d", d);
+      pathLen = pathEl.getTotalLength();
+      pathEl.style.strokeDasharray = pathLen;
+      pathEl.style.strokeDashoffset = pathLen;
+    }
+    function drawTrajectory(progress) {
+      if (!pathEl || !pathLen) return;
+      // scroll the viewBox so the fixed SVG reveals the arc at our scroll depth
+      var y = window.scrollY || root.scrollTop || 0;
+      svg.setAttribute("viewBox", "0 " + y.toFixed(0) + " " + window.innerWidth + " " + window.innerHeight);
+      // stroke the path in proportion to scroll progress
+      pathEl.style.strokeDashoffset = (pathLen * (1 - progress)).toFixed(1);
+    }
+
+    var ticking = false;
+    function onScroll() {
+      if (ticking) return;
+      ticking = true;
+      requestAnimationFrame(function () { update(); ticking = false; });
+    }
+    window.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("resize", function () { measure(); update(); });
+    // re-measure once big media (hero video, images) settle the layout
+    window.addEventListener("load", function () { measure(); update(); });
+
+    // click the scroll rocket → quick barrel-roll + boost puffs
+    var boosting = false;
+    rk.addEventListener("click", function () {
+      if (boosting) return;
+      boosting = true;
+      rk.classList.remove("boost"); void rk.offsetWidth; rk.classList.add("boost");
+      var n = 0, iv = setInterval(function () { rk._puff(); if (++n >= 5) clearInterval(iv); }, 70);
+      setTimeout(function () { rk.classList.remove("boost"); boosting = false; }, 750);
+    });
+
+    measure();
+    update();
+  })();
+
+  /* ---------- LAZY-PLAY BACKGROUND VIDEOS ---------- */
+  // Ambient videos marked data-lazy-video only load & play while on screen,
+  // and pause when scrolled away, so they never fight the initial page load.
+  (function lazyVideos() {
+    var vids = document.querySelectorAll("video[data-lazy-video]");
+    if (!vids.length) return;
+    if (reduceMotion || !("IntersectionObserver" in window)) return;
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (e) {
+        var v = e.target;
+        if (e.isIntersecting) {
+          if (v.preload === "none") v.preload = "auto";
+          var p = v.play();
+          if (p && p.catch) p.catch(function () {});
+        } else {
+          v.pause();
+        }
+      });
+    }, { rootMargin: "200px 0px" });
+    vids.forEach(function (v) { io.observe(v); });
+  })();
+
+  /* ---------- LAUNCH SEQUENCE (easter egg) ---------- */
+  // Triple-click the brand, or type "liftoff", to run a T-10 countdown that ends
+  // with the rocket climbing across the screen amid confetti and a screen shake.
+  (function launchSequence() {
+    var overlay = document.getElementById("countdown");
+    var rocket = document.getElementById("launch-rocket");
+    if (!overlay || !rocket) return;
+    var numEl = overlay.querySelector(".cd-num");
+    var statusEl = overlay.querySelector(".cd-status");
+    var ringEl = overlay.querySelector(".cd-ring > i");
+    var running = false, timers = [], audioCtx = null;
+
+    var STATUS = {
+      10: "Terminal Count", 6: "Startup", 3: "Ignition Sequence Start", 1: "Liftoff Commit"
+    };
+
+    function beep(freq, dur, vol) {
+      try {
+        audioCtx = audioCtx || new (window.AudioContext || window.webkitAudioContext)();
+        var o = audioCtx.createOscillator(), g = audioCtx.createGain();
+        o.type = "sine"; o.frequency.value = freq;
+        g.gain.value = vol == null ? 0.05 : vol;
+        o.connect(g); g.connect(audioCtx.destination);
+        o.start();
+        g.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + (dur || 0.12));
+        o.stop(audioCtx.currentTime + (dur || 0.12));
+      } catch (e) {}
+    }
+
+    function clearTimers() { timers.forEach(clearTimeout); timers = []; }
+
+    function abort() {
+      clearTimers();
+      overlay.classList.remove("show");
+      rocket.classList.remove("go");
+      document.body.classList.remove("launching");
+      running = false;
+    }
+
+    function confettiBurst() {
+      var colors = ["#47abec", "#7c5cff", "#39d98a", "#ffd447", "#ff6bb5"];
+      for (var i = 0; i < 90; i++) {
+        var c = document.createElement("div");
+        c.className = "cd-confetti";
+        c.style.left = (Math.random() * 100) + "vw";
+        c.style.background = colors[i % colors.length];
+        c.style.animationDuration = (1 + Math.random() * 1.2) + "s";
+        c.style.animationDelay = (Math.random() * 0.25) + "s";
+        document.body.appendChild(c);
+        c.addEventListener("animationend", function () { this.remove(); });
+      }
+    }
+
+    function ignite() {
+      overlay.classList.remove("show");
+      document.body.classList.add("launching");
+      rocket.classList.remove("go"); void rocket.offsetWidth; rocket.classList.add("go");
+      beep(880, 0.5, 0.06);
+      confettiBurst();
+      timers.push(setTimeout(function () {
+        document.body.classList.remove("launching");
+        running = false;
+      }, 2600));
+    }
+
+    function run() {
+      if (running) return;
+      running = true;
+      overlay.classList.add("show");
+      var n = 10;
+      function step() {
+        if (n > 0) {
+          numEl.textContent = n;
+          numEl.classList.remove("go");
+          numEl.classList.remove("tick"); void numEl.offsetWidth; numEl.classList.add("tick");
+          if (STATUS[n]) statusEl.textContent = STATUS[n];
+          ringEl.style.width = ((10 - n + 1) / 10 * 100) + "%";
+          beep(n <= 3 ? 660 : 440, 0.1, 0.045);
+          n--;
+          timers.push(setTimeout(step, 1000));
+        } else {
+          statusEl.textContent = "We have liftoff";
+          numEl.textContent = "GO";
+          numEl.classList.add("go");
+          beep(720, 0.18, 0.06);
+          timers.push(setTimeout(ignite, 650));
+        }
+      }
+      step();
+    }
+
+    // trigger 1: triple-click the brand
     var brand = document.querySelector(".brand");
-    if (brand) brand.addEventListener("dblclick", launch);
+    if (brand) {
+      var clicks = 0, clickTimer = null;
+      brand.addEventListener("click", function (e) {
+        clicks++;
+        if (clicks >= 3) {
+          e.preventDefault();
+          clicks = 0; clearTimeout(clickTimer);
+          run();
+          return;
+        }
+        clearTimeout(clickTimer);
+        clickTimer = setTimeout(function () { clicks = 0; }, 600);
+      });
+    }
+
+    // trigger 2: type "liftoff" anywhere
+    var typed = "";
+    document.addEventListener("keydown", function (e) {
+      if (e.key === "Escape") { abort(); return; }
+      if (e.key && e.key.length === 1) {
+        typed = (typed + e.key.toLowerCase()).slice(-7);
+        if (typed.indexOf("liftoff") !== -1) { typed = ""; run(); }
+      }
+    });
+
+    // mobile: no ESC key — tap the countdown overlay to abort
+    overlay.addEventListener("click", function () { if (running) abort(); });
+  })();
+
+  /* ---------- SHARED TOAST (easter eggs) ---------- */
+  var eggToast = (function () {
+    var el = document.getElementById("egg-toast");
+    var hideTimer = null;
+    return function (html, ms) {
+      if (!el) return;
+      el.innerHTML = html;
+      el.classList.add("show");
+      clearTimeout(hideTimer);
+      hideTimer = setTimeout(function () { el.classList.remove("show"); }, ms || 4200);
+    };
+  })();
+
+  /* ---------- MAGNETIC BUTTONS ---------- */
+  // Hero buttons subtly pull toward the cursor as it approaches. Pointer-only.
+  (function magneticButtons() {
+    if (reduceMotion) return;
+    if (!window.matchMedia || !window.matchMedia("(hover:hover) and (pointer:fine)").matches) return;
+    document.querySelectorAll(".hero-cta .btn").forEach(function (btn) {
+      var strength = 0.35;
+      btn.addEventListener("mousemove", function (e) {
+        var r = btn.getBoundingClientRect();
+        var dx = e.clientX - (r.left + r.width / 2);
+        var dy = e.clientY - (r.top + r.height / 2);
+        btn.style.transform = "translate(" + (dx * strength).toFixed(1) + "px," + (dy * strength).toFixed(1) + "px)";
+      });
+      btn.addEventListener("mouseleave", function () { btn.style.transform = ""; });
+    });
+  })();
+
+  /* ---------- KONAMI SCRUB (easter egg) ---------- */
+  (function konamiScrub() {
+    var flash = document.getElementById("scrub-flash");
+    if (!flash) return;
+    var SEQ = ["ArrowUp","ArrowUp","ArrowDown","ArrowDown","ArrowLeft","ArrowRight","ArrowLeft","ArrowRight","b","a"];
+    var pos = 0;
+    document.addEventListener("keydown", function (e) {
+      var k = e.key.length === 1 ? e.key.toLowerCase() : e.key;
+      pos = (k === SEQ[pos]) ? pos + 1 : (k === SEQ[0] ? 1 : 0);
+      if (pos === SEQ.length) {
+        pos = 0;
+        flash.classList.add("show");
+        if (!reduceMotion) document.body.classList.add("scrubbed");
+        setTimeout(function () {
+          flash.classList.remove("show");
+          document.body.classList.remove("scrubbed");
+        }, 1900);
+      }
+    });
+  })();
+
+  /* ---------- KEYWORD JUMPS (easter egg) ---------- */
+  // Type an event name to jump/pulse the matching section + HUD.
+  (function keywordJumps() {
+    var MAP = {
+      apogee: "rocket", meco: "experience", seco: "contact",
+      maxq: "about", stagesep: "rocket"
+    };
+    var buf = "";
+    document.addEventListener("keydown", function (e) {
+      if (!e.key || e.key.length !== 1) return;
+      buf = (buf + e.key.toLowerCase()).replace(/[^a-z]/g, "").slice(-9);
+      for (var word in MAP) {
+        if (buf.indexOf(word) !== -1) {
+          var sec = document.getElementById(MAP[word]);
+          if (sec) sec.scrollIntoView({ behavior: reduceMotion ? "auto" : "smooth" });
+          var hud = document.getElementById("launch-hud");
+          if (hud) { hud.classList.remove("flash"); void hud.offsetWidth; hud.classList.add("flash"); }
+          buf = "";
+          break;
+        }
+      }
+    });
+  })();
+
+  /* ---------- THE MARTIAN + STRUTS (easter eggs) ---------- */
+  (function quoteEggs() {
+    var buf = "";
+    document.addEventListener("keydown", function (e) {
+      if (!e.key || e.key.length !== 1) return;
+      buf = (buf + e.key.toLowerCase()).replace(/[^a-z]/g, "").slice(-12);
+      if (buf.indexOf("martian") !== -1) {
+        buf = "";
+        eggToast('<span class="et-mono">🥔 Mark Watney:</span> “I’m going to have to science the sh__ out of this.”');
+      } else if (buf.indexOf("struts") !== -1) {
+        buf = "";
+        eggToast('<span class="et-mono">Disclaimer:</span> No struts were harmed in the making of this animation. (The real ones… less lucky.)');
+      }
+    });
+  })();
+
+  /* ---------- IDLE ORBIT SATELLITE (easter egg) ---------- */
+  (function idleOrbit() {
+    var sat = document.getElementById("satellite");
+    if (!sat || reduceMotion) return;
+    var timer = null, flying = false;
+    function arm() {
+      clearTimeout(timer);
+      timer = setTimeout(function () {
+        if (flying) return;
+        flying = true;
+        sat.classList.remove("go"); void sat.offsetWidth; sat.classList.add("go");
+        sat.addEventListener("animationend", function once() {
+          sat.classList.remove("go"); flying = false;
+          sat.removeEventListener("animationend", once);
+          arm();
+        });
+      }, 30000);
+    }
+    ["mousemove","scroll","keydown","touchstart","click"].forEach(function (ev) {
+      window.addEventListener(ev, arm, { passive: true });
+    });
+    arm();
+  })();
+
+  /* ---------- EASTER-EGG CHEATSHEET ---------- */
+  (function eggSheet() {
+    var btn = document.getElementById("eggToggle");
+    var sheet = document.getElementById("egg-sheet");
+    if (!btn || !sheet) return;
+    function open() {
+      sheet.hidden = false;
+      requestAnimationFrame(function () { sheet.classList.add("in"); });
+      btn.classList.add("open"); btn.setAttribute("aria-expanded", "true");
+    }
+    function close() {
+      sheet.hidden = true; sheet.classList.remove("in");
+      btn.classList.remove("open"); btn.setAttribute("aria-expanded", "false");
+    }
+    btn.addEventListener("click", function (e) {
+      e.stopPropagation();
+      if (sheet.hidden) open(); else close();
+    });
+    // click outside / Escape closes it
+    document.addEventListener("click", function (e) {
+      if (!sheet.hidden && !sheet.contains(e.target) && e.target !== btn) close();
+    });
+    document.addEventListener("keydown", function (e) { if (e.key === "Escape") close(); });
+  })();
+
+  /* ---------- CONSOLE GREETING (easter egg) ---------- */
+  (function consoleGreeting() {
+    try {
+      var big = "font-size:13px;font-family:monospace;color:#47abec;";
+      console.log("%c" +
+        "        /\\\n" +
+        "       /  \\\n" +
+        "      |    |\n" +
+        "      | NC |\n" +
+        "      |    |\n" +
+        "     /|    |\\\n" +
+        "    /_|____|_\\\n" +
+        "       /\\\n" +
+        "      /  \\\n", big);
+      console.log("%cLooks like you know your way around a console. 🚀", "font-size:14px;font-weight:bold;color:#7c5cff;");
+      console.log("%cHidden around here: triple-click the logo (or type \"liftoff\") to launch · Konami code to scrub · type \"apogee\", \"meco\", \"martian\", or \"struts\" · click the little rocket · leave it idle a while.", "font-size:12px;color:#9aa6bd;");
+      console.log("%cLet's talk: nchennoju@gmail.com", "font-size:12px;color:#47abec;");
+    } catch (e) {}
   })();
 
   /* ---------- MISC ---------- */
@@ -625,11 +1122,20 @@
   document.querySelectorAll("[data-count]").forEach(function (el) { countObs.observe(el); });
   updateParallax();
 
-  window.addEventListener("load", function () {
-    setTimeout(function () {
-      var pre = document.getElementById("preloader");
-      pre.classList.add("done");
-      setTimeout(function () { pre.remove(); }, 650);
-    }, 250);
-  });
+  // Dismiss the preloader as soon as the page is interactive. We do NOT wait
+  // for window.load, because that blocks on every subresource (background
+  // videos, the YouTube iframe, etc.) and would leave the spinner up needlessly.
+  function hidePreloader() {
+    var pre = document.getElementById("preloader");
+    if (!pre || pre.classList.contains("done")) return;
+    pre.classList.add("done");
+    setTimeout(function () { if (pre.parentNode) pre.remove(); }, 650);
+  }
+  if (document.readyState !== "loading") {
+    hidePreloader();
+  } else {
+    document.addEventListener("DOMContentLoaded", hidePreloader);
+  }
+  // hard fallback: never let the spinner linger no matter what
+  setTimeout(hidePreloader, 2000);
 })();

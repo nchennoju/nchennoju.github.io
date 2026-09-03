@@ -1,0 +1,529 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Anniversary Photo Card Template</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Playfair+Display:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      /* --cover: the front photo of the card. Replace with url('your-cover.jpg'). */
+      --cover: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='600' height='600'%3E%3Crect width='100%25' height='100%25' fill='%23dfe3ea'/%3E%3Ctext x='50%25' y='50%25' font-family='sans-serif' font-size='34' fill='%238a93a3' text-anchor='middle' dominant-baseline='middle'%3EYour Photo Here%3C/text%3E%3C/svg%3E");
+
+      --amethyst:#8a6db4;
+      --amethyst-deep:#6f5596;
+      --powder:#cfe0f5;
+      --mint:#cfe6db;
+      --cream:#fff6f0;
+      --ink:#4a3f55;
+      --gold:rgba(212,175,55,.82);
+    }
+
+    body {
+      margin: 0;
+      height: 100vh;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Playfair Display', serif;
+      color: var(--ink);
+      background:
+        radial-gradient(1200px 800px at 50% 20%, #f9f2fc 0%, #efe7f7 40%, #e7eff7 70%, #eaf4ef 100%),
+        linear-gradient(120deg, rgba(255,255,255,.28), rgba(255,255,255,0) 40%, rgba(255,255,255,.24) 70%, rgba(255,255,255,0));
+      background-blend-mode: screen;
+      scroll-behavior: smooth;
+    }
+
+    .card {
+      position: relative;
+      width: 500px;
+      height: 455px;
+      perspective: 1000px;
+    }
+
+    .birthdayCard {
+      width: 100%;
+      height: 100%;
+      transition: transform 1.2s ease;
+      transform-style: preserve-3d;
+      will-change: transform;
+    }
+    .birthdayCard.open { transform: rotateY(-170deg); }
+
+    .cardFront, .cardInside {
+      position: absolute; inset: 0;
+      backface-visibility: hidden;
+      transform-style: preserve-3d;
+      border-radius: 16px;
+      box-shadow: 0 18px 40px rgba(0,0,0,0.14);
+      overflow: hidden;
+      height: 400px;
+    }
+
+    /* FRONT — photo cover */
+    .cardFront {
+      background: center/cover no-repeat var(--cover);
+      display: grid; place-items: center;
+      text-align: center; padding: 28px;
+      border: 2px solid var(--gold);
+      position: relative;
+    }
+    .cardFront::before{
+      content:""; position:absolute; inset:0;
+      background:
+        linear-gradient(180deg, rgba(0,0,0,.15), rgba(0,0,0,.35)),
+        radial-gradient(60% 60% at 50% 40%, rgba(255,210,120,.18), transparent 70%);
+      mix-blend-mode: multiply; pointer-events:none;
+    }
+    .cardFront::after{
+      content:""; position:absolute; inset:12px;
+      border: 1px solid rgba(212,175,55,.55);
+      border-radius:12px;
+      box-shadow: inset 0 0 36px rgba(255,255,255,.10);
+      pointer-events:none;
+    }
+
+    .frontTitle {
+      font-family: 'Great Vibes', cursive;
+      color: #ffffff;
+      text-shadow: 0 2px 14px rgba(0,0,0,.55);
+      font-size: 2.6rem; line-height: 1.1; letter-spacing: .4px;
+    }
+    .subtitle {
+      margin-top: 6px; font-size: 1rem;
+      color: #fffbea; text-shadow: 0 1px 8px rgba(0,0,0,.55); opacity: .98;
+    }
+    .kissWrap{
+      position:absolute; bottom:18px; display:flex; gap:8px; align-items:center;
+      color:#ffffff; font-size:.95rem; opacity:.96; text-shadow: 0 1px 8px rgba(0,0,0,.6);
+    }
+    .kiss{ width:18px; height:18px; animation: floatKiss 2.2s ease-in-out infinite; filter: drop-shadow(0 1px 3px rgba(0,0,0,.45)); }
+    @keyframes floatKiss{ 0%,100%{ transform: translateY(0) scale(1); } 50%{ transform: translateY(-6px) scale(1.08); } }
+    .kiss.fade{ opacity:0; transition:opacity .5s ease; }
+
+    /* INSIDE — scrollable content */
+    .cardInside {
+      background: linear-gradient(180deg, var(--cream) 0%, #f6eef9 55%, #edf7f3 100%);
+      transform: rotateY(180deg);
+      display: flex; flex-direction: column;
+      padding: 22px;
+      border: 1px solid rgba(212,175,55,.35);
+    }
+
+    .insideScroll {
+      position: relative;
+      flex: 1;
+      overflow: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      padding-right: 6px;
+    }
+    .insideScroll::-webkit-scrollbar { width: 10px; }
+    .insideScroll::-webkit-scrollbar-track { background: rgba(0,0,0,.06); border-radius: 10px; }
+    .insideScroll::-webkit-scrollbar-thumb { background: rgba(138,109,180,.45); border-radius: 10px; }
+    .insideScroll::-webkit-scrollbar-thumb:hover { background: rgba(138,109,180,.65); }
+
+    .insideTitle{ font-family: 'Great Vibes', cursive; color: var(--amethyst); font-size: 2rem; margin: 0 0 4px; }
+    p { font-size: 0.92rem; margin: 0; line-height: 1.55; color: var(--ink); }
+    .divider{ height:1px; width:100%; background: linear-gradient(90deg, transparent, rgba(0,0,0,.10), transparent); margin: 6px 0 2px; }
+
+    /* Slideshow container */
+    .slideshow {
+      position: relative; width: 100%;
+      min-height: 300px;
+      max-height: 500px;
+      display: none;            /* shown after open */
+      align-items: center; justify-content: center;
+      overflow: hidden; border-radius: 12px;
+      background: linear-gradient(180deg, #f4eaf7, #e6f3ee);
+      border: 1px solid rgba(212,175,55,.25);
+    }
+
+    /* Arrows */
+    .navArrow {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 40px; height: 40px;
+      border-radius: 999px;
+      border: 1px solid rgba(212,175,55,.45);
+      background: rgba(0,0,0,.35);
+      color: #fff;
+      display: grid; place-items: center;
+      cursor: pointer;
+      user-select: none;
+      backdrop-filter: saturate(120%) blur(2px);
+      transition: transform .15s ease, background .15s ease, opacity .15s ease;
+      opacity: .9;
+      z-index: 2;
+    }
+    .navArrow:hover { background: rgba(0,0,0,.5); transform: translateY(-50%) scale(1.06); }
+    .navArrow:active { transform: translateY(-50%) scale(0.98); }
+    #prevBtn { left: 8px; }
+    #nextBtn { right: 8px; }
+
+    /* 3D flip slide */
+    .slide {
+      position: absolute; inset: 8px;          /* small inset to avoid clipping */
+      display: grid; place-items: center;
+      transform-style: preserve-3d;
+      transition: transform .6s ease, opacity .3s ease;
+      opacity: 0; pointer-events: none;
+      border-radius: 12px;
+    }
+    .slide.active { opacity: 1; pointer-events: auto; }
+    .slide.flipped { transform: rotateY(180deg); }
+
+    .slide .face {
+      position: absolute; inset: 0;
+      display: grid; place-items: center;
+      backface-visibility: hidden;
+      overflow: hidden; border-radius: 12px;
+    }
+    /* Scale images to target height */
+    .slide .face img {
+      height: 300px;
+      width: auto;
+      max-width: none;
+      object-fit: contain;
+      display: block;
+    }
+    .slide .back { transform: rotateY(180deg); }
+
+    .tap-hint {
+      position: absolute; right: 10px; bottom: 8px;
+      font-size: .8rem; padding: 2px 8px;
+      background: rgba(0,0,0,.35); color: #fff; border-radius: 999px;
+      pointer-events: none;
+    }
+
+    .hint { font-size: 0.84rem; color: #6d617f; }
+
+    /* Confetti */
+    .confetti { position: fixed; inset: 0; pointer-events: none; overflow: hidden; z-index: 999; }
+    .confetti-piece { position: absolute; top: -10px; font-size: 20px; animation: fall 3.2s linear forwards; }
+    @keyframes fall { to { transform: translateY(100vh) rotate(360deg); opacity: 0; } }
+
+    /* Buttons */
+    .btn {
+      position: fixed; bottom: 20px; padding: 10px 16px;
+      border: none; background: var(--amethyst); color: #fbf7ff;
+      border-radius: 10px; font-weight: 600; cursor: pointer; letter-spacing: .2px;
+      box-shadow: 0 8px 18px rgba(138,109,180,.35);
+      border: 1px solid rgba(212,175,55,.35);
+      z-index: 5;
+    }
+    .btn:hover { background: var(--amethyst-deep); }
+    #resetBtn { right: 20px; }
+    #openBtn  { left: 20px; }
+  </style>
+</head>
+<body>
+
+<!--
+  ============================================================================
+  ANNIVERSARY PHOTO CARD TEMPLATE
+  ============================================================================
+  A paper-anniversary greeting card with a photo cover and a 3D flip
+  slideshow inside. Click "Open Card" (or blow a kiss into the mic, if
+  allowed) to flip the card open; confetti falls and an auto-advancing
+  slideshow plays. Each slide flips between two versions of a photo when
+  tapped (originally a "styled" front and an "original" back).
+
+  WHERE TO CUSTOMIZE:
+    1. NAMES        — search for [NAME] and replace with the recipient's name.
+                      (Appears in the front subtitle and the inside greeting.)
+    2. MESSAGES     — edit the <div class="frontTitle">, the .insideTitle,
+                      and the <p> inside .insideScroll with your own words.
+    3. SIGN-OFF     — replace "— [Your Name]" with your own signature.
+    4. COVER PHOTO  — set the --cover CSS variable (top of <style>) to your
+                      own image, e.g. url('your-cover.jpg').
+    5. PHOTOS       — edit the `slidesData` array in the <script> at the
+                      bottom. Keep the same shape { front, back, alt }; add or
+                      remove entries freely. Point front/back at your own
+                      image paths.
+    6. AUDIO LINK   — the "for your ears only" link is optional; edit its href
+                      or remove the <a> tag.
+  Every image currently points to an inline placeholder so the template
+  works with zero external files.
+  ============================================================================
+-->
+
+<div class="card">
+  <div id="birthdayCard" class="birthdayCard">
+    <!-- FRONT -->
+    <div class="cardFront" aria-label="Card cover">
+      <div>
+        <div class="frontTitle">Happy<br>1st<br>Anniversary</div>
+        <div class="subtitle">[NAME]</div>
+      </div>
+
+      <div class="kissWrap" aria-hidden="true">
+        <svg class="kiss" viewBox="0 0 24 24" fill="#ffffff" width="18" height="18" aria-hidden="true">
+          <path d="M12 21s-6.716-4.09-9.192-8.485C1.2 9.6 3.514 6 7.03 6c1.874 0 3.3.94 4.01 2.012C11.67 6.94 13.097 6 14.97 6c3.516 0 5.83 3.6 4.222 6.515C18.716 16.91 12 21 12 21z"/>
+        </svg>
+        <span>blow a kiss… or tap Open</span>
+        <svg class="kiss" viewBox="0 0 24 24" fill="#ffffff" width="18" height="18" aria-hidden="true">
+          <path d="M12 21s-6.716-4.09-9.192-8.485C1.2 9.6 3.514 6 7.03 6c1.874 0 3.3.94 4.01 2.012C11.67 6.94 13.097 6 14.97 6c3.516 0 5.83 3.6 4.222 6.515C18.716 16.91 12 21 12 21z"/>
+        </svg>
+      </div>
+    </div>
+
+    <!-- INSIDE (fixed; scrolls internally) -->
+    <div class="cardInside" aria-live="polite">
+      <div class="insideScroll">
+        <h1 class="insideTitle">To My Love — [NAME],</h1>
+        <p>Happy Anniversary!<br><br>Every year with you is my favorite. From the very first day to right now, you have made ordinary moments feel like magic and turned this house into a home.<br><br>Thank you for your laughter, your patience, and your love. Here's to another year of adventures, quiet mornings, and everything in between.<br><br>Here's to us, and to many more.<br><br>With all my love,<br>— [Your Name] <span class="heart" aria-hidden="true">❤️</span></p>
+        <a href="#">Here's something for your ears only...</a>
+        <div class="divider"></div>
+
+        <!-- Flip slideshow -->
+        <div id="slideshow" class="slideshow" aria-label="Our memories slideshow">
+          <button id="prevBtn" class="navArrow" aria-label="Previous photo" title="Previous">❮</button>
+          <button id="nextBtn" class="navArrow" aria-label="Next photo" title="Next">❯</button>
+        </div>
+        <div class="hint" id="slideshowHint" style="display:none;">Tap photo to flip between the two versions</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="confetti" id="confetti"></div>
+
+<!-- Optional personal audio: add your own audio here -->
+<!-- <audio id="cardAudio" src=""></audio> -->
+
+<!-- Buttons -->
+<button id="openBtn" class="btn" onclick="openCardManually()">💜 Open Card</button>
+<button id="resetBtn" class="btn" onclick="resetCard()">↺ Reset</button>
+
+<script>
+  let triggered = false;
+  let prvVol = 0;
+  let slideshowTimer = null;
+  let currentSlide = 0;
+  let firstImageLoaded = false;
+
+  const SLIDE_INTERVAL = 3000;
+
+  /* ===== Slideshow pairs: front + back (tap a slide to flip between them) =====
+     Replace these with your own photo paths. Each slide shows `front` first
+     and flips to `back` on tap. Keep the { front, back, alt } shape; you can
+     add or remove entries. Every entry below uses the inline placeholder so
+     the template works with no external files. */
+  const PLACEHOLDER = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='600' height='600'%3E%3Crect width='100%25' height='100%25' fill='%23dfe3ea'/%3E%3Ctext x='50%25' y='50%25' font-family='sans-serif' font-size='34' fill='%238a93a3' text-anchor='middle' dominant-baseline='middle'%3EYour Photo Here%3C/text%3E%3C/svg%3E";
+
+  const slidesData = [
+    { front: PLACEHOLDER, back: PLACEHOLDER, alt: 'Our first memory' },
+    { front: PLACEHOLDER, back: PLACEHOLDER, alt: 'A day out together' },
+    { front: PLACEHOLDER, back: PLACEHOLDER, alt: 'Laughing together' },
+    { front: PLACEHOLDER, back: PLACEHOLDER, alt: 'A special trip' },
+    { front: PLACEHOLDER, back: PLACEHOLDER, alt: 'A quiet moment' },
+    { front: PLACEHOLDER, back: PLACEHOLDER, alt: 'A celebration' },
+    { front: PLACEHOLDER, back: PLACEHOLDER, alt: 'An adventure' },
+    { front: PLACEHOLDER, back: PLACEHOLDER, alt: 'Just the two of us' },
+    { front: PLACEHOLDER, back: PLACEHOLDER, alt: 'Here and now' }
+  ];
+
+  const slideshowEl = document.getElementById('slideshow');
+  const prevBtn = document.getElementById('prevBtn');
+  const nextBtn = document.getElementById('nextBtn');
+
+  const slides = slidesData.map((item, idx) => {
+    const slide = document.createElement('div');
+    slide.className = 'slide';
+    slide.setAttribute('role', 'group');
+    slide.setAttribute('aria-label', `Photo ${idx+1} of ${slidesData.length} — tap to flip`);
+
+    const front = document.createElement('div');
+    front.className = 'face front';
+    const imgFront = new Image();
+    imgFront.src = item.front;
+    imgFront.alt = (item.alt || 'Photo') + ' — front';
+    imgFront.onload = () => { firstImageLoaded = true; };
+    front.appendChild(imgFront);
+
+    const back = document.createElement('div');
+    back.className = 'face back';
+    const imgBack = new Image();
+    imgBack.src = item.back;
+    imgBack.alt = (item.alt || 'Photo') + ' — back';
+    back.appendChild(imgBack);
+
+    const hint = document.createElement('div');
+    hint.className = 'tap-hint';
+    hint.textContent = 'tap to flip';
+
+    slide.appendChild(front);
+    slide.appendChild(back);
+    slide.appendChild(hint);
+
+    // Tap/click to flip (pauses auto; user controls the vibe)
+    slide.addEventListener('click', () => {
+      slide.classList.toggle('flipped');
+      restartAutoAdvance(); // restart timer so it keeps moving after interaction
+    });
+
+    // Keyboard flip when slide has focus
+    slide.tabIndex = 0;
+    slide.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        slide.classList.toggle('flipped');
+        restartAutoAdvance();
+      }
+    });
+
+    slideshowEl.appendChild(slide);
+    return slide;
+  });
+
+  /* ===== Slideshow controls ===== */
+  function goToSlide(index) {
+    slides[currentSlide].classList.remove('active','flipped');
+    currentSlide = (index + slides.length) % slides.length;
+    slides[currentSlide].classList.remove('flipped'); // always start on front face
+    slides[currentSlide].classList.add('active');
+  }
+
+  function nextSlide() { goToSlide(currentSlide + 1); }
+  function prevSlide() { goToSlide(currentSlide - 1); }
+
+  function startAutoAdvance() {
+    stopAutoAdvance();
+    slideshowTimer = setInterval(nextSlide, SLIDE_INTERVAL);
+  }
+  function stopAutoAdvance() {
+    if (slideshowTimer) { clearInterval(slideshowTimer); slideshowTimer = null; }
+  }
+  function restartAutoAdvance() {
+    // brief pause then resume, feels snappier after interactions
+    stopAutoAdvance();
+    setTimeout(startAutoAdvance, 1200);
+  }
+
+  // Arrow buttons
+  prevBtn.addEventListener('click', () => { prevSlide(); restartAutoAdvance(); });
+  nextBtn.addEventListener('click', () => { nextSlide(); restartAutoAdvance(); });
+
+  // Keyboard arrows when slideshow is visible
+  document.addEventListener('keydown', (e) => {
+    if (slideshowEl.style.display !== 'flex') return;
+    if (e.key === 'ArrowLeft') { e.preventDefault(); prevSlide(); restartAutoAdvance(); }
+    if (e.key === 'ArrowRight'){ e.preventDefault(); nextSlide(); restartAutoAdvance(); }
+  });
+
+  /* ===== Mic blow-to-open (optional) ===== */
+  if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+    navigator.mediaDevices.getUserMedia({ audio: true })
+      .then(function(stream) {
+        const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+        const analyser = audioContext.createAnalyser();
+        const microphone = audioContext.createMediaStreamSource(stream);
+        const scriptProcessor = audioContext.createScriptProcessor(2048, 1, 1);
+
+        analyser.smoothingTimeConstant = 0.8;
+        analyser.fftSize = 1024;
+
+        microphone.connect(analyser);
+        analyser.connect(scriptProcessor);
+        scriptProcessor.connect(audioContext.destination);
+
+        scriptProcessor.onaudioprocess = function() {
+          const array = new Uint8Array(analyser.frequencyBinCount);
+          analyser.getByteFrequencyData(array);
+          const arraySum = array.reduce((a, v) => a + v, 0);
+          const average = Math.round(arraySum / array.length);
+
+          if (!triggered && average - prvVol > 60) onKissTriggered();
+          prvVol = average;
+        };
+      })
+      .catch(function(err) {
+        console.warn('Mic not available (or denied). Use the Open button.', err);
+      });
+  } else {
+    console.warn('Media devices not supported. Use the Open button.');
+  }
+
+  function onKissTriggered() {
+    if (triggered) return;
+    triggered = true;
+    document.querySelectorAll('.kiss').forEach(k => k.classList.add('fade'));
+    setTimeout(() => openCard(), 450);
+  }
+
+  function openCardManually() {
+    if (triggered) return;
+    triggered = true;
+    document.querySelectorAll('.kiss').forEach(k => k.classList.add('fade'));
+    openCard();
+  }
+
+  function openCard() {
+    const card = document.getElementById('birthdayCard');
+    card.classList.add('open');
+    launchPetalConfetti();
+    startSlideshow();
+  }
+
+  function startSlideshow() {
+    if (!slides.length) return;
+
+    // Wait until at least one image loaded
+    if (!firstImageLoaded) {
+      const wait = setInterval(() => {
+        if (firstImageLoaded) { clearInterval(wait); startSlideshow(); }
+      }, 100);
+      setTimeout(() => clearInterval(wait), 5000);
+      return;
+    }
+
+    slideshowEl.style.display = 'flex';
+    document.getElementById('slideshowHint').style.display = 'block';
+
+    slides.forEach(s => s.classList.remove('active','flipped'));
+    currentSlide = 0;
+    slides[currentSlide].classList.add('active');
+
+    startAutoAdvance();
+  }
+
+  function stopSlideshow() {
+    stopAutoAdvance();
+    slides.forEach(s => s.classList.remove('active','flipped'));
+    currentSlide = 0;
+    slideshowEl.style.display = 'none';
+    const hint = document.getElementById('slideshowHint');
+    if (hint) hint.style.display = 'none';
+  }
+
+  function launchPetalConfetti() {
+    const confettiContainer = document.getElementById('confetti');
+    const petals = ['💜','🌸','🌺','🌷','💮'];
+    for (let i = 0; i < 48; i++) {
+      const piece = document.createElement('div');
+      piece.classList.add('confetti-piece');
+      piece.textContent = petals[Math.floor(Math.random() * petals.length)];
+      piece.style.left = Math.random() * 100 + 'vw';
+      piece.style.animationDuration = (2.8 + Math.random() * 2) + 's';
+      piece.style.fontSize = (16 + Math.random() * 22) + 'px';
+      confettiContainer.appendChild(piece);
+      setTimeout(() => piece.remove(), 5200);
+    }
+  }
+
+  function resetCard() {
+    triggered = false;
+    document.getElementById('birthdayCard').classList.remove('open');
+    document.getElementById('confetti').innerHTML = '';
+    document.querySelectorAll('.kiss').forEach(k => k.classList.remove('fade'));
+    stopSlideshow();
+    const scroller = document.querySelector('.insideScroll');
+    if (scroller) scroller.scrollTo({ top: 0, behavior: 'instant' });
+  }
+</script>
+</body>
+</html>
